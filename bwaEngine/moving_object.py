@@ -1,9 +1,10 @@
 import pygame
-import config
 import json
 
-from sprite import Orientation
-from physical_object import PhysicalObject, Direction
+from . import config
+
+from .sprite import Orientation
+from .physical_object import PhysicalObject, Direction
 
 class MovingObject(PhysicalObject):
 	def __init__(self, json_sprite, physical_data, map_, initial_position):

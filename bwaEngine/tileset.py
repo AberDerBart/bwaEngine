@@ -1,8 +1,8 @@
 import json
 import pygame
 import os.path
-import config
-from util import relativePath
+import bwaEngine.config
+from .util import relativePath
 
 class Tile:
 	def __init__(self,surf,data):

@@ -1,6 +1,6 @@
 import pygame
 import os.path
-import config
+import bwaEngine.config
 
 def init():
 	global font

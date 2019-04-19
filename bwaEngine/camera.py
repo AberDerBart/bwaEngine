@@ -1,6 +1,6 @@
 import pygame
-from hero import Hero
-from sprite import AnimSprite
+from .hero import Hero
+from .sprite import AnimSprite
 
 class Camera(Hero):
 	typeName = "camera"

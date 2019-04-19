@@ -1,10 +1,10 @@
 import pygame
 import json
 import operator
-from sprite import AnimSprite, Orientation
-import config
+from .sprite import AnimSprite, Orientation
+from . import config
 from enum import Enum
-from util import relativePath
+from .util import relativePath
 
 class Direction(Orientation):
 	NONE = 0

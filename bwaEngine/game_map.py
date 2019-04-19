@@ -1,13 +1,13 @@
 import json
 import pygame
-from tileset import TileSet, EntitySet, SetDict
-from util import relativePath, convertCoords
+from .tileset import TileSet, EntitySet, SetDict
+from .util import relativePath, convertCoords
 import os.path
 import math
-import config
-import physical_object
-from text import RenderedText
-from offset_group import OffsetGroup
+import bwaEngine.config
+import bwaEngine.physical_object
+from .text import RenderedText
+from .offset_group import OffsetGroup
 
 def test_map(filename, offset=(0,0)):
 	pygame.init()

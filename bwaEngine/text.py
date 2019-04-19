@@ -1,6 +1,6 @@
 import pygame
-import config
-from util import convertCoords
+from . import config
+from .util import convertCoords
 
 class RenderedText(pygame.sprite.Sprite):
 	typeName = "text"

@@ -1,12 +1,12 @@
 import os.path
 import json
-import config
-from tileset import *
-from text import RenderedText
-from camera import Camera
+import bwaEngine.config
+from .tileset import *
+from .text import RenderedText
+from .camera import Camera
 import pygame
 
-from game_map import GameMap
+from .game_map import GameMap
 
 class MapParser:
 	def _parseMap(gamemap, mapLayerData, setDict):

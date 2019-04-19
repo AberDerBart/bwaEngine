@@ -1,7 +1,7 @@
 import pygame
-from moving_object import MovingObject
-from physical_object import Direction
-from text import RenderedText
+from .moving_object import MovingObject
+from .physical_object import Direction
+from .text import RenderedText
 
 class Hero(MovingObject):
 	def __init__(self, json_sprite, physical_data, map_, position):
