@@ -1,5 +1,4 @@
 import pygame
-import gamemap
 import config
 
 class Viewport:

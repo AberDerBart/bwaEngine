@@ -6,11 +6,11 @@ from text import RenderedText
 from camera import Camera
 import pygame
 
-from gamemap import Map
+from game_map import GameMap
 
 class MapParser:
 	def _parseMap(gamemap, mapLayerData, setDict):
-		"""parses the map layer of a map and adds it to the given Map object"""
+		"""parses the map layer of a map and adds it to the given GameMap object"""
 		for row in range(gamemap.height):
 			curRow = []
 			for col in range(gamemap.width):
@@ -20,7 +20,7 @@ class MapParser:
 			gamemap.tiles.append(curRow)
 
 	def _parseEntities(gamemap, entityLayerData, setDict):
-		"""parses the entity layer of a map and adds it to the given Map object"""
+		"""parses the entity layer of a map and adds it to the given GameMap object"""
 		for obj in entityLayerData["objects"]:
 			x = obj["x"]
 			y = obj["y"]
@@ -71,17 +71,17 @@ class MapParser:
 					gamemap.player = cam
 
 	def _parseBackground(gamemap, backgroundLayerData):
-		"""parses the background layer of a map and adds it to the given Map object"""
+		"""parses the background layer of a map and adds it to the given GameMap object"""
 		gamemap.background = pygame.image.load(relativePath(backgroundLayerData.get("image"),gamemap.path))
 
 	def parse(path):
-		"""parses the map data given under [path] and returns the resulting Map object"""
-		gamemap = Map()
+		"""parses the map data given under [path] and returns the resulting GameMap object"""
+		gamemap = GameMap()
 
 		path = os.path.abspath(path)
 		gamemap.path = path
 
-		print("Loading Map:",path)
+		print("Loading map:",path)
 		data = json.load(open(path))
 
 		gamemap.width = data['width']

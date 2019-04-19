@@ -2,7 +2,6 @@ import pygame
 import json
 import operator
 from sprite import AnimSprite, Orientation
-import gamemap
 import config
 from enum import Enum
 from util import relativePath

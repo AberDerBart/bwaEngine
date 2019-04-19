@@ -13,7 +13,7 @@ def test_map(filename, offset=(0,0)):
 	pygame.init()
 	screen = pygame.display.set_mode((960,544))
 
-	testMap = Map(filename,2.4535)
+	testMap = GameMap(filename,2.4535)
 
 	testMap.render(screen,offset)
 
@@ -26,7 +26,7 @@ def test_map(filename, offset=(0,0)):
 
 	
 
-class Map:
+class GameMap:
 	def __init__(self):
 		self.path = None
 		self.width = 0
