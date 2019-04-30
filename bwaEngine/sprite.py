@@ -82,7 +82,12 @@ class AnimSprite(pygame.sprite.Sprite):
 		if animation in self.animations[self.orientation]:
 			self.currentAnimationName = animation
 			self.currentAnimation = self.animations[self.orientation][animation]
-			self.frameNo = 0
+
+			if(self.currentAnimation[1] == 'reverse'):
+				self.frameNo = len(self.currentAnimation[0]) - 1
+			else:
+				self.frameNo = 0
+
 			self.frameTime = 0
 			self.direction = self.currentAnimation[1]
 			self.image = self.currentAnimation[0][self.frameNo][0]
@@ -114,8 +119,10 @@ class AnimSprite(pygame.sprite.Sprite):
 				self.frameNo = self.frameNo - 1
 				if self.frameNo == 0:
 					self.direction = 'pingpong'
-			elif self.direction == 'backward':
+			elif self.direction == 'reverse':
 				self.frameNo = (self.frameNo - 1) % len(self.currentAnimation[0])
+				if (self.frameNo == len(self.currentAnimation[0]) - 1):
+					self.on_animationFinished()
 			else:
 				self.frameNo = (self.frameNo + 1) % len(self.currentAnimation[0])
 				if self.frameNo == 0:
