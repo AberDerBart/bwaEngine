@@ -164,6 +164,10 @@ class PhysicalObject(AnimSprite):
 
 	def on_collision(self, direction, obj = None):
 		pass
+	
+	def die(self):
+		self.remove(self.map_.physicalEntities)
+		super().die()
 
 	def update(self, ms):
 		self.on_ground = False

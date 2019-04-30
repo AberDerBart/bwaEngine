@@ -40,6 +40,10 @@ class MovingObject(PhysicalObject):
 	def on_edge(self, direction):
 		pass
 
+	def die(self):
+		self.movement = 0
+		super().die()
+
 	def update(self,ms):
 		self.vx = self.movement * self.speed
 		super().update(ms)

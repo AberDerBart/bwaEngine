@@ -65,7 +65,8 @@ class AnimSprite(pygame.sprite.Sprite):
 		self.setAnimation(data['meta']['frameTags'][0]['name'])
 
 	def die(self):
-		self.kill()
+		if not self.setAnimation('die'):
+			self.kill()
 		self.on_death()
 	
 	def on_death(self):
@@ -85,6 +86,7 @@ class AnimSprite(pygame.sprite.Sprite):
 			self.frameTime = 0
 			self.direction = self.currentAnimation[1]
 			self.image = self.currentAnimation[0][self.frameNo][0]
+			return True
 	
 	def animationDuration(self, animation):
 		return sum([frame[1] for frame in self.animations[self.orientation].get(animation, [])[0]])
@@ -93,7 +95,8 @@ class AnimSprite(pygame.sprite.Sprite):
 		self.rect = pygame.Rect(position, self.size)
 
 	def on_animationFinished(self):
-		pass
+		if self.currentAnimationName == "die":
+			self.kill()
 
 	def update(self, ms):
 		self.setPosition((int(self.x),int(self.y)))
