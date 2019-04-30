@@ -1,6 +1,15 @@
 import pygame
+from .control import PlayerControl
 
-"""KEYMAP"""
+"""DEFAULT KEYMAP"""
+defaultKeymap = {
+	pygame.K_LEFT: PlayerControl.left,
+	pygame.K_RIGHT: PlayerControl.right,
+	pygame.K_SPACE: PlayerControl.jump,
+	pygame.K_LCTRL: PlayerControl.attack,
+	pygame.K_UP: PlayerControl.switch
+}
+
 left_key = pygame.K_LEFT
 right_key = pygame.K_RIGHT
 jump_key = pygame.K_SPACE
