@@ -1,6 +1,5 @@
 import pygame
 from . import config
-from .util import convertCoords
 
 class RenderedText(pygame.sprite.Sprite):
 	typeName = "text"
@@ -10,7 +9,7 @@ class RenderedText(pygame.sprite.Sprite):
 		color = pygame.Color(data.get("color","#000000"))
 		self.text = data.get("text","")
 		fontPath = config.fonts.get(data.get("fontfamily"))
-		size = int(convertCoords(data.get("pixelsize", 16)))
+		size = int(data.get("pixelsize", 16))
 
 		font = pygame.font.Font(fontPath, size)
 

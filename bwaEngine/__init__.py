@@ -12,3 +12,4 @@ from .camera import Camera
 from .offset_group import OffsetGroup
 from .text import RenderedText
 from .viewport import Viewport
+from .control import PlayerControl

@@ -14,6 +14,7 @@ class Hero(MovingObject):
                                  "fontfamily":"Lady Radical 2",
                                  "text":"#Beer: 0"}
 		self.beer_counter = RenderedText((0, 0), self.font_render_dict)
+		self.partner = None
 
 	def update_hud(self):
 		self.font_render_dict['text'] = "#Beer: " + str(self.num_beers)
@@ -26,7 +27,15 @@ class Hero(MovingObject):
 		super().die()
 
 	def switch(self):
-		super().die()
+		if self.partner:
+			super().die()
+			self.map_.entities.add(self.partner)
+			self.map_.physicalEntities.add(self.partner)
+			self.map_.player = self.partner
+			self.partner.x = self.x
+			self.partner.y = self.y
+			return self.partner
+		return self
 
 	def special(self):
 		pass
