@@ -1,6 +1,6 @@
-# bwaEngine
+# junebugEngine
 
-bwaEngine is a platformer game engine based on pygame
+junebugEngine is a platformer game engine based on pygame
 
 ## Setup
 

@@ -1,5 +1,5 @@
 import pygame
-import bwaEngine.config
+import junebugEngine.config
 
 class Viewport:
 	def __init__(self, size, map_, offset=(0,0), paddingTop = 0, paddingBottom = 0, paddingLeft = 0, paddingRight = 0):

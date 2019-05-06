@@ -1,6 +1,6 @@
 import pygame
 import os.path
-import bwaEngine.config
+import junebugEngine.config
 
 def init():
 	global font

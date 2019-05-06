@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name="bwaEngine",
+    name="junebugEngine",
     version="1.0.0",
     author="Nils Kornfeld, Jonas Grosse-Holz",
     author_email="aber@der-b.art",

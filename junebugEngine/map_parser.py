@@ -1,6 +1,6 @@
 import os.path
 import json
-import bwaEngine.config
+import junebugEngine.config
 from .tileset import *
 from .text import RenderedText
 from .camera import Camera

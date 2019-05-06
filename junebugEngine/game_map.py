@@ -4,8 +4,8 @@ from .tileset import TileSet, EntitySet, SetDict
 from .util import relativePath, convertCoords
 import os.path
 import math
-import bwaEngine.config
-import bwaEngine.physical_object
+import junebugEngine.config
+import junebugEngine.physical_object
 from .text import RenderedText
 from .offset_group import OffsetGroup
 

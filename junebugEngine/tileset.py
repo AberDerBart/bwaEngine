@@ -1,7 +1,7 @@
 import json
 import pygame
 import os.path
-import bwaEngine.config
+import junebugEngine.config
 from .util import relativePath
 
 class Tile:
