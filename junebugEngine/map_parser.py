@@ -6,7 +6,7 @@ from .text import RenderedText
 from .camera import Camera
 import pygame
 
-from .game_map import GameMap
+from .game_map import GameMap, TileLayer
 
 class MapParser:
 	def _parseMap(gamemap, mapLayerData, setDict):
@@ -18,6 +18,20 @@ class MapParser:
 				tileIndex = mapLayerData['data'][mapIndex]
 				curRow.append(setDict.get(tileIndex))
 			gamemap.tiles.append(curRow)
+	def _parseTileLayer(gamemap, layerData, setDict):
+		layer = TileLayer(gamemap, layerData.get("name"))
+		layer.height = layerData.get("height")
+		layer.width = layerData.get("width")
+
+		for row in range(layer.height):
+			curRow = []
+			for col in range(layer.width):
+				mapIndex = row * layer.width + col
+				tileIndex = layerData['data'][mapIndex]
+				curRow.append(setDict.get(tileIndex))
+			layer.tiles.append(curRow)
+
+		return layer
 
 	def _parseEntities(gamemap, entityLayerData, setDict):
 		"""parses the entity layer of a map and adds it to the given GameMap object"""
@@ -97,7 +111,8 @@ class MapParser:
 		if renderOrder=='right-down':
 			for layer in data["layers"]:
 				if layer.get("type") == "tilelayer":
-					MapParser._parseMap(gamemap, layer, setDict)
+					gamemap.layers.append(MapParser._parseTileLayer(gamemap, layer, setDict))
+					#MapParser._parseMap(gamemap, layer, setDict)
 				if layer.get("type") == "objectgroup":
 					MapParser._parseEntities(gamemap, layer, setDict)
 				elif layer.get("type") == "imagelayer":

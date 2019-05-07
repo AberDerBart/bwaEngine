@@ -25,6 +25,35 @@ def test_map(filename, offset=(0,0)):
 				exit(0)
 
 	
+class MapLayer:
+	def __init__(self, gamemap, name):
+		self.gamemap = gamemap
+		self.name = name
+	def render(self, screen, offset):
+		pass
+	
+class TileLayer(MapLayer):
+	def __init__(self, gamemap, name):
+		self.tiles = []
+		self.width = 0
+		self.height = 0
+		super().__init__(gamemap, name)
+
+	def render(self, screen, offset):
+
+		scrWidth = screen.get_width()
+		scrHeight = screen.get_height()
+
+		minX = max(math.trunc((0 - offset[0]) / self.gamemap.tileWidth),0)
+		maxX = min(math.ceil((scrWidth - offset[0]) / self.gamemap.tileWidth), self.width-1)
+		minY = max(math.trunc((0 - offset[1]) / self.gamemap.tileHeight),0)
+		maxY = min(math.ceil((scrHeight - offset[1]) / self.gamemap.tileHeight), self.height-1)
+
+		for row in range(minY,maxY+1):
+			for col in range(minX,maxX+1):
+				tile = self.tiles[row][col]
+				if tile and tile.getSurf():
+					screen.blit(tile.getSurf(), (col*self.gamemap.tileWidth+offset[0],row*self.gamemap.tileHeight+offset[1]))
 
 class GameMap:
 	def __init__(self):
@@ -34,6 +63,7 @@ class GameMap:
 		self.player = None
 		self.tileWidth = 0
 		self.tileHeight = 0
+		self.layers = []
 		self.tiles = []
 		self.goal = None
 		self.entities = OffsetGroup()
@@ -81,11 +111,13 @@ class GameMap:
 		minY = max(math.trunc((0 - offset[1]) / self.tileHeight),0)
 		maxY = min(math.ceil((scrHeight - offset[1]) / self.tileHeight), self.height-1)
 		
-		for row in range(minY,maxY+1):
-			for col in range(minX,maxX+1):
-				tile = self.tiles[row][col]
-				if tile and tile.getSurf():
-					screen.blit(tile.getSurf(), (col*self.tileWidth+offset[0],row*self.tileHeight+offset[1]))
+		for layer in self.layers:
+			layer.render(screen, offset)
+		#for row in range(minY,maxY+1):
+		#	for col in range(minX,maxX+1):
+		#		tile = self.tiles[row][col]
+		#		if tile and tile.getSurf():
+		#			screen.blit(tile.getSurf(), (col*self.tileWidth+offset[0],row*self.tileHeight+offset[1]))
 		self.entities.draw(screen, offset)
 
 	def clear(self,screen,bg,offset):
