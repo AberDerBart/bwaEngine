@@ -1,3 +1,4 @@
+![logo](logo.png) 
 # junebugEngine
 
 junebugEngine is a platformer game engine based on pygame
