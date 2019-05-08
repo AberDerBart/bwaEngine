@@ -1,5 +1,6 @@
 import pygame
 import junebugEngine.config
+from .game_map import EntityLayer
 
 class Viewport:
 	def __init__(self, size, map_, offset=(0,0), paddingTop = 0, paddingBottom = 0, paddingLeft = 0, paddingRight = 0):
@@ -55,16 +56,18 @@ class Viewport:
 		self.rect.right = - self.offsetx + self.width
 
 
-		for entity in self.map_.entities:
-			if self.is_visible(entity):
-				entity.update(ms)
-				if entity not in self.visibleEntities:
-					entity.on_screen_enter()
-					self.visibleEntities.add(entity)
-			else:
-				if entity in self.visibleEntities:
-					entity.on_screen_exit()
-					self.visibleEntities.remove(entity)
+		for layer in self.map_.layers:
+			if type(layer) == EntityLayer:
+				for entity in layer.entities:
+					if self.is_visible(entity):
+						entity.update(ms)
+						if entity not in self.visibleEntities:
+							entity.on_screen_enter()
+							self.visibleEntities.add(entity)
+					else:
+						if entity in self.visibleEntities:
+							entity.on_screen_exit()
+							self.visibleEntities.remove(entity)
 
 		self.draw()
 

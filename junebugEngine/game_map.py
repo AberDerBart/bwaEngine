@@ -38,7 +38,14 @@ class TileLayer(MapLayer):
 				tile = self.tiles[row][col]
 				if tile and tile.getSurf():
 					screen.blit(tile.getSurf(), (col*self.gamemap.tileWidth+offset[0],row*self.gamemap.tileHeight+offset[1]))
+class EntityLayer(MapLayer):
+	def __init__(self, gamemap, name):
+		self.entities = OffsetGroup()
+		super().__init__(gamemap, name)
 
+	def render(self, screen, offset):
+		self.entities.draw(screen, offset)
+	
 class GameMap:
 	def __init__(self):
 		self.path = None
@@ -98,12 +105,7 @@ class GameMap:
 		
 		for layer in self.layers:
 			layer.render(screen, offset)
-		#for row in range(minY,maxY+1):
-		#	for col in range(minX,maxX+1):
-		#		tile = self.tiles[row][col]
-		#		if tile and tile.getSurf():
-		#			screen.blit(tile.getSurf(), (col*self.tileWidth+offset[0],row*self.tileHeight+offset[1]))
-		self.entities.draw(screen, offset)
+		#self.entities.draw(screen, offset)
 
 	def clear(self,screen,bg,offset):
 		scrWidth = screen.get_width()

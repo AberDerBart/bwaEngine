@@ -14,8 +14,6 @@ class AnimSprite(pygame.sprite.Sprite):
 
 		self.map_ = map_
 
-		map_.entities.add(self)
-
 		data = json.load(open(json_file))
 
 		folder = os.path.dirname(json_file) + os.sep

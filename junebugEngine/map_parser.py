@@ -7,18 +7,9 @@ from .camera import Camera
 from .sprite import AnimSprite
 import pygame
 
-from .game_map import GameMap, TileLayer
+from .game_map import GameMap, TileLayer, EntityLayer
 
 class MapParser:
-	def _parseMap(gamemap, mapLayerData, setDict):
-		"""parses the map layer of a map and adds it to the given GameMap object"""
-		for row in range(gamemap.height):
-			curRow = []
-			for col in range(gamemap.width):
-				mapIndex = row * gamemap.width + col
-				tileIndex = mapLayerData['data'][mapIndex]
-				curRow.append(setDict.get(tileIndex))
-			gamemap.tiles.append(curRow)
 	def _parseTileLayer(gamemap, layerData, setDict):
 		layer = TileLayer(gamemap, layerData.get("name"))
 		layer.height = layerData.get("height")
@@ -34,8 +25,10 @@ class MapParser:
 
 		return layer
 
-	def _parseEntities(gamemap, entityLayerData, setDict):
-		"""parses the entity layer of a map and adds it to the given GameMap object"""
+	def _parseEntityLayer(gamemap, entityLayerData, setDict):
+		"""parses and returns an entity layer of a map"""
+		layer = EntityLayer(gamemap, entityLayerData.get("name"))
+
 		for obj in entityLayerData["objects"]:
 			x = obj["x"]
 			y = obj["y"]
@@ -56,16 +49,18 @@ class MapParser:
 
 				if generator:
 					entity = generator(gamemap, (x,y))
+					layer.entities.add(entity)
 
 					if properties.get("player"):
 						gamemap.player = entity
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
 					entity = AnimSprite(spritePath, gamemap, (x,y))
+					layer.entities.add(entity)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 			elif "text" in obj:
-				gamemap.entities.add(RenderedText((x,y), obj["text"]))
+				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
 				gamemap.goal = pygame.Rect(x, y, width, height)
 			elif obj.get("type") == "camera":
@@ -88,10 +83,11 @@ class MapParser:
 					path.append((px,py))
 
 				cam = Camera(gamemap, path, timePerPoint)
-				gamemap.entities.add(cam)
+				layer.entities.add(cam)
 
 				if player:
 					gamemap.player = cam
+		return layer
 
 	def _parseBackground(gamemap, backgroundLayerData):
 		"""parses the background layer of a map and adds it to the given GameMap object"""
@@ -124,9 +120,9 @@ class MapParser:
 					gamemap.layers.append(newLayer)
 					if not gamemap.collisionTiles:
 						gamemap.collisionTiles = newLayer.tiles
-					#MapParser._parseMap(gamemap, layer, setDict)
 				if layer.get("type") == "objectgroup":
-					MapParser._parseEntities(gamemap, layer, setDict)
+					newLayer = MapParser._parseEntityLayer(gamemap, layer, setDict)
+					gamemap.layers.append(newLayer)					
 				elif layer.get("type") == "imagelayer":
 					MapParser._parseBackground(gamemap, layer)
 			return gamemap
