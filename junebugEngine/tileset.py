@@ -56,6 +56,7 @@ class EntityData:
 		return EntityData.generators.get(self.entityType)
 	
 	def __init__(self,data, relPath):
+		self.path = relPath
 		self.entityType = None
 		self.properties = {}
 		for prop in data['properties']:

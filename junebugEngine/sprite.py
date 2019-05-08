@@ -7,6 +7,7 @@ class Orientation:
 	RIGHT = 2
 
 class AnimSprite(pygame.sprite.Sprite):
+	typeName = None
 
 	def __init__(self, json_file, map_, position):
 		super().__init__()

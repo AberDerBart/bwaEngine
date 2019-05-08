@@ -4,6 +4,7 @@ import junebugEngine.config
 from .tileset import *
 from .text import RenderedText
 from .camera import Camera
+from .sprite import AnimSprite
 import pygame
 
 from .game_map import GameMap, TileLayer
@@ -43,16 +44,24 @@ class MapParser:
 			if "gid" in obj:
 				entityIndex = obj["gid"]
 				entityData = setDict.get(entityIndex)
+
+				# extract static entity properties
+				properties = entityData.properties.copy()
+				# overwrite custom properties
+				propDict = obj.get("properties",[])
+				for prop in propDict:
+					properties[prop["name"]] = prop["value"]
+
 				generator = entityData.getGenerator()
+
 				if generator:
 					entity = generator(gamemap, (x,y))
 
-					propDict = obj.get("properties",[])
-					properties = entityData.properties.copy()
-					for prop in propDict:
-						properties[prop["name"]] = prop["value"]
 					if properties.get("player"):
 						gamemap.player = entity
+				elif properties.get("sprite"):
+					spritePath = relativePath(properties.get("sprite"), entityData.path)
+					entity = AnimSprite(spritePath, gamemap, (x,y))
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 			elif "text" in obj:
