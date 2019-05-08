@@ -111,7 +111,10 @@ class MapParser:
 		if renderOrder=='right-down':
 			for layer in data["layers"]:
 				if layer.get("type") == "tilelayer":
-					gamemap.layers.append(MapParser._parseTileLayer(gamemap, layer, setDict))
+					newLayer = MapParser._parseTileLayer(gamemap, layer, setDict)
+					gamemap.layers.append(newLayer)
+					if not gamemap.collisionTiles:
+						gamemap.collisionTiles = newLayer.tiles
 					#MapParser._parseMap(gamemap, layer, setDict)
 				if layer.get("type") == "objectgroup":
 					MapParser._parseEntities(gamemap, layer, setDict)

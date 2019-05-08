@@ -9,22 +9,6 @@ import junebugEngine.physical_object
 from .text import RenderedText
 from .offset_group import OffsetGroup
 
-def test_map(filename, offset=(0,0)):
-	pygame.init()
-	screen = pygame.display.set_mode((960,544))
-
-	testMap = GameMap(filename,2.4535)
-
-	testMap.render(screen,offset)
-
-	pygame.display.update()
-	
-	while(True):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				exit(0)
-
-	
 class MapLayer:
 	def __init__(self, gamemap, name):
 		self.gamemap = gamemap
@@ -64,11 +48,12 @@ class GameMap:
 		self.tileWidth = 0
 		self.tileHeight = 0
 		self.layers = []
-		self.tiles = []
+		self.collision = []
 		self.goal = None
 		self.entities = OffsetGroup()
 		self.physicalEntities = pygame.sprite.Group()
 		self.background = None
+		self.collisionTiles = None
 		
 	def pixelWidth(self):
 		return self.tileWidth * self.width
@@ -82,7 +67,7 @@ class GameMap:
 		tileY = int(y / self.tileHeight)
 
 		if tileX in range(0, self.width) and tileY in range(0, self.height):
-			return self.tiles[tileY][tileX]
+			return self.collisionTiles[tileY][tileX]
 		return None
 
 	def tileRange(self, rect):
@@ -129,20 +114,20 @@ class GameMap:
 		minY = max(math.trunc((0 - offset[1]) / self.tileHeight),0)
 		maxY = min(math.ceil((scrHeight - offset[1]) / self.tileHeight), self.height-1)
 
-		for row in range(minY,maxY+1):
-			for col in range(minX,maxX+1):
-				tile = self.tiles[row][col]
-				if tile:
-					left = max(col * self.tileWidth + offset[0], 0)
-					top = max(row *self.tileHeight + offset[1], 0)
-					
-					right = min(scrWidth, left + self.tileWidth)
-					bottom = min(scrHeight, top + self.tileHeight)
-
-					pos = (left,top)
-					size = (right - left, bottom - top)
-					print(pos)
-					screen.blit(bg.subsurface(pygame.Rect(pos,size)),pos)
+		#for row in range(minY,maxY+1):
+		#	for col in range(minX,maxX+1):
+		#		tile = self.tiles[row][col]
+		#		if tile:
+		#			left = max(col * self.tileWidth + offset[0], 0)
+		#			top = max(row *self.tileHeight + offset[1], 0)
+		#			
+		#			right = min(scrWidth, left + self.tileWidth)
+		#			bottom = min(scrHeight, top + self.tileHeight)
+		#
+		#			pos = (left,top)
+		#			size = (right - left, bottom - top)
+		#			print(pos)
+		#			screen.blit(bg.subsurface(pygame.Rect(pos,size)),pos)
 
 		self.entities.clear(screen, bg)
 

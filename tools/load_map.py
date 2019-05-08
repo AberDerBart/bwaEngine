@@ -10,7 +10,7 @@ parser.add_argument("map")
 
 args = parser.parse_args()
 
-screen = pygame.display.set_mode((1366,768))
+screen = pygame.display.set_mode((640,480))
 
 gameMap = junebugEngine.MapParser.parse(args.map)
 
