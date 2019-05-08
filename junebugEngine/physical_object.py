@@ -14,10 +14,10 @@ class Direction(Orientation):
 class PhysicalObject(AnimSprite):
 	typeName = None
 
-	def __init__(self, json_sprite, physical_data, map_, initial_position):
-		super().__init__(json_sprite, map_, initial_position)
+	def __init__(self, json_sprite, physical_data, layer, initial_position):
+		super().__init__(json_sprite, layer, initial_position)
 
-		map_.physicalEntities.add(self)
+		layer.gamemap.physicalEntities.add(self)
 
 		hitboxLeft = physical_data.get("hitboxLeft", 0)
 		hitboxRight = physical_data.get("hitboxRight", 0)
@@ -125,9 +125,9 @@ class PhysicalObject(AnimSprite):
 
 		collisionTilesVertical = []
 		if shiftY >= 0:
-			collisionTilesVertical = self.map_.tileRange(self.shiftedHitbox(0, max(shiftY,1)))
+			collisionTilesVertical = self.layer.gamemap.tileRange(self.shiftedHitbox(0, max(shiftY,1)))
 		else:
-			collisionTilesVertical = self.map_.tileRange(self.shiftedHitbox(0, shiftY))
+			collisionTilesVertical = self.layer.gamemap.tileRange(self.shiftedHitbox(0, shiftY))
 
 		for tile, tileRect in reversed(collisionTilesVertical):
 			if tile.collide:
@@ -142,7 +142,7 @@ class PhysicalObject(AnimSprite):
 
 		shiftY = self.vy * ms / 1000.
 		xHitbox = self.shiftedHitbox(shiftX, shiftY)
-		collisionTilesHorizontal = self.map_.tileRange(xHitbox)
+		collisionTilesHorizontal = self.layer.gamemap.tileRange(xHitbox)
 
 		for tile, tileRect in collisionTilesHorizontal:
 			if tile.collide:
@@ -166,7 +166,7 @@ class PhysicalObject(AnimSprite):
 		pass
 	
 	def die(self):
-		self.remove(self.map_.physicalEntities)
+		self.remove(self.layer.gamemap.physicalEntities)
 		super().die()
 
 	def update(self, ms):

@@ -9,10 +9,11 @@ class Orientation:
 class AnimSprite(pygame.sprite.Sprite):
 	typeName = None
 
-	def __init__(self, json_file, map_, position):
+	def __init__(self, json_file, layer, position):
 		super().__init__()
 
-		self.map_ = map_
+		self.layer = layer
+		layer.entities.add(self)
 
 		data = json.load(open(json_file))
 

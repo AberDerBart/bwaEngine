@@ -5,8 +5,8 @@ from .sprite import AnimSprite
 class Camera(Hero):
 	typeName = "camera"
 
-	def __init__(self, map_, path, timePerPoint):
-		super().__init__("art/sprites/invisibleObject.json", {}, map_, path[0])
+	def __init__(self, layer, path, timePerPoint):
+		super().__init__("art/sprites/invisibleObject.json", {}, layer, path[0])
 
 		self.timePerPoint = int(timePerPoint * 1000)
 		self.time = 0

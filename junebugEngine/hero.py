@@ -4,8 +4,8 @@ from .physical_object import Direction
 from .text import RenderedText
 
 class Hero(MovingObject):
-	def __init__(self, json_sprite, physical_data, map_, position):
-		super().__init__(json_sprite, physical_data, map_, position)
+	def __init__(self, json_sprite, physical_data, layer, position):
+		super().__init__(json_sprite, physical_data, layer, position)
 
 		self.die_sound = pygame.mixer.Sound('sound/game_over.wav')
 		self.channel = pygame.mixer.find_channel()
@@ -29,9 +29,9 @@ class Hero(MovingObject):
 	def switch(self):
 		if self.partner:
 			super().die()
-			self.map_.entities.add(self.partner)
-			self.map_.physicalEntities.add(self.partner)
-			self.map_.player = self.partner
+			self.layer.entities.add(self.partner)
+			self.layer.gamemap.physicalEntities.add(self.partner)
+			self.layer.gamemap.player = self.partner
 			self.partner.x = self.x
 			self.partner.y = self.y
 			return self.partner

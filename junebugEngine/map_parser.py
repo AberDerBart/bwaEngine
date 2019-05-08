@@ -48,15 +48,13 @@ class MapParser:
 				generator = entityData.getGenerator()
 
 				if generator:
-					entity = generator(gamemap, (x,y))
-					layer.entities.add(entity)
+					entity = generator(layer, (x,y))
 
 					if properties.get("player"):
 						gamemap.player = entity
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
-					entity = AnimSprite(spritePath, gamemap, (x,y))
-					layer.entities.add(entity)
+					entity = AnimSprite(spritePath, layer, (x,y))
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 			elif "text" in obj:
@@ -82,7 +80,7 @@ class MapParser:
 					py = point["y"]
 					path.append((px,py))
 
-				cam = Camera(gamemap, path, timePerPoint)
+				cam = Camera(layer, path, timePerPoint)
 				layer.entities.add(cam)
 
 				if player:
