@@ -116,11 +116,13 @@ class MapParser:
 				if layer.get("type") == "tilelayer":
 					newLayer = MapParser._parseTileLayer(gamemap, layer, setDict)
 					gamemap.layers.append(newLayer)
+					gamemap.layerDict[newLayer.name] = newLayer
 					if not gamemap.collisionTiles:
 						gamemap.collisionTiles = newLayer.tiles
 				if layer.get("type") == "objectgroup":
 					newLayer = MapParser._parseEntityLayer(gamemap, layer, setDict)
 					gamemap.layers.append(newLayer)					
+					gamemap.layerDict[newLayer.name] = newLayer
 				elif layer.get("type") == "imagelayer":
 					MapParser._parseBackground(gamemap, layer)
 			return gamemap

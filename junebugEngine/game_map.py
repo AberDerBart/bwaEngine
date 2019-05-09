@@ -61,7 +61,10 @@ class GameMap:
 		self.physicalEntities = pygame.sprite.Group()
 		self.background = None
 		self.collisionTiles = None
-		
+		self.layerDict = {}
+	
+	def getLayer(self, layerName):
+		return self.layerDict.get(layerName)
 	def pixelWidth(self):
 		return self.tileWidth * self.width
 	def pixelHeight(self):
