@@ -35,7 +35,7 @@ class MapParser:
 			width = obj["width"]
 			height = obj["height"]
 			if "gid" in obj:
-				entityIndex = obj["gid"]
+				entityIndex = obj["gid"] & 0x0fffffff # mask out vertical and horizontal flipping
 				entityData = setDict.get(entityIndex)
 
 				# extract static entity properties
