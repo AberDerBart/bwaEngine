@@ -36,6 +36,7 @@ class MapParser:
 			height = obj["height"]
 			if "gid" in obj:
 				entityIndex = obj["gid"] & 0x0fffffff # mask out vertical and horizontal flipping
+				mirror_h = True if (obj["gid"] & 0x80000000) else False
 				entityData = setDict.get(entityIndex)
 
 				# extract static entity properties
@@ -48,13 +49,13 @@ class MapParser:
 				generator = entityData.getGenerator()
 
 				if generator:
-					entity = generator(layer, (x,y))
+					entity = generator(layer, (x,y), mirror_h)
 
 					if properties.get("player"):
 						gamemap.player = entity
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
-					entity = AnimSprite(spritePath, layer, (x,y))
+					entity = AnimSprite(spritePath, layer, (x,y), mirror_h)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 			elif "text" in obj:

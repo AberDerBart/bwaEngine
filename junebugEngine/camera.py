@@ -6,7 +6,7 @@ class Camera(Hero):
 	typeName = "camera"
 
 	def __init__(self, layer, path, timePerPoint):
-		super().__init__("art/sprites/invisibleObject.json", {}, layer, path[0])
+		super().__init__("art/sprites/invisibleObject.json", {}, layer, path[0], False)
 
 		self.timePerPoint = int(timePerPoint * 1000)
 		self.time = 0

@@ -9,7 +9,7 @@ class Orientation:
 class AnimSprite(pygame.sprite.Sprite):
 	typeName = None
 
-	def __init__(self, json_file, layer, position):
+	def __init__(self, json_file, layer, position, mirror_h):
 		super().__init__()
 
 		self.layer = layer
@@ -61,7 +61,10 @@ class AnimSprite(pygame.sprite.Sprite):
 			self.animations[Orientation.LEFT][name]=(framesLeft,direction)
 
 		self.setPosition((int(self.x), int(self.y)))
-		self.orientation = Orientation.RIGHT
+		if mirror_h:
+			self.orientation = Orientation.LEFT
+		else:
+			self.orientation = Orientation.RIGHT
 		self.setAnimation(data['meta']['frameTags'][0]['name'])
 
 	def die(self):
