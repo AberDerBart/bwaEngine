@@ -1,6 +1,6 @@
 import pygame
 
-from .sprite import Orientation, AnimSprite 
+from .sprite import Orientation, AnimSprite, Alignment
 from .physical_object import Direction, PhysicalObject
 from .moving_object import MovingObject
 from .hero import Hero
