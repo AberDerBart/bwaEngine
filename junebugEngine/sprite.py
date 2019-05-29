@@ -67,6 +67,9 @@ class AnimSprite(pygame.sprite.Sprite):
 			self.orientation = Orientation.RIGHT
 		self.setAnimation(data['meta']['frameTags'][0]['name'])
 
+	def setProperties(self, properties):
+		self.properties = properties
+
 	def die(self):
 		if not self.setAnimation('die'):
 			self.kill()

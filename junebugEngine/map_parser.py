@@ -48,6 +48,8 @@ class MapParser:
 
 				generator = entityData.getGenerator()
 
+				entity = None
+
 				if generator:
 					entity = generator(layer, (x,y), mirror_h)
 
@@ -58,6 +60,9 @@ class MapParser:
 					entity = AnimSprite(spritePath, layer, (x,y), mirror_h)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
+				if entity:
+					entity.setProperties(properties)
+
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
