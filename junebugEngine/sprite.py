@@ -70,18 +70,19 @@ class AnimSprite(pygame.sprite.Sprite):
 			framesLeft = allFramesLeft[first:last+1]
 
 			self.animations[Orientation.RIGHT][name]=(framesRight,direction)
+			self.animations[Orientation.LEFT][name]=(framesLeft,direction)
 
 		# adjust position to alignment
 
-		if alignment & Alignment.BOTTOM:
+		if alignment & Alignment.TOP:
 			y -= self.size[1]
-		if not alignment & (Alignment.TOP | Alignment.BOTTOM):
+		elif not (alignment & Alignment.BOTTOM):
 			y -= self.size[1] / 2
 		if alignment & Alignment.RIGHT:
 			x -= self.size[0]
-		if not alignment & (Alignment.LEFT | Alignment.RIGHT):
+		elif not (alignment & Alignment.LEFT):
 			x -= self.size[0] / 2
-			self.animations[Orientation.LEFT][name]=(framesLeft,direction)
+
 
 		self.setPosition((int(self.x), int(self.y)))
 
