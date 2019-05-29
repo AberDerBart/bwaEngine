@@ -1,15 +1,27 @@
 import pygame
 import json
 import os.path
+import enum
 
 class Orientation:
 	LEFT = -2
 	RIGHT = 2
 
+class Alignment(enum.IntEnum):
+	CENTER = 0
+	LEFT = 1
+	RIGHT = 2
+	TOP = 4
+	BOTTOM = 8
+	TOP_LEFT = 5
+	TOP_RIGHT = 6
+	BOTTOM_LEFT = 9
+	BOTTOM_RIGHT = 10
+
 class AnimSprite(pygame.sprite.Sprite):
 	typeName = None
 
-	def __init__(self, json_file, layer, position, mirror_h):
+	def __init__(self, json_file, layer, position, mirror_h, alignment = Alignment.BOTTOM_LEFT):
 		super().__init__()
 
 		self.layer = layer
@@ -58,9 +70,21 @@ class AnimSprite(pygame.sprite.Sprite):
 			framesLeft = allFramesLeft[first:last+1]
 
 			self.animations[Orientation.RIGHT][name]=(framesRight,direction)
+
+		# adjust position to alignment
+
+		if alignment & Alignment.BOTTOM:
+			y -= self.size[1]
+		if not alignment & (Alignment.TOP | Alignment.BOTTOM):
+			y -= self.size[1] / 2
+		if alignment & Alignment.RIGHT:
+			x -= self.size[0]
+		if not alignment & (Alignment.LEFT | Alignment.RIGHT):
+			x -= self.size[0] / 2
 			self.animations[Orientation.LEFT][name]=(framesLeft,direction)
 
 		self.setPosition((int(self.x), int(self.y)))
+
 		if mirror_h:
 			self.orientation = Orientation.LEFT
 		else:
@@ -102,7 +126,7 @@ class AnimSprite(pygame.sprite.Sprite):
 	def animationDuration(self, animation):
 		return sum([frame[1] for frame in self.animations[self.orientation].get(animation, [])[0]])
 
-	def setPosition(self,position):
+	def setPosition(self, position):
 		self.rect = pygame.Rect(position, self.size)
 
 	def on_animationFinished(self):
