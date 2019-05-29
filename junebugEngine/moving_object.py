@@ -7,8 +7,8 @@ from .sprite import Orientation
 from .physical_object import PhysicalObject, Direction
 
 class MovingObject(PhysicalObject):
-	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h):
-		super().__init__(json_sprite, physical_data, layer, initial_position, mirror_h)
+	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs):
+		super().__init__(json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs)
 
 		self.speed = physical_data.get("baseSpeed", 0)
 

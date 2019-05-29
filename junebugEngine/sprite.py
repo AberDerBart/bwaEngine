@@ -75,13 +75,14 @@ class AnimSprite(pygame.sprite.Sprite):
 		# adjust position to alignment
 
 		if alignment & Alignment.TOP:
-			y -= self.size[1]
+			self.y -= self.size[1]
 		elif not (alignment & Alignment.BOTTOM):
-			y -= self.size[1] / 2
+			self.y -= self.size[1] / 2
 		if alignment & Alignment.RIGHT:
-			x -= self.size[0]
+			self.x -= self.size[0]
 		elif not (alignment & Alignment.LEFT):
-			x -= self.size[0] / 2
+			self.x -= self.size[0] / 2
+			print(self.x)
 
 
 		self.setPosition((int(self.x), int(self.y)))

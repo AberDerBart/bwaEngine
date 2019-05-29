@@ -14,8 +14,8 @@ class Direction(Orientation):
 class PhysicalObject(AnimSprite):
 	typeName = None
 
-	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h):
-		super().__init__(json_sprite, layer, initial_position, mirror_h)
+	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs):
+		super().__init__(json_sprite, layer, initial_position, mirror_h, **kwargs)
 
 		layer.gamemap.physicalEntities.add(self)
 

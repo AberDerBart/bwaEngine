@@ -4,8 +4,8 @@ from .physical_object import Direction
 from .text import RenderedText
 
 class Hero(MovingObject):
-	def __init__(self, json_sprite, physical_data, layer, position, mirror_h):
-		super().__init__(json_sprite, physical_data, layer, position, mirror_h)
+	def __init__(self, json_sprite, physical_data, layer, position, mirror_h, **kwargs):
+		super().__init__(json_sprite, physical_data, layer, position, mirror_h, **kwargs)
 
 		self.die_sound = pygame.mixer.Sound('sound/game_over.wav')
 		self.channel = pygame.mixer.find_channel()
