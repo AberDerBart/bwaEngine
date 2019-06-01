@@ -30,7 +30,7 @@ class Hero(MovingObject):
 		if self.partner:
 			super().die()
 			self.layer.entities.add(self.partner)
-			self.layer.gamemap.physicalEntities.add(self.partner)
+			self.partner.enablePhysics()
 			self.layer.gamemap.player = self.partner
 			self.partner.x = self.x
 			self.partner.y = self.y
