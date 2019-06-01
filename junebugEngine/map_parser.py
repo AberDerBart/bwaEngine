@@ -131,6 +131,12 @@ class MapParser:
 					gamemap.layerDict[newLayer.name] = newLayer
 				elif layer.get("type") == "imagelayer":
 					MapParser._parseBackground(gamemap, layer)
+			if not gamemap.getLayer("backgroundEntities"):
+				newLayer = EntityLayer(gamemap,'backgroundEntities')
+				gamemap.layers.insert(0, newLayer)
+				gamemap.layerDict[newLayer.name] = newLayer
+
+
 			return gamemap
 		else:
 			print("unsupported render order", renderOrder,", use right-down")
