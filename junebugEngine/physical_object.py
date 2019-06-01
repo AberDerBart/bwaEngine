@@ -17,7 +17,7 @@ class PhysicalObject(AnimSprite):
 	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs):
 		super().__init__(json_sprite, layer, initial_position, mirror_h, **kwargs)
 
-		layer.gamemap.physicalEntities.add(self)
+		self.enablePhysics(True)
 
 		hitboxLeft = physical_data.get("hitboxLeft", 0)
 		hitboxRight = physical_data.get("hitboxRight", 0)
@@ -166,16 +166,24 @@ class PhysicalObject(AnimSprite):
 		pass
 	
 	def die(self):
-		self.remove(self.layer.gamemap.physicalEntities)
+		self.enablePhysics(False)
 		super().die()
 
+	def enablePhysics(self, enable = True):
+		self.physics = enable
+		if enable:
+			self.layer.gamemap.physicalEntities.add(self)
+		else:
+			self.remove(self.layer.gamemap.physicalEntities)
+
 	def update(self, ms):
-		self.on_ground = False
-		self.hitbox_rect.left = self.x + self.hitboxOffsetX
-		self.hitbox_rect.top =self.y + self.hitboxOffsetY
-		self.simulate_gravity(ms)
-		self.collide_with_map(ms)
-		self.simulate_collision(ms)
-		self.x += ms / 1000.  * self.vx
-		self.y += ms / 1000.  * self.vy
+		if(self.physics):
+			self.on_ground = False
+			self.hitbox_rect.left = self.x + self.hitboxOffsetX
+			self.hitbox_rect.top =self.y + self.hitboxOffsetY
+			self.simulate_gravity(ms)
+			self.collide_with_map(ms)
+			self.simulate_collision(ms)
+			self.x += ms / 1000.  * self.vx
+			self.y += ms / 1000.  * self.vy
 		super().update(ms)
