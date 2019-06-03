@@ -53,7 +53,7 @@ class MovingObject(PhysicalObject):
 	def update(self,ms):
 		self.vx = self.movement * self.speed
 
-		if self.jumpTime < 200:
+		if self.jumpTime < 250:
 			self.jumpTime += ms
 			if self.jumping:
 				# stay rising constantly, until the maximal jumptime has passed
