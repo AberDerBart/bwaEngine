@@ -17,6 +17,9 @@ class MovingObject(PhysicalObject):
 		self.channel = pygame.mixer.find_channel()
 		self.channel.set_volume(.3)
 
+		self.jumpTime = 0
+		self.jumping = False
+
 		self.idle()
 
 	def run_left(self):
@@ -32,9 +35,10 @@ class MovingObject(PhysicalObject):
 	def jump(self, hold = True):
 		if self.on_ground and hold:
 			self.channel.play(self.jump_sound)
-			self.vy = -min(270,config.max_vertical_speed)
-		elif self.vy < 0 and not hold:
-			self.vy = 0
+			self.jumping = True
+			self.jumpTime = 0
+		if not hold:
+			self.jumping = False
 	def idle(self):
 		self.movement = 0
 		self.setAnimation('idle')
@@ -48,6 +52,17 @@ class MovingObject(PhysicalObject):
 
 	def update(self,ms):
 		self.vx = self.movement * self.speed
+
+		if self.jumpTime < 200:
+			self.jumpTime += ms
+			if self.jumping:
+				# stay rising constantly, until the maximal jumptime has passed
+				self.vy = -200
+			else:
+				# decellerate jump with twice the speed, im jump button was released
+				if self.vy < 0:
+					self.simulate_gravity(ms)
+
 		super().update(ms)
 		if self.on_ground and config.current_map and self.movement != 0:
 			groundY = self.y + self.hitboxOffsetY + self.hitboxHeight
