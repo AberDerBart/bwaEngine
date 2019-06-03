@@ -29,10 +29,12 @@ class MovingObject(PhysicalObject):
 		self.orientation = Orientation.RIGHT
 		self.setAnimation('run')
 
-	def jump(self):
-		if self.on_ground:
+	def jump(self, hold = True):
+		if self.on_ground and hold:
 			self.channel.play(self.jump_sound)
 			self.vy = -min(270,config.max_vertical_speed)
+		elif self.vy < 0 and not hold:
+			self.vy = 0
 	def idle(self):
 		self.movement = 0
 		self.setAnimation('idle')

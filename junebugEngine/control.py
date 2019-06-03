@@ -37,8 +37,7 @@ class PlayerControl:
 			else:
 				self.char.idle()
 	def jump(self, pressed):
-		if pressed:
-			self.char.jump()
+		self.char.jump(pressed)
 	def attack(self, pressed):
 		if pressed:
 			self.char.special()
