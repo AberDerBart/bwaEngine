@@ -34,28 +34,12 @@ class Viewport:
 		self.surf.blit(self.bg, (0,0))
 
 	def update(self,ms):
+		# reset to background
 		self.clear()
+		# update the map
 		self.map_.update(ms)
 
-		# adjust offset
-		if self.map_.player:
-			if self.map_.player.x + self.offsetx < self.paddingLeft:
-				self.offsetx = self.paddingLeft - self.map_.player.x
-			elif self.map_.player.x + self.map_.player.size[0] + self.offsetx > self.width - self.paddingRight:
-				self.offsetx = self.width - self.paddingRight - self.map_.player.x - self.map_.player.size[0]
-
-			if self.map_.player.y + self.offsety < self.paddingTop:
-				self.offsety = self.paddingTop - self.map_.player.y
-			elif self.map_.player.y + self.map_.player.size[1] + self.offsety > self.height - self.paddingBottom:
-				self.offsety = self.height - self.paddingBottom - self.map_.player.y - self.map_.player.size[1]
-			self.clipOffset()
-
-		self.rect.top = - self.offsety
-		self.rect.left = - self.offsetx
-		self.rect.bottom = - self.offsety + self.height
-		self.rect.right = - self.offsetx + self.width
-
-
+		# update visible entities
 		for layer in self.map_.layers:
 			if type(layer) == EntityLayer:
 				for entity in layer.entities:
@@ -69,7 +53,28 @@ class Viewport:
 							entity.on_screen_exit()
 							self.visibleEntities.remove(entity)
 
+		# adjust offset
+		if self.map_.player:
+			if self.map_.player.rect.left + self.offsetx < self.paddingLeft:
+				self.offsetx = self.paddingLeft - int(self.map_.player.x)
+			elif self.map_.player.rect.right + self.offsetx > self.width - self.paddingRight:
+				self.offsetx = int(self.width - self.paddingRight - int(self.map_.player.x) - self.map_.player.size[0])
+
+			if self.map_.player.rect.top + self.offsety < self.paddingTop:
+				self.offsety = int(self.paddingTop - self.map_.player.y)
+			elif self.map_.player.rect.bottom + self.offsety > self.height - self.paddingBottom:
+				self.offsety = int(self.height - self.paddingBottom - self.map_.player.y - self.map_.player.size[1])
+			self.clipOffset()
+		
+
+		self.rect.top = - self.offsety
+		self.rect.left = - self.offsetx
+		self.rect.bottom = - self.offsety + self.height
+		self.rect.right = - self.offsetx + self.width
+
 		self.draw()
+
+
 
 	def clipOffset(self):
 		if self.map_:
