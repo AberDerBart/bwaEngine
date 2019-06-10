@@ -40,31 +40,23 @@ class PhysicalObject(AnimSprite):
 		self.on_ground = False
 
 	def collisionX(self, block, ms):
-		is_collisionX = False
-		direction_list = []
-		if self.vx > 0:
-			right_rect = self.hitbox_rect.move(max(1,
-                                self.vx * ms / 1000.), 0)
-			right_collision = pygame.Rect.colliderect(right_rect, block.hitbox_rect)
-			if right_collision:
-				self.x = block.hitbox_rect.left - self.hitbox_rect.width - self.hitboxOffsetX
-				#self.on_collision(Direction.RIGHT, block)
-				#block.on_collision(Direction.LEFT, self)
+		if self.vx == 0:
+			return False, []
+
+		collisionRect = self.shiftedHitbox(self.vx * ms / 1000., 0)
+		collision = collisionRect.colliderect(block.hitbox())
+
+		if collision:
+			if self.vx > 0:
 				self.vx = 0
-				is_collisionX = True
-				direction_list.append(Direction.RIGHT)
-		elif self.vx < 0:
-			left_rect = self.hitbox_rect.move(min(-1,
-                               self.vx * ms / 1000.), 0)
-			left_collision = pygame.Rect.colliderect(left_rect, block.hitbox_rect)
-			if left_collision:
-				self.x = block.hitbox_rect.right - self.hitboxOffsetX
-				#self.on_collision(Direction.LEFT, block)
-				#block.on_collision(Direction.RIGHT, self)
+				self.x = block.hitbox().left - self.hitbox().width - self.hitboxOffsetX
+				return True, [Direction.RIGHT]
+			else:
 				self.vx = 0
-				is_collisionX = True
-				direction_list.append(Direction.LEFT)
-		return is_collisionX, direction_list
+				self.x = block.hitbox().right - self.hitboxOffsetX
+				return True, [Direction.LEFT]
+
+		return False, []
 
 	def collisionY(self, block, ms):
 		is_collisionY = False
