@@ -34,7 +34,7 @@ class PhysicalObject(AnimSprite):
 		self.vy = 0
 		self.on_ground = False
 
-	def collisionX(self, block, ms):
+	def collideRectX(self, block, ms):
 		collisionRect = self.shiftedHitbox(roundAbsUp(self.vx * ms / 1000.), 0)
 		collision = collisionRect.colliderect(block)
 
@@ -50,7 +50,7 @@ class PhysicalObject(AnimSprite):
 
 		return Direction.NONE
 
-	def collisionY(self, block, ms):
+	def collideRectY(self, block, ms):
 		collisionRect = self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.))
 		collision = collisionRect.colliderect(block)
 
@@ -79,7 +79,7 @@ class PhysicalObject(AnimSprite):
 
 		for tile, tileRect in collisionTiles:
 			if tile.collide:
-				dirX = self.collisionX(tileRect, ms)
+				dirX = self.collideRectX(tileRect, ms)
 				if dirX != Direction.NONE:
 					self.on_collision(dirX, None)
 
@@ -88,7 +88,7 @@ class PhysicalObject(AnimSprite):
 		collision_list.remove(self)
 
 		for block in collision_list:
-			dirX = self.collisionX(block.hitbox(), ms)
+			dirX = self.collideRectX(block.hitbox(), ms)
 			if dirX != Direction.NONE:
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
@@ -100,7 +100,7 @@ class PhysicalObject(AnimSprite):
 
 		for tile, tileRect in reversed(collisionTiles):
 			if tile.collide:
-				dirY = self.collisionY(tileRect, ms)
+				dirY = self.collideRectY(tileRect, ms)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
 
@@ -109,8 +109,7 @@ class PhysicalObject(AnimSprite):
 		collision_list.remove(self)
 
 		for block in collision_list:
-			dirX = self.collisionX(block.hitbox(), ms)
-			dirY = self.collisionY(block.hitbox(), ms)
+			dirY = self.collideRectY(block.hitbox(), ms)
 			if dirY != Direction.NONE:
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
