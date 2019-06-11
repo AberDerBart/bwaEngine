@@ -36,50 +36,35 @@ class PhysicalObject(AnimSprite):
 
 	def collisionX(self, block, ms):
 		collisionRect = self.shiftedHitbox(roundAbsUp(self.vx * ms / 1000.), 0)
-		collision = collisionRect.colliderect(block.hitbox())
+		collision = collisionRect.colliderect(block)
 
 		if collision:
 			if self.vx > 0:
 				self.vx = 0
-				self.x = block.hitbox().left - self.hitbox().width - self.hitboxOffsetX
+				self.x = block.left - self.hitbox().width - self.hitboxOffsetX
 				return Direction.RIGHT
 			elif self.vx < 0:
 				self.vx = 0
-				self.x = block.hitbox().right - self.hitboxOffsetX
+				self.x = block.right - self.hitboxOffsetX
 				return Direction.LEFT
 
 		return Direction.NONE
 
 	def collisionY(self, block, ms):
 		collisionRect = self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.))
-		collision = collisionRect.colliderect(block.hitbox())
+		collision = collisionRect.colliderect(block)
 
 		if collision:
 			if self.vy < 0:
 				self.vy = 0
-				self.y = block.hitbox().bottom - self.hitboxOffsetY
+				self.y = block.bottom - self.hitboxOffsetY
 				return Direction.UP
 			elif self.vy > 0:
 				self.vy = 0
-				self.y = block.hitbox().top - self.hitbox().height - self.hitboxOffsetY
+				self.y = block.top - self.hitbox().height - self.hitboxOffsetY
 				self.on_ground = True
 				return Direction.DOWN
 		return Direction.NONE
-
-
-	def simulate_collision(self, ms):
-		collision_list = config.current_map.physicalEntities.copy()
-		collision_list.remove(self)
-
-		for block in collision_list:
-			dirX = self.collisionX(block, ms)
-			dirY = self.collisionY(block, ms)
-			if dirY != Direction.NONE:
-				self.on_collision(dirY, block)
-				block.on_collision(dirY * -1, self)
-			if dirX != Direction.NONE:
-				self.on_collision(dirX, block)
-				block.on_collision(dirX * -1, self)
 
 	def simulate_gravity(self, ms):
 		self.vy = self.vy + config.gravity * (ms / 1000.)
@@ -87,38 +72,48 @@ class PhysicalObject(AnimSprite):
 		if self.vy >= config.max_vertical_speed / 1000.:
 			self.vy = config.max_vertical_speed / 1000.
 
-	def collide_with_map(self,ms):
-		shiftX = self.vx * ms / 1000.
-		shiftY = self.vy * ms / 1000.
+	def collideX(self, ms):
 
-		collisionTilesVertical = []
-		if shiftY >= 0:
-			collisionTilesVertical = self.layer.gamemap.tileRange(self.shiftedHitbox(0, max(shiftY,1)))
-		else:
-			collisionTilesVertical = self.layer.gamemap.tileRange(self.shiftedHitbox(0, shiftY))
+		# collide with map in x direction
+		collisionTiles = self.layer.gamemap.tileRange(self.shiftedHitbox(roundAbsUp(self.vx * ms / 1000.), 0))
 
-		for tile, tileRect in reversed(collisionTilesVertical):
+		for tile, tileRect in collisionTiles:
 			if tile.collide:
-				if shiftY > 0:
-					self.y = tileRect.top - self.hitboxHeight - self.hitboxOffsetY
-					self.on_ground=True
-					self.on_collision(Direction.DOWN, None)
-				else:
-					self.y = tileRect.bottom
-					self.on_collision(Direction.UP, None)
-				self.vy = 0
+				dirX = self.collisionX(tileRect, ms)
+				if dirX != Direction.NONE:
+					self.on_collision(dirX, None)
 
-		shiftY = self.vy * ms / 1000.
-		xHitbox = self.shiftedHitbox(shiftX, shiftY)
-		collisionTilesHorizontal = self.layer.gamemap.tileRange(xHitbox)
+		# collide with entities in x direction
+		collision_list = config.current_map.physicalEntities.copy()
+		collision_list.remove(self)
 
-		for tile, tileRect in collisionTilesHorizontal:
+		for block in collision_list:
+			dirX = self.collisionX(block.hitbox(), ms)
+			if dirX != Direction.NONE:
+				self.on_collision(dirX, block)
+				block.on_collision(dirX * -1, self)
+
+	def collideY(self, ms):
+
+		# collide with map in y direction
+		collisionTiles = self.layer.gamemap.tileRange(self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.)))
+
+		for tile, tileRect in reversed(collisionTiles):
 			if tile.collide:
-				if tileRect.left >= xHitbox.left:
-					self.on_collision(Direction.RIGHT, None)
-				else:
-					self.on_collision(Direction.LEFT, None)
-				self.vx = 0
+				dirY = self.collisionY(tileRect, ms)
+				if dirY != Direction.NONE:
+					self.on_collision(dirY, None)
+
+		# collide with entities in y direction
+		collision_list = config.current_map.physicalEntities.copy()
+		collision_list.remove(self)
+
+		for block in collision_list:
+			dirX = self.collisionX(block.hitbox(), ms)
+			dirY = self.collisionY(block.hitbox(), ms)
+			if dirY != Direction.NONE:
+				self.on_collision(dirY, block)
+				block.on_collision(dirY * -1, self)
 
 	def hitbox(self):
 		x = int(self.x + self.hitboxOffsetX)
@@ -148,8 +143,10 @@ class PhysicalObject(AnimSprite):
 		if(self.physics):
 			self.on_ground = False
 			self.simulate_gravity(ms)
-			self.collide_with_map(ms)
-			self.simulate_collision(ms)
+
+			self.collideX(ms)
 			self.x += ms / 1000.  * self.vx
+
+			self.collideY(ms)
 			self.y += ms / 1000.  * self.vy
 		super().update(ms)
