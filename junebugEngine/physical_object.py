@@ -4,7 +4,7 @@ import operator
 from .sprite import AnimSprite, Orientation
 from . import config
 from enum import Enum
-from .util import relativePath
+from .util import relativePath, roundAbsUp
 
 class Direction(Orientation):
 	NONE = 0
@@ -40,51 +40,36 @@ class PhysicalObject(AnimSprite):
 		self.on_ground = False
 
 	def collisionX(self, block, ms):
-		if self.vx == 0:
-			return False, []
-
-		collisionRect = self.shiftedHitbox(self.vx * ms / 1000., 0)
+		collisionRect = self.shiftedHitbox(roundAbsUp(self.vx * ms / 1000.), 0)
 		collision = collisionRect.colliderect(block.hitbox())
 
 		if collision:
 			if self.vx > 0:
 				self.vx = 0
 				self.x = block.hitbox().left - self.hitbox().width - self.hitboxOffsetX
-				return True, [Direction.RIGHT]
-			else:
+				return Direction.RIGHT
+			elif self.vx < 0:
 				self.vx = 0
 				self.x = block.hitbox().right - self.hitboxOffsetX
-				return True, [Direction.LEFT]
+				return Direction.LEFT
 
-		return False, []
+		return Direction.NONE
 
 	def collisionY(self, block, ms):
-		is_collisionY = False
-		direction_list = []
-		if self.vy < 0:
-			top_rect = self.hitbox_rect.move(0, min(-1,
-                              self.vy * ms / 1000.))
-			top_collision = pygame.Rect.colliderect(top_rect, block.hitbox_rect)
-			if top_collision:
+		collisionRect = self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.))
+		collision = collisionRect.colliderect(block.hitbox())
+
+		if collision:
+			if self.vy < 0:
+				self.vy = 0
 				self.y = block.hitbox_rect.bottom - self.hitboxOffsetY
-				#self.on_collision(Direction.UP, block)
-				#block.on_collision(Direction.DOWN, self)
+				return Direction.UP
+			elif self.vy > 0:
 				self.vy = 0
-				is_collisionY = True
-				direction_list.append(Direction.UP)
-		if self.vy > 0:
-			bottom_rect = self.hitbox_rect.move(0, max(1,
-                                 self.vy * ms / 1000.))
-			bottom_collision = pygame.Rect.colliderect(bottom_rect, block.hitbox_rect)
-			if bottom_collision:
 				self.y = block.hitbox_rect.top - self.hitbox_rect.height - self.hitboxOffsetY
-				#self.on_collision(Direction.DOWN, block)
-				#block.on_collision(Direction.UP, self)
 				self.on_ground = True
-				self.vy = 0
-				is_collisionY = True
-				direction_list.append(Direction.DOWN)
-		return is_collisionY, direction_list
+				return Direction.DOWN
+		return Direction.NONE
 
 
 	def simulate_collision(self, ms):
@@ -92,18 +77,14 @@ class PhysicalObject(AnimSprite):
 		collision_list.remove(self)
 
 		for block in collision_list:
-			is_collisionX, dir_listX = self.collisionX(block, ms)
-			self.hitbox_rect.left = self.x + self.hitboxOffsetX
-			self.hitbox_rect.top = self.y + self.hitboxOffsetY
-			is_collisionY, dir_listY = self.collisionY(block, ms)
-			if is_collisionY:
-				for direction in dir_listY:
-					self.on_collision(direction, block)
-					block.on_collision(direction * -1, self)
-			elif is_collisionX:
-				for direction in dir_listX:
-					self.on_collision(direction, block)
-					block.on_collision(direction * -1, self)
+			dirX = self.collisionX(block, ms)
+			dirY = self.collisionY(block, ms)
+			if dirY != Direction.NONE:
+				self.on_collision(dirY, block)
+				block.on_collision(dirY * -1, self)
+			if dirX != Direction.NONE:
+				self.on_collision(dirX, block)
+				block.on_collision(dirX * -1, self)
 
 	def simulate_gravity(self, ms):
 		self.vy = self.vy + config.gravity * (ms / 1000.)

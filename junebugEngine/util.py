@@ -1,6 +1,13 @@
 import pygame
 import os.path
 import junebugEngine.config
+import math
+
+def roundAbsUp(number):
+	if number < 0:
+		return math.floor(number)
+	else:
+		return math.ceil(number)
 
 def init():
 	global font
