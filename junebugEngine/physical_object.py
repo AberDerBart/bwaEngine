@@ -30,11 +30,6 @@ class PhysicalObject(AnimSprite):
 		self.hitboxWidth = self.size[0] - (hitboxLeft + hitboxRight)
 		self.hitboxHeight = self.size[1] - (hitboxTop + hitboxBottom)
 
-		self.hitbox_rect = pygame.Rect(self.x + self.hitboxOffsetX,
-                                  self.y + self.hitboxOffsetY,
-                                  self.hitboxWidth,
-                                  self.hitboxHeight)
-
 		self.vx = 0
 		self.vy = 0
 		self.on_ground = False
@@ -62,11 +57,11 @@ class PhysicalObject(AnimSprite):
 		if collision:
 			if self.vy < 0:
 				self.vy = 0
-				self.y = block.hitbox_rect.bottom - self.hitboxOffsetY
+				self.y = block.hitbox().bottom - self.hitboxOffsetY
 				return Direction.UP
 			elif self.vy > 0:
 				self.vy = 0
-				self.y = block.hitbox_rect.top - self.hitbox_rect.height - self.hitboxOffsetY
+				self.y = block.hitbox().top - self.hitbox().height - self.hitboxOffsetY
 				self.on_ground = True
 				return Direction.DOWN
 		return Direction.NONE
@@ -152,8 +147,6 @@ class PhysicalObject(AnimSprite):
 	def update(self, ms):
 		if(self.physics):
 			self.on_ground = False
-			self.hitbox_rect.left = self.x + self.hitboxOffsetX
-			self.hitbox_rect.top =self.y + self.hitboxOffsetY
 			self.simulate_gravity(ms)
 			self.collide_with_map(ms)
 			self.simulate_collision(ms)
