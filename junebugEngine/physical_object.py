@@ -35,7 +35,10 @@ class PhysicalObject(AnimSprite):
 		self.on_ground = False
 
 	def collideRect(self, block, ms, dx=0, dy=0):
-		collisionRect = self.shiftedHitbox(roundAbsUp(dx), roundAbsUp(dy))
+		dx = roundAbsUp(dx)
+		dy = roundAbsUp(dy)
+
+		collisionRect = self.shiftedHitbox(dx, dy)
 		collision = collisionRect.colliderect(block)
 
 		if collision:
@@ -64,7 +67,7 @@ class PhysicalObject(AnimSprite):
 		if self.vy >= config.max_vertical_speed / 1000.:
 			self.vy = config.max_vertical_speed / 1000.
 
-	def collideX(self, ms):
+	def physicsX(self, ms):
 
 		# collide with map in x direction
 		collisionTiles = self.layer.gamemap.tileRange(self.shiftedHitbox(roundAbsUp(self.vx * ms / 1000.), 0))
@@ -88,8 +91,12 @@ class PhysicalObject(AnimSprite):
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
 				dx = self.vx * ms / 1000.
+		
+		self.x += dx
 
-	def collideY(self, ms):
+	def physicsY(self, ms):
+		if self.typeName == "metalhead":
+			print(self.vy)
 
 		# collide with map in y direction
 		collisionTiles = self.layer.gamemap.tileRange(self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.)))
@@ -101,11 +108,15 @@ class PhysicalObject(AnimSprite):
 				dirY = self.collideRect(tileRect, ms, dy=dy)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
+					if self.typeName == "metalhead":
+						print('dy',roundAbsUp(dy), dirY)
 					dy = self.vy * ms / 1000.
 
 		# collide with entities in y direction
 		collision_list = config.current_map.physicalEntities.copy()
 		collision_list.remove(self)
+		if self.typeName == "metalhead":
+			print(self.vy)
 
 		for block in collision_list:
 			dirY = self.collideRect(block.hitbox(), ms, dy=dy)
@@ -113,6 +124,7 @@ class PhysicalObject(AnimSprite):
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
 				dy = self.vy * ms / 1000.
+		self.y += dy
 
 	def hitbox(self):
 		x = int(self.x + self.hitboxOffsetX)
@@ -142,10 +154,8 @@ class PhysicalObject(AnimSprite):
 		if(self.physics):
 			self.on_ground = False
 			self.simulate_gravity(ms)
+			
+			self.physicsX(ms)
+			self.physicsY(ms)
 
-			self.collideX(ms)
-			self.x += ms / 1000.  * self.vx
-
-			self.collideY(ms)
-			self.y += ms / 1000.  * self.vy
 		super().update(ms)
