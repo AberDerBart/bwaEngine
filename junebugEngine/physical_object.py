@@ -95,8 +95,6 @@ class PhysicalObject(AnimSprite):
 		self.x += dx
 
 	def physicsY(self, ms):
-		if self.typeName == "metalhead":
-			print(self.vy)
 
 		# collide with map in y direction
 		collisionTiles = self.layer.gamemap.tileRange(self.shiftedHitbox(0, roundAbsUp(self.vy * ms / 1000.)))
@@ -108,15 +106,11 @@ class PhysicalObject(AnimSprite):
 				dirY = self.collideRect(tileRect, ms, dy=dy)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
-					if self.typeName == "metalhead":
-						print('dy',roundAbsUp(dy), dirY)
 					dy = self.vy * ms / 1000.
 
 		# collide with entities in y direction
 		collision_list = config.current_map.physicalEntities.copy()
 		collision_list.remove(self)
-		if self.typeName == "metalhead":
-			print(self.vy)
 
 		for block in collision_list:
 			dirY = self.collideRect(block.hitbox(), ms, dy=dy)
