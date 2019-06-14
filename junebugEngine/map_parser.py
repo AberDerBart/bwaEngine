@@ -5,6 +5,7 @@ from .tileset import *
 from .text import RenderedText
 from .camera import Camera
 from .sprite import AnimSprite
+from .game_object import PHYSICS_SCALE
 import pygame
 
 from .game_map import GameMap, TileLayer, EntityLayer
@@ -51,7 +52,7 @@ class MapParser:
 				entity = None
 
 				if generator:
-					entity = generator(layer, (x,y), mirror_h)
+					entity = generator(layer, (x * PHYSICS_SCALE,y * PHYSICS_SCALE), mirror_h)
 
 					if properties.get("player"):
 						gamemap.player = entity
@@ -61,7 +62,8 @@ class MapParser:
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 				if entity:
-					entity.setProperties(properties)
+					pass
+					#entity.setProperties(properties)
 
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))

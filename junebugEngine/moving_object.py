@@ -8,10 +8,9 @@ from .physical_object import PhysicalObject, Direction
 
 class MovingObject(PhysicalObject):
 	acc = 500
-	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs):
-		super().__init__(json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs)
-
-		self.speed = physical_data.get("baseSpeed", 0)
+	speed = 100
+	def __init__(self, position, size):
+		super().__init__(position, size)
 
 		#sound
 		self.jump_sound = pygame.mixer.Sound('sound/jump.wav')
@@ -25,13 +24,15 @@ class MovingObject(PhysicalObject):
 
 	def run_left(self):
 		self.targetSpeed = -self.speed
-		self.orientation = Orientation.LEFT
-		self.setAnimation('run')
+		if self.sprite:
+			self.sprite.orientation = Orientation.LEFT
+			self.sprite.setAnimation('run')
 
 	def run_right(self):
 		self.targetSpeed = self.speed
-		self.orientation = Orientation.RIGHT
-		self.setAnimation('run')
+		if self.sprite:
+			self.sprite.orientation = Orientation.RIGHT
+			self.sprite.setAnimation('run')
 
 	def jump(self, hold = True):
 		if self.on_ground and hold:
@@ -42,7 +43,8 @@ class MovingObject(PhysicalObject):
 			self.jumping = False
 	def idle(self):
 		self.targetSpeed = 0
-		self.setAnimation('idle')
+		if self.sprite:
+			self.sprite.setAnimation('idle')
 
 	def on_edge(self, direction):
 		pass

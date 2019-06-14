@@ -55,14 +55,14 @@ class Viewport:
 
 		# adjust offset
 		if self.map_.player:
-			if self.map_.player.rect.left + self.offsetx < self.paddingLeft:
+			if self.map_.player.sprite.rect.left + self.offsetx < self.paddingLeft:
 				self.offsetx = self.paddingLeft - int(self.map_.player.x)
-			elif self.map_.player.rect.right + self.offsetx > self.width - self.paddingRight:
+			elif self.map_.player.sprite.rect.right + self.offsetx > self.width - self.paddingRight:
 				self.offsetx = int(self.width - self.paddingRight - int(self.map_.player.x) - self.map_.player.size[0])
 
-			if self.map_.player.rect.top + self.offsety < self.paddingTop:
+			if self.map_.player.sprite.rect.top + self.offsety < self.paddingTop:
 				self.offsety = int(self.paddingTop - self.map_.player.y)
-			elif self.map_.player.rect.bottom + self.offsety > self.height - self.paddingBottom:
+			elif self.map_.player.sprite.rect.bottom + self.offsety > self.height - self.paddingBottom:
 				self.offsety = int(self.height - self.paddingBottom - self.map_.player.y - self.map_.player.size[1])
 			self.clipOffset()
 		

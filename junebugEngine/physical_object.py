@@ -1,34 +1,27 @@
 import pygame
+from pygame.rect import Rect
 import json
 import operator
 from .sprite import AnimSprite, Orientation
 from . import config
 from enum import Enum
 from .util import relativePath, roundAbsUp
+from .game_object import GameObject
+
+physicsScale = 1024
 
 class Direction(Orientation):
 	NONE = 0
 	UP = -1
 	DOWN = 1
 
-class PhysicalObject(AnimSprite):
+class PhysicalObject(GameObject):
 	typeName = None
 
-	def __init__(self, json_sprite, physical_data, layer, initial_position, mirror_h, **kwargs):
-		super().__init__(json_sprite, layer, initial_position, mirror_h, **kwargs)
+	def __init__(self, position, size):
+		super().__init__(position, size)
 
 		self.enablePhysics(True)
-
-		hitboxLeft = physical_data.get("hitboxLeft", 0)
-		hitboxRight = physical_data.get("hitboxRight", 0)
-		hitboxTop = physical_data.get("hitboxTop", 0)
-		hitboxBottom = physical_data.get("hitboxBottom", 0)
-
-		self.hitboxOffsetX = hitboxLeft
-		self.hitboxOffsetY = hitboxTop
-
-		self.hitboxWidth = self.size[0] - (hitboxLeft + hitboxRight)
-		self.hitboxHeight = self.size[1] - (hitboxTop + hitboxBottom)
 
 		self.vx = 0
 		self.vy = 0
@@ -140,12 +133,14 @@ class PhysicalObject(AnimSprite):
 	def enablePhysics(self, enable = True):
 		self.physics = enable
 		if enable:
-			self.layer.gamemap.physicalEntities.add(self)
+			pass
+			#self.layer.gamemap.physicalEntities.add(self)
 		else:
-			self.remove(self.layer.gamemap.physicalEntities)
+			pass
+			#self.remove(self.layer.gamemap.physicalEntities)
 
 	def update(self, ms):
-		if(self.physics):
+		if(self.physics and False):
 			self.on_ground = False
 			self.simulate_gravity(ms)
 			
