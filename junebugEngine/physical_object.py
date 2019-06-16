@@ -107,7 +107,7 @@ class PhysicalObject(GameObject):
 			collision_list.remove(self)
 
 		for block in collision_list:
-			dirY = self.collideRect(block.hitbox(), ms, dy=dy)
+			dirY = self.collideRect(block, ms, dy=dy)
 			if dirY != Direction.NONE:
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
