@@ -73,14 +73,14 @@ class MovingObject(PhysicalObject):
 
 		super().update(ms)
 		if self.on_ground and self.vx != 0:
-			groundY = self.y + self.hitboxOffsetY + self.hitboxHeight
+			groundY = self.bottom
 			
 			if self.vx > 0:
 				direction = Direction.RIGHT
-				groundX = self.x + self.hitboxOffsetX + self.hitboxWidth
+				groundX = self.right
 			else:
 				direction = Direction.LEFT
-				groundX = self.x + self.hitboxOffsetX
+				groundX = self.left
 
 			nextTile = config.current_map.tileAt((groundX,groundY))
 			
