@@ -39,6 +39,12 @@ class Viewport:
 		# update the map
 		self.map_.update(ms)
 
+		# update physics for visible entities:
+		for obj in self.map_.anchored:
+			if obj.sprite:
+				if self.is_visible(obj.sprite):
+					obj.update(ms)
+
 		# update visible entities
 		for layer in self.map_.layers:
 			if type(layer) == EntityLayer:

@@ -8,6 +8,7 @@ import junebugEngine.config
 import junebugEngine.physical_object
 from .text import RenderedText
 from .offset_group import OffsetGroup
+from .game_object import PHYSICS_SCALE
 
 class MapLayer:
 	def __init__(self, gamemap, name):
@@ -58,7 +59,7 @@ class GameMap:
 		self.collision = []
 		self.goal = None
 		self.entities = OffsetGroup()
-		self.physicalEntities = pygame.sprite.Group()
+		self.anchored = []
 		self.background = None
 		self.collisionTiles = None
 		self.layerDict = {}
@@ -73,8 +74,8 @@ class GameMap:
 		x = pos[0]
 		y = pos[1]
 		
-		tileX = int(x / self.tileWidth)
-		tileY = int(y / self.tileHeight)
+		tileX = int(x / self.tileWidth / PHYSICS_SCALE)
+		tileY = int(y / self.tileHeight / PHYSICS_SCALE)
 
 		if tileX in range(0, self.width) and tileY in range(0, self.height):
 			return self.collisionTiles[tileY][tileX]
@@ -87,12 +88,12 @@ class GameMap:
 		yMax = rect.bottom - 1
 
 		tiles=[]
-		for y in list(range(yMin,yMax,self.tileHeight)) + [yMax]:
-			for x in list(range(xMin,xMax,self.tileWidth)) + [xMax]:
+		for y in list(range(yMin,yMax,self.tileHeight * PHYSICS_SCALE)) + [yMax]:
+			for x in list(range(xMin,xMax,self.tileWidth * PHYSICS_SCALE)) + [xMax]:
 				tmpTile=self.tileAt((x,y))
 				if tmpTile:
-					tileX = int(x / self.tileWidth) * self.tileWidth
-					tileY = int(y / self.tileHeight) * self.tileHeight
+					tileX = int(x / self.tileWidth / PHYSICS_SCALE) * self.tileWidth * PHYSICS_SCALE
+					tileY = int(y / self.tileHeight / PHYSICS_SCALE) * self.tileHeight * PHYSICS_SCALE
 					tileRect = pygame.Rect(tileX, tileY, self.tileWidth, self.tileHeight)
 					tiles.append((tmpTile, tileRect))
 		return tiles

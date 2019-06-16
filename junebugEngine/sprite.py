@@ -135,8 +135,6 @@ class AnimSprite(pygame.sprite.Sprite):
 			self.kill()
 
 	def update(self, ms):
-		self.setPosition((int(self.x),int(self.y)))
-
 		self.frameTime = self.frameTime + ms
 		curr = self.currentAnimation[0][self.frameNo]
 		direction = self.currentAnimation[1]

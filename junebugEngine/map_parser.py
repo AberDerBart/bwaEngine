@@ -53,6 +53,7 @@ class MapParser:
 
 				if generator:
 					entity = generator(layer, (x * PHYSICS_SCALE,y * PHYSICS_SCALE), mirror_h)
+					entity.anchorTo(gamemap)
 
 					if properties.get("player"):
 						gamemap.player = entity

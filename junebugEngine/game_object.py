@@ -33,10 +33,22 @@ class GameObject(Rect):
 		super().__init__((x, y), size)
 		self.sprite = None
 		self.spriteOffset = (0,0)
+		self.anchor = None
+
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite
 		self.spriteOffset = spriteOffset
 		self.updateSpritePosition()
+	def anchorTo(self, anchor):
+		if self.anchor:
+			self.anchor.anchored.remove(self)
+		self.anchor = anchor
+		if anchor:
+			anchor.anchored.append(self)
+
+	def update(self, ms):
+		pass
+
 	def truncate(self):
 		x = self.x - self.x % PHYSICS_SCALE
 		y = self.y - self.y % PHYSICS_SCALE
@@ -50,7 +62,7 @@ class GameObject(Rect):
 		h = self.h // PHYSICS_SCALE
 		return Rect(x, y, w, h)
 	def updateSpritePosition(self):
-		self.sprite.x = self.toPixel().x + self.spriteOffset[0]
-		self.sprite.y = self.toPixel().y + self.spriteOffset[1]
-		self.sprite.setPosition((self.sprite.x, self.sprite.y))
+		x = self.toPixel().x + self.spriteOffset[0]
+		y = self.toPixel().y + self.spriteOffset[1]
+		self.sprite.setPosition((x, y))
 
