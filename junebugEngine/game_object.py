@@ -1,10 +1,36 @@
 from pygame.rect import Rect
+from enum import Enum
 
 PHYSICS_SCALE = 1024
 
+class Alignment:
+	CENTER = 0
+	LEFT = 1
+	RIGHT = 2
+	TOP = 4
+	BOTTOM = 8
+	TOPLEFT = 5
+	TOPRIGHT = 6
+	BOTTOMLEFT = 9
+	BOTTOMRIGHT = 10
+
 class GameObject(Rect):
-	def __init__(self, position, size = (0,0)):
-		super().__init__(position, size)
+	def __init__(self, position, size = (0,0), align = Alignment.BOTTOMLEFT):
+		if align & Alignment.LEFT:
+			x = position[0]
+		elif align & Alignment.RIGHT:
+			x = position[0] - size[0]
+		else:
+			x = position[0] - size[0] / 2
+
+		if align & Alignment.TOP:
+			y = position[1]
+		elif align & Alignment.BOTTOM:
+			y = position[1] - size[1]
+		else:
+			y = position[1] - size[1] / 2
+		
+		super().__init__((x, y), size)
 		self.sprite = None
 		self.spriteOffset = (0,0)
 	def setSprite(self, sprite, spriteOffset = (0,0)):
