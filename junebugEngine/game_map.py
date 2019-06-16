@@ -94,7 +94,7 @@ class GameMap:
 				if tmpTile:
 					tileX = int(x / self.tileWidth / PHYSICS_SCALE) * self.tileWidth * PHYSICS_SCALE
 					tileY = int(y / self.tileHeight / PHYSICS_SCALE) * self.tileHeight * PHYSICS_SCALE
-					tileRect = pygame.Rect(tileX, tileY, self.tileWidth, self.tileHeight)
+					tileRect = pygame.Rect(tileX, tileY, self.tileWidth * PHYSICS_SCALE, self.tileHeight * PHYSICS_SCALE)
 					tiles.append((tmpTile, tileRect))
 		return tiles
 
