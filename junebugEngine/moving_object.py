@@ -24,14 +24,18 @@ class MovingObject(PhysicalObject):
 
 	def run_left(self):
 		self.targetSpeed = -self.speed
+		self.orientation = Orientation.LEFT
+		# TODO: make sprite check for its orientation on every frame
+		self.updateSpritePosition()
 		if self.sprite:
-			self.sprite.orientation = Orientation.LEFT
 			self.sprite.setAnimation('run')
 
 	def run_right(self):
 		self.targetSpeed = self.speed
+		self.orientation = Orientation.RIGHT
+		# TODO: make sprite check for its orientation on every frame
+		self.updateSpritePosition()
 		if self.sprite:
-			self.sprite.orientation = Orientation.RIGHT
 			self.sprite.setAnimation('run')
 
 	def jump(self, hold = True):

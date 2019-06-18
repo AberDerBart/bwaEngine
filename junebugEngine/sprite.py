@@ -3,6 +3,7 @@ import json
 import os.path
 import enum
 
+# TODO: consider defining this elsewhere
 class Orientation:
 	LEFT = -2
 	RIGHT = 2

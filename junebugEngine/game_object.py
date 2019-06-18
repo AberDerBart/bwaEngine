@@ -1,5 +1,5 @@
 from pygame.rect import Rect
-from enum import Enum
+from .sprite import Orientation
 
 PHYSICS_SCALE = 1024
 
@@ -34,6 +34,7 @@ class GameObject(Rect):
 		self.sprite = None
 		self.spriteOffset = (0,0)
 		self.anchor = None
+		self.orientation = Orientation.RIGHT
 
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite
@@ -47,7 +48,11 @@ class GameObject(Rect):
 			anchor.anchored.append(self)
 
 	def update(self, ms):
-		pass
+		self.updateSpritePosition()
+
+	def die(self):
+		if self.sprite:
+			self.sprite.die()
 
 	def truncate(self):
 		x = self.x - self.x % PHYSICS_SCALE
@@ -62,7 +67,9 @@ class GameObject(Rect):
 		h = self.h // PHYSICS_SCALE
 		return Rect(x, y, w, h)
 	def updateSpritePosition(self):
-		x = self.toPixel().x + self.spriteOffset[0]
-		y = self.toPixel().y + self.spriteOffset[1]
-		self.sprite.setPosition((x, y))
+		if self.sprite:
+			x = self.toPixel().x + self.spriteOffset[0]
+			y = self.toPixel().y + self.spriteOffset[1]
+			self.sprite.setPosition((x, y))
+			self.sprite.orientation = self.orientation
 

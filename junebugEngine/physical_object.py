@@ -88,7 +88,6 @@ class PhysicalObject(GameObject):
 	def physicsY(self, ms):
 
 		dy = self.vy * ms
-		print(dy)
 
 		# collide with map in y direction
 		collisionTiles = self.anchor.tileRange(self.move(0, dy))
@@ -98,7 +97,6 @@ class PhysicalObject(GameObject):
 				dirY = self.collideRect(tileRect, ms, dy=dy)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
-					print(None)
 					dy = self.vy * ms
 
 		# collide with entities in y direction
@@ -118,7 +116,7 @@ class PhysicalObject(GameObject):
 		pass
 	
 	def die(self):
-		self.enablePhysics(False)
+		self.anchorTo(None)
 		super().die()
 
 	def enablePhysics(self, enable = True):
