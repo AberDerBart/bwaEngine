@@ -8,21 +8,21 @@ class Orientation:
 	LEFT = -2
 	RIGHT = 2
 
-class Alignment(enum.IntEnum):
+class Alignment:
 	CENTER = 0
 	LEFT = 1
 	RIGHT = 2
 	TOP = 4
 	BOTTOM = 8
-	TOP_LEFT = 5
-	TOP_RIGHT = 6
-	BOTTOM_LEFT = 9
-	BOTTOM_RIGHT = 10
+	TOPLEFT = 5
+	TOPRIGHT = 6
+	BOTTOMLEFT = 9
+	BOTTOMRIGHT = 10
 
 class AnimSprite(pygame.sprite.Sprite):
 	typeName = None
 
-	def __init__(self, json_file, layer, position, mirror_h, alignment = Alignment.BOTTOM_LEFT):
+	def __init__(self, json_file, layer, position, mirror_h, alignment = Alignment.BOTTOMLEFT):
 		super().__init__()
 
 		self.layer = layer

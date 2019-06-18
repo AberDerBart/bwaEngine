@@ -1,18 +1,7 @@
 from pygame.rect import Rect
-from .sprite import Orientation
+from .sprite import Orientation, Alignment
 
 PHYSICS_SCALE = 1024
-
-class Alignment:
-	CENTER = 0
-	LEFT = 1
-	RIGHT = 2
-	TOP = 4
-	BOTTOM = 8
-	TOPLEFT = 5
-	TOPRIGHT = 6
-	BOTTOMLEFT = 9
-	BOTTOMRIGHT = 10
 
 class GameObject(Rect):
 	def __init__(self, position, size = (0,0), align = Alignment.BOTTOMLEFT):
