@@ -18,8 +18,8 @@ class Direction(Orientation):
 class PhysicalObject(GameObject):
 	typeName = None
 
-	def __init__(self, position, size):
-		super().__init__(position, size)
+	def __init__(self, position, size, **kwargs):
+		super().__init__(position, size, **kwargs)
 
 		self.enablePhysics(True)
 
@@ -62,6 +62,8 @@ class PhysicalObject(GameObject):
 		dx = self.vx * ms
 
 		# collide with map in x direction
+		if not self.anchor:
+			return
 		collisionTiles = self.anchor.tileRange(self.move(dx, 0))
 
 		for tile, tileRect in collisionTiles:
@@ -72,6 +74,8 @@ class PhysicalObject(GameObject):
 					dx = self.vx * ms
 
 		# collide with entities in x direction
+		if not self.anchor:
+			return
 		collision_list = self.anchor.anchored.copy()
 		if self in collision_list:
 			collision_list.remove(self)
@@ -90,6 +94,9 @@ class PhysicalObject(GameObject):
 		dy = self.vy * ms
 
 		# collide with map in y direction
+		if not self.anchor:
+			return
+
 		collisionTiles = self.anchor.tileRange(self.move(0, dy))
 
 		for tile, tileRect in reversed(collisionTiles):
@@ -100,6 +107,9 @@ class PhysicalObject(GameObject):
 					dy = self.vy * ms
 
 		# collide with entities in y direction
+		if not self.anchor:
+			return
+
 		collision_list = self.anchor.anchored.copy()
 		if self in collision_list:
 			collision_list.remove(self)
