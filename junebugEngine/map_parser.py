@@ -52,7 +52,7 @@ class MapParser:
 				entity = None
 
 				if generator:
-					entity = generator(layer, (x * PHYSICS_SCALE,y * PHYSICS_SCALE), mirror_h)
+					entity = generator(layer, (x * PHYSICS_SCALE,y * PHYSICS_SCALE), mirror_h, **properties)
 					entity.anchorTo(gamemap)
 
 					if properties.get("player"):
@@ -62,9 +62,6 @@ class MapParser:
 					entity = AnimSprite(spritePath, layer, (x,y), mirror_h)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
-				if entity:
-					pass
-					#entity.setProperties(properties)
 
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))
