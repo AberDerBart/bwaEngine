@@ -84,10 +84,10 @@ class MapParser:
 				for point in obj["polyline"]:
 					px = point["x"]
 					py = point["y"]
-					path.append((px,py))
+					path.append((px * PHYSICS_SCALE,py * PHYSICS_SCALE))
 
 				cam = Camera(layer, path, timePerPoint)
-				layer.entities.add(cam)
+				cam.anchorTo(gamemap)
 
 				if player:
 					gamemap.player = cam

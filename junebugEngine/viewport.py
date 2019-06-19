@@ -41,35 +41,37 @@ class Viewport:
 
 		# update physics for visible entities:
 		for obj in self.map_.anchored:
-			if obj.sprite:
-				if self.is_visible(obj.sprite):
-					obj.update(ms)
+			if self.obj_visible(obj):
+				obj.update(ms)
 
 		# update visible entities
 		for layer in self.map_.layers:
 			if type(layer) == EntityLayer:
-				for entity in layer.entities:
-					if self.is_visible(entity):
-						entity.update(ms)
-						if entity not in self.visibleEntities:
-							entity.on_screen_enter()
-							self.visibleEntities.add(entity)
+				for sprite in layer.entities:
+					if self.sprite_visible(sprite):
+						sprite.update(ms)
+						if sprite not in self.visibleEntities:
+							sprite.on_screen_enter()
+							self.visibleEntities.add(sprite)
 					else:
-						if entity in self.visibleEntities:
-							entity.on_screen_exit()
-							self.visibleEntities.remove(entity)
+						if sprite in self.visibleEntities:
+							sprite.on_screen_exit()
+							self.visibleEntities.remove(sprite)
 
 		# adjust offset
+		print(self.map_.player.toPixel())
 		if self.map_.player:
-			if self.map_.player.sprite.rect.left + self.offsetx < self.paddingLeft:
-				self.offsetx = self.paddingLeft - int(self.map_.player.x)
-			elif self.map_.player.sprite.rect.right + self.offsetx > self.width - self.paddingRight:
-				self.offsetx = int(self.width - self.paddingRight - int(self.map_.player.x) - self.map_.player.size[0])
+			playerRect = self.map_.player.toPixel()
+			print(playerRect)
+			if playerRect.left + self.offsetx < self.paddingLeft:
+				self.offsetx = self.paddingLeft - playerRect.left
+			elif playerRect.right + self.offsetx > self.width - self.paddingRight:
+				self.offsetx = int(self.width - self.paddingRight - playerRect.right)
 
-			if self.map_.player.sprite.rect.top + self.offsety < self.paddingTop:
-				self.offsety = int(self.paddingTop - self.map_.player.y)
-			elif self.map_.player.sprite.rect.bottom + self.offsety > self.height - self.paddingBottom:
-				self.offsety = int(self.height - self.paddingBottom - self.map_.player.y - self.map_.player.size[1])
+			if playerRect.top + self.offsety < self.paddingTop:
+				self.offsety = int(self.paddingTop - playerRect.top)
+			elif playerRect.bottom + self.offsety > self.height - self.paddingBottom:
+				self.offsety = int(self.height - self.paddingBottom - playerRect.bottom)
 			self.clipOffset()
 		
 
@@ -103,11 +105,12 @@ class Viewport:
 		if(self.map_):
 			self.map_.render(self.surf, (self.offsetx, self.offsety))
 
-	def is_visible(self, entity):
-		visibility = False
-		if entity.typeName in ['berndman', 'wonderstevie', 'camera']:
-			visibility = True
-		if self.rect.colliderect(entity.rect):
-			visibility = True
-		return visibility
+	def sprite_visible(self, sprite):
+		return self.rect.colliderect(sprite.rect)
 
+	def obj_visible(self, obj):
+		if obj.typeName in ['berndman', 'wonderstevie', 'camera']:
+			return True
+		if not obj.sprite:
+			return False
+		return self.sprite_visible(obj.sprite)

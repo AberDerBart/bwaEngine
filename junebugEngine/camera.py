@@ -1,21 +1,21 @@
 import pygame
 from .hero import Hero
-from .sprite import AnimSprite
+from .game_object import GameObject, PHYSICS_SCALE
 
-class Camera(Hero):
+class Camera(GameObject):
 	typeName = "camera"
 
 	def __init__(self, layer, path, timePerPoint, **kwargs):
-		super().__init__("art/sprites/invisibleObject.json", {}, layer, path[0], False, **kwargs)
+		# TODO: make gameobject with no size not be falsy
+		super().__init__(path[0], (PHYSICS_SCALE, PHYSICS_SCALE,), **kwargs)
 
 		self.timePerPoint = int(timePerPoint * 1000)
 		self.time = 0
 		self.path = path
 
 	def update(self, ms):
-		AnimSprite.update(self, ms)
-
 		self.time = self.time + ms
+		print(self.time, self.topleft, self.timePerPoint)
 
 		pointProgress = self.time / self.timePerPoint
 		lastPoint = int(self.time / self.timePerPoint)
@@ -30,5 +30,7 @@ class Camera(Hero):
 		else:
 			self.x = self.path[-1][0]
 			self.y = self.path[-1][1]
+
+		super().update(ms)
 
 
