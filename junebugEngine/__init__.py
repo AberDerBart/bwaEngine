@@ -13,4 +13,4 @@ from .offset_group import OffsetGroup
 from .text import RenderedText
 from .viewport import Viewport
 from .control import PlayerControl
-from .game_object import GameObject
+from .game_object import GameObject, PHYSICS_SCALE

@@ -4,8 +4,8 @@ import junebugEngine.config
 from .tileset import *
 from .text import RenderedText
 from .camera import Camera
-from .sprite import AnimSprite
-from .game_object import PHYSICS_SCALE
+from .sprite import AnimSprite, Alignment
+from .game_object import PHYSICS_SCALE, GameObject
 import pygame
 
 from .game_map import GameMap, TileLayer, EntityLayer
@@ -66,7 +66,7 @@ class MapParser:
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
-				gamemap.goal = pygame.Rect(x, y, width, height)
+				gamemap.goal = GameObject((x * PHYSICS_SCALE, y * PHYSICS_SCALE), (width * PHYSICS_SCALE, height * PHYSICS_SCALE), align=Alignment.TOPLEFT)
 			elif obj.get("type") == "camera":
 
 				properties = obj["properties"]
