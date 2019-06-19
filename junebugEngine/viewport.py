@@ -59,10 +59,8 @@ class Viewport:
 							self.visibleEntities.remove(sprite)
 
 		# adjust offset
-		print(self.map_.player.toPixel())
 		if self.map_.player:
 			playerRect = self.map_.player.toPixel()
-			print(playerRect)
 			if playerRect.left + self.offsetx < self.paddingLeft:
 				self.offsetx = self.paddingLeft - playerRect.left
 			elif playerRect.right + self.offsetx > self.width - self.paddingRight:

@@ -15,7 +15,6 @@ class Camera(GameObject):
 
 	def update(self, ms):
 		self.time = self.time + ms
-		print(self.time, self.topleft, self.timePerPoint)
 
 		pointProgress = self.time / self.timePerPoint
 		lastPoint = int(self.time / self.timePerPoint)
