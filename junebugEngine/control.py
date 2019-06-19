@@ -8,11 +8,15 @@ class PlayerControl:
 		self.char = char
 		self.keymap = keymap
 		self.active = []
+
+	def setCharacter(self, char):
+		self.char = char
+		self.active = []
 	def processEvent(self, event):
 		if self.char:
 			if event.type == pygame.KEYUP:
 				action = self.keymap.get(event.key)
-				if action:
+				if action and action in self.active:
 					self.active.remove(action)
 					action(self, False)
 			if event.type == pygame.KEYDOWN:
