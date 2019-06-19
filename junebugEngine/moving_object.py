@@ -15,7 +15,8 @@ class MovingObject(PhysicalObject):
 		#sound
 		self.jump_sound = pygame.mixer.Sound('sound/jump.wav')
 		self.channel = pygame.mixer.find_channel()
-		self.channel.set_volume(.3)
+		if self.channel:
+			self.channel.set_volume(.3)
 
 		self.jumpTime = 0
 		self.jumping = False
