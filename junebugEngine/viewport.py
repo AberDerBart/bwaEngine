@@ -50,13 +50,6 @@ class Viewport:
 				for sprite in layer.entities:
 					if self.sprite_visible(sprite):
 						sprite.update(ms)
-						if sprite not in self.visibleEntities:
-							sprite.on_screen_enter()
-							self.visibleEntities.add(sprite)
-					else:
-						if sprite in self.visibleEntities:
-							sprite.on_screen_exit()
-							self.visibleEntities.remove(sprite)
 
 		# adjust offset
 		if self.map_.player:

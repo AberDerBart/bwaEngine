@@ -35,9 +35,7 @@ class AnimSprite(pygame.sprite.Sprite):
 		image = pygame.image.load(folder + data['meta']['image']).convert()
 		image.set_colorkey((255,0,255))
 
-		self.x = position[0]
-		self.y = position[1] - image.get_size()[1] 
-
+		self.rect = pygame.rect.Rect(position, (0,0))
 
 		allFramesRight = []
 		allFramesLeft = []
@@ -49,8 +47,9 @@ class AnimSprite(pygame.sprite.Sprite):
 			h = frame['frame']['h']
 
 			rect = pygame.Rect(x,y,w,h)
-			self.size = (int(w), int(h))
-			frameImg = pygame.transform.scale(image.subsurface(rect),self.size)
+			self.rect.width = int(w)
+			self.rect.height = int(h)
+			frameImg = image.subsurface(rect)
 			duration = frame['duration']
 
 			allFramesRight.append((frameImg,duration))
@@ -75,17 +74,14 @@ class AnimSprite(pygame.sprite.Sprite):
 
 		# adjust position to alignment
 
-		if alignment & Alignment.TOP:
-			self.y += self.size[1]
-		elif not (alignment & Alignment.BOTTOM):
-			self.y += self.size[1] / 2
+		if alignment & Alignment.BOTTOM:
+			self.rect.y -= self.rect.height
+		elif not (alignment & Alignment.TOP):
+			self.rect.y -= self.rect.height / 2
 		if alignment & Alignment.RIGHT:
-			self.x -= self.size[0]
+			self.rect.x -= self.rect.width
 		elif not (alignment & Alignment.LEFT):
-			self.x -= self.size[0] / 2
-
-
-		self.setPosition((int(self.x), int(self.y)))
+			self.rect.x -= self.rect.width / 2
 
 		if mirror_h:
 			self.orientation = Orientation.LEFT
@@ -93,21 +89,12 @@ class AnimSprite(pygame.sprite.Sprite):
 			self.orientation = Orientation.RIGHT
 		self.setAnimation(data['meta']['frameTags'][0]['name'])
 
-	def setProperties(self, properties):
-		self.properties = properties
-
 	def die(self):
 		if not self.setAnimation('die'):
 			self.kill()
 		self.on_death()
 	
 	def on_death(self):
-		pass
-
-	def on_screen_exit(self):
-		pass
-
-	def on_screen_enter(self):
 		pass
 
 	def setAnimation(self,animation):
@@ -127,9 +114,6 @@ class AnimSprite(pygame.sprite.Sprite):
 	
 	def animationDuration(self, animation):
 		return sum([frame[1] for frame in self.animations[self.orientation].get(animation, [])[0]])
-
-	def setPosition(self, position):
-		self.rect = pygame.Rect(position, self.size)
 
 	def on_animationFinished(self):
 		if self.currentAnimationName == "die":
