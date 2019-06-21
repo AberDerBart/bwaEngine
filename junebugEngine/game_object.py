@@ -40,24 +40,21 @@ class GameObject(Rect):
 		if anchor:
 			anchor.anchored.append(self)
 
-	def collisionCandidates(self, obj = None, _branch = None):
+	def collisionCandidates(self, rect, _branch = None):
 		candidates = []
 		if _branch:
 			for c in self.anchored:
 				if c != _branch:
 					candidates += [c]
-					candidates += c.collisionCandidates(obj or self, self)
+					candidates += c.collisionCandidates(rect, self)
 		if self.anchor is not None and _branch != self.anchor:
 			candidates.append(self.anchor)
-			candidates += self.anchor.collisionCandidates(obj or self, self)
+			candidates += self.anchor.collisionCandidates(rect, self)
 
 		return candidates
 		
 	def boundingBox(self):
-		bBox = python.pygame.Rect(self)
-		for obj in self.anchored:
-			bBox = bBox.union(obj)
-		return bBox
+		return self.unionall(self.anchored)
 
 	def update(self, ms):
 		self.updateSpritePosition()

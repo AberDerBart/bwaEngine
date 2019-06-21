@@ -76,7 +76,7 @@ class PhysicalObject(GameObject):
 						return
 
 		# collide with entities in x direction
-		collision_list = self.collisionCandidates()
+		collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
 
 		for block in collision_list:
 			dirX = self.collideRect(block, ms, dx=dx)
@@ -109,7 +109,7 @@ class PhysicalObject(GameObject):
 						return
 
 		# collide with entities in y direction
-		collision_list = self.collisionCandidates()
+		collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
 
 		for block in collision_list:
 			dirY = self.collideRect(block, ms, dy=dy)
