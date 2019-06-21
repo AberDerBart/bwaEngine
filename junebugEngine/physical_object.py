@@ -72,13 +72,11 @@ class PhysicalObject(GameObject):
 				if dirX != Direction.NONE:
 					self.on_collision(dirX, None)
 					dx = self.vx * ms
+					if not (dx and anchor):
+						return
 
 		# collide with entities in x direction
-		if not self.anchor:
-			return
-		collision_list = self.anchor.anchored.copy()
-		if self in collision_list:
-			collision_list.remove(self)
+		collision_list = self.collisionCandidates()
 
 		for block in collision_list:
 			dirX = self.collideRect(block, ms, dx=dx)
@@ -86,6 +84,8 @@ class PhysicalObject(GameObject):
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
 				dx = self.vx * ms
+				if not (dx and anchor):
+					return
 		
 		self.x += dx
 
@@ -105,14 +105,11 @@ class PhysicalObject(GameObject):
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
 					dy = self.vy * ms
+					if not (dy and anchor):
+						return
 
 		# collide with entities in y direction
-		if not self.anchor:
-			return
-
-		collision_list = self.anchor.anchored.copy()
-		if self in collision_list:
-			collision_list.remove(self)
+		collision_list = self.collisionCandidates()
 
 		for block in collision_list:
 			dirY = self.collideRect(block, ms, dy=dy)
@@ -120,6 +117,8 @@ class PhysicalObject(GameObject):
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
 				dy = self.vy * ms
+				if not (dy and anchor):
+					return
 		self.y += dy
 
 	def on_collision(self, direction, obj = None):

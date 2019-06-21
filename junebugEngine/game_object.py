@@ -4,7 +4,7 @@ from .sprite import Orientation, Alignment
 PHYSICS_SCALE = 1024
 
 class GameObject(Rect):
-	def __init__(self, position, size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
+	def __init__(self, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
 		if align & Alignment.LEFT:
 			x = position[0]
 		elif align & Alignment.RIGHT:
@@ -20,10 +20,13 @@ class GameObject(Rect):
 			y = position[1] - size[1] / 2
 		
 		super().__init__((x, y), size)
+		self.orientation = Orientation.RIGHT
+
 		self.sprite = None
 		self.spriteOffset = (0,0)
+		
 		self.anchor = None
-		self.orientation = Orientation.RIGHT
+		self.anchored = []
 
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite
@@ -36,6 +39,25 @@ class GameObject(Rect):
 		self.anchor = anchor
 		if anchor:
 			anchor.anchored.append(self)
+
+	def collisionCandidates(self, obj = None, _branch = None):
+		candidates = []
+		if _branch:
+			for c in self.anchored:
+				if c != _branch:
+					candidates += [c]
+					candidates += c.collisionCandidates(obj or self, self)
+		if self.anchor is not None and _branch != self.anchor:
+			candidates.append(self.anchor)
+			candidates += self.anchor.collisionCandidates(obj or self, self)
+
+		return candidates
+		
+	def boundingBox(self):
+		bBox = python.pygame.Rect(self)
+		for obj in self.anchored:
+			bBox = bBox.union(obj)
+		return bBox
 
 	def update(self, ms):
 		self.updateSpritePosition()

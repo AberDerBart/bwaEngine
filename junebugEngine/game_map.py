@@ -8,7 +8,7 @@ import junebugEngine.config
 import junebugEngine.physical_object
 from .text import RenderedText
 from .offset_group import OffsetGroup
-from .game_object import PHYSICS_SCALE
+from .game_object import PHYSICS_SCALE, GameObject
 
 class MapLayer:
 	def __init__(self, gamemap, name):
@@ -47,8 +47,9 @@ class EntityLayer(MapLayer):
 	def render(self, screen, offset):
 		self.entities.draw(screen, offset)
 	
-class GameMap:
+class GameMap(GameObject):
 	def __init__(self):
+		super().__init__()
 		self.path = None
 		self.width = 0
 		self.height = 0
@@ -59,7 +60,6 @@ class GameMap:
 		self.collision = []
 		self.goal = None
 		self.entities = OffsetGroup()
-		self.anchored = []
 		self.background = None
 		self.collisionTiles = None
 		self.layerDict = {}
