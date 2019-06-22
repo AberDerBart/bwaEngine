@@ -52,11 +52,10 @@ class MapParser:
 				entity = None
 
 				if generator:
-					entity = generator(layer, (x * PHYSICS_SCALE,y * PHYSICS_SCALE), mirror_h, **properties)
-					entity.anchorTo(gamemap)
-
+					entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
 					if properties.get("player"):
 						gamemap.player = entity
+
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
 					entity = AnimSprite(spritePath, layer, (x,y), mirror_h)

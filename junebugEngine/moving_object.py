@@ -9,8 +9,8 @@ from .physical_object import PhysicalObject, Direction
 class MovingObject(PhysicalObject):
 	acc = 500
 	speed = 100
-	def __init__(self, position, size, **kwargs):
-		super().__init__(position, size, **kwargs)
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
 
 		#sound
 		self.jump_sound = pygame.mixer.Sound('sound/jump.wav')

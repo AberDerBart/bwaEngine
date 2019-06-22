@@ -18,8 +18,8 @@ class Direction(Orientation):
 class PhysicalObject(GameObject):
 	typeName = None
 
-	def __init__(self, position, size, **kwargs):
-		super().__init__(position, size, **kwargs)
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
 
 		self.enablePhysics(True)
 

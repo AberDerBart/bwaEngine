@@ -22,11 +22,8 @@ class Alignment:
 class AnimSprite(pygame.sprite.Sprite):
 	typeName = None
 
-	def __init__(self, json_file, layer, position, mirror_h, alignment = Alignment.BOTTOMLEFT):
+	def __init__(self, json_file, position = (0, 0), mirror_h = False, alignment = Alignment.BOTTOMLEFT):
 		super().__init__()
-
-		self.layer = layer
-		layer.entities.add(self)
 
 		data = json.load(open(json_file))
 

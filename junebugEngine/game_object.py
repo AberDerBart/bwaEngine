@@ -4,7 +4,7 @@ from .sprite import Orientation, Alignment
 PHYSICS_SCALE = 1024
 
 class GameObject(Rect):
-	def __init__(self, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
+	def __init__(self, world = None, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
 		if align & Alignment.LEFT:
 			x = position[0]
 		elif align & Alignment.RIGHT:
@@ -27,6 +27,8 @@ class GameObject(Rect):
 		
 		self.anchor = None
 		self.anchored = []
+
+		self.world = world
 
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite

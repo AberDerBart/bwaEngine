@@ -49,7 +49,7 @@ class EntityLayer(MapLayer):
 	
 class GameMap(GameObject):
 	def __init__(self):
-		super().__init__()
+		super().__init__(self)
 		self.path = None
 		self.width = 0
 		self.height = 0
@@ -63,7 +63,16 @@ class GameMap(GameObject):
 		self.background = None
 		self.collisionTiles = None
 		self.layerDict = {}
-	
+
+	def spawn(self, objType, position, layer = None, **kwargs):
+		entity = objType(world = self, position = position, **kwargs)
+		entity.anchorTo(self)
+
+		if entity.sprite:
+			layer = layer or self.getLayer("entities")
+			layer.entities.add(entity.sprite)
+
+		return entity
 	def getLayer(self, layerName):
 		return self.layerDict.get(layerName)
 	def pixelWidth(self):
@@ -99,43 +108,8 @@ class GameMap(GameObject):
 		return tiles
 
 	def render(self,screen,offset):
-		scrWidth = screen.get_width()
-		scrHeight = screen.get_height()
-
-		minX = max(math.trunc((0 - offset[0]) / self.tileWidth),0)
-		maxX = min(math.ceil((scrWidth - offset[0]) / self.tileWidth), self.width-1)
-		minY = max(math.trunc((0 - offset[1]) / self.tileHeight),0)
-		maxY = min(math.ceil((scrHeight - offset[1]) / self.tileHeight), self.height-1)
-		
 		for layer in self.layers:
 			layer.render(screen, offset)
-		#self.entities.draw(screen, offset)
-
-	def clear(self,screen,bg,offset):
-		scrWidth = screen.get_width()
-		scrHeight = screen.get_height()
-
-		minX = max(math.trunc((0 - offset[0]) / self.tileWidth),0)
-		maxX = min(math.ceil((scrWidth - offset[0]) / self.tileWidth), self.width-1)
-		minY = max(math.trunc((0 - offset[1]) / self.tileHeight),0)
-		maxY = min(math.ceil((scrHeight - offset[1]) / self.tileHeight), self.height-1)
-
-		#for row in range(minY,maxY+1):
-		#	for col in range(minX,maxX+1):
-		#		tile = self.tiles[row][col]
-		#		if tile:
-		#			left = max(col * self.tileWidth + offset[0], 0)
-		#			top = max(row *self.tileHeight + offset[1], 0)
-		#			
-		#			right = min(scrWidth, left + self.tileWidth)
-		#			bottom = min(scrHeight, top + self.tileHeight)
-		#
-		#			pos = (left,top)
-		#			size = (right - left, bottom - top)
-		#			print(pos)
-		#			screen.blit(bg.subsurface(pygame.Rect(pos,size)),pos)
-
-		self.entities.clear(screen, bg)
 
 	def update(self, ms):
 		#self.entities.update(ms)
