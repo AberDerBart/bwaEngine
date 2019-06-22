@@ -1,5 +1,4 @@
 import pygame
-from .hero import Hero
 from .game_object import GameObject, PHYSICS_SCALE
 
 class Camera(GameObject):

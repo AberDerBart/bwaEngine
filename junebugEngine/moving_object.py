@@ -4,11 +4,12 @@ import json
 from . import config
 
 from .sprite import Orientation
-from .physical_object import PhysicalObject, Direction
+from .game_object import GameObject, Direction
 
-class MovingObject(PhysicalObject):
+class MovingObject(GameObject):
 	acc = 500
 	speed = 100
+
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 
@@ -77,6 +78,7 @@ class MovingObject(PhysicalObject):
 					self.simulate_gravity(ms)
 
 		super().update(ms, frameIndex)
+
 		if self.on_ground and self.vx != 0:
 			groundY = self.bottom
 			

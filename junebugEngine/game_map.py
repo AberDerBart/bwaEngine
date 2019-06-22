@@ -4,8 +4,6 @@ from .tileset import TileSet, EntitySet, SetDict
 from .util import relativePath, convertCoords
 import os.path
 import math
-import junebugEngine.config
-import junebugEngine.physical_object
 from .text import RenderedText
 from .offset_group import OffsetGroup
 from .game_object import PHYSICS_SCALE, GameObject
@@ -48,6 +46,7 @@ class EntityLayer(MapLayer):
 		self.entities.draw(screen, offset)
 	
 class GameMap(GameObject):
+	typeName = "map"
 	def __init__(self):
 		super().__init__(self)
 		self.path = None

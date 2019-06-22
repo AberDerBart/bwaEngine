@@ -1,7 +1,6 @@
 import pygame
 
-from .physical_object import Direction
-from .hero import Hero
+from .game_object import Direction
 
 class PlayerControl:
 	def __init__(self, keymap = {}, char=None):
