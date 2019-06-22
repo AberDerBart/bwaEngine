@@ -27,6 +27,7 @@ class Viewport:
 		self.paddingRight = paddingRight
 
 		self.visibleEntities = pygame.sprite.Group()
+		self.frameIndex = 0
 
 		self.clear()
 
@@ -39,10 +40,13 @@ class Viewport:
 		# update the map
 		self.map_.update(ms)
 
+		self.frameIndex += 1
+
 		# update physics for visible entities:
 		for obj in self.map_.anchored:
 			if self.obj_visible(obj):
-				obj.update(ms)
+				if obj.frameIndex != self.frameIndex:
+					obj.update(ms, self.frameIndex)
 
 		# update visible entities
 		for layer in self.map_.layers:

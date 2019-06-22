@@ -58,7 +58,7 @@ class MovingObject(PhysicalObject):
 		self.targetSpeed = 0
 		super().die()
 
-	def update(self,ms):
+	def update(self, ms, frameIndex):
 		#self.vx = self.targetSpeed
 		if self.targetSpeed > self.vx:
 			self.vx = min(self.vx + self.acc * ms / 1000., self.targetSpeed)
@@ -76,7 +76,7 @@ class MovingObject(PhysicalObject):
 				if self.vy < 0:
 					self.simulate_gravity(ms)
 
-		super().update(ms)
+		super().update(ms, frameIndex)
 		if self.on_ground and self.vx != 0:
 			groundY = self.bottom
 			

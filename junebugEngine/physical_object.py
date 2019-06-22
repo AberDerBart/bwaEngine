@@ -137,7 +137,7 @@ class PhysicalObject(GameObject):
 			pass
 			#self.remove(self.layer.gamemap.physicalEntities)
 
-	def update(self, ms):
+	def update(self, ms, frameIndex):
 		if(self.physics):
 			self.on_ground = False
 			self.simulate_gravity(ms)
@@ -146,4 +146,4 @@ class PhysicalObject(GameObject):
 			self.physicsY(ms)
 			self.updateSpritePosition()
 
-		super().update(ms)
+		super().update(ms, frameIndex)

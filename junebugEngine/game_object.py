@@ -29,6 +29,7 @@ class GameObject(Rect):
 		self.anchored = []
 
 		self.world = world
+		self.frameIndex = 0
 
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite
@@ -58,8 +59,13 @@ class GameObject(Rect):
 	def boundingBox(self):
 		return self.unionall(self.anchored)
 
-	def update(self, ms):
+	def update(self, ms, frameIndex):
+		self.frameIndex = frameIndex
 		self.updateSpritePosition()
+
+		for obj in self.anchored:
+			if obj.frameIndex != frameIndex:
+				obj.update(ms)
 
 	def die(self):
 		if self.sprite:
