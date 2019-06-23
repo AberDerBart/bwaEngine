@@ -11,8 +11,11 @@ class Direction(Orientation):
 
 class GameObject(Rect):
 	typeName = None
+	gravity = False
+	collides = False
+	blocks = False
 
-	def __init__(self, world = None, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, collides = False, collideable = False, **kwargs):
+	def __init__(self, world = None, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
 		if align & Alignment.LEFT:
 			x = position[0]
 		elif align & Alignment.RIGHT:
@@ -46,8 +49,10 @@ class GameObject(Rect):
 		self.vx = 0
 		self.vy = 0
 		self.on_ground = False
-
-		self.physics = collides or collideable
+	def resetPhysics(self):
+		self.blocks = type(self).blocks
+		self.gravity = type(self).gravity
+		self.collides = type(self).collides
 
 	def setSprite(self, sprite, spriteOffset = (0,0)):
 		self.sprite = sprite
@@ -121,6 +126,9 @@ class GameObject(Rect):
 
 		dx = self.absDx(self.vx * ms)
 
+		if not self.collides:
+			return dx
+
 		# collide with map in x direction
 		if not self.anchor:
 			return 0
@@ -150,6 +158,9 @@ class GameObject(Rect):
 	def physicsY(self, ms):
 
 		dy = self.absDy(self.vy * ms)
+
+		if not self.collides:
+			return dy
 
 		# collide with map in y direction
 		if not self.anchor:
@@ -207,15 +218,12 @@ class GameObject(Rect):
 	def update(self, ms, frameIndex):
 		self.frameIndex = frameIndex
 
-		if(self.physics):
-			self.on_ground = False
+		self.on_ground = False
+		if self.gravity:
 			self.simulate_gravity(ms)
 			
-			self.x += self.physicsX(ms)
-			self.y += self.physicsY(ms)
-		else:
-			self.x += self.absDx()
-			self.y += self.absDy()
+		self.x += self.physicsX(ms)
+		self.y += self.physicsY(ms)
 
 		self.updateSpritePosition()
 
