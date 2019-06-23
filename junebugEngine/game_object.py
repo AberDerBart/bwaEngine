@@ -60,8 +60,12 @@ class GameObject(Rect):
 		self.updateSpritePosition()
 
 	def anchorTo(self, anchor):
-		print(self.typeName, 'anchorTo', anchor.typeName if anchor else anchor)
-		print(self.vx, self.vy)
+		"""anchors the GameObject to another GameObject - any movement of the anchor is copied to the object"""
+		# if we lose the anchor, keep it for the children
+		if not anchor:
+			for obj in self.anchored:
+				obj.anchorTo(self.anchor)
+		# exchange the anchor
 		if self.anchor:
 			self.anchor.anchored.remove(self)
 		self.anchor = anchor
