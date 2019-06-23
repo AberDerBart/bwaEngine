@@ -12,7 +12,7 @@ class Camera(GameObject):
 		self.time = 0
 		self.path = path
 
-	def update(self, ms):
+	def update(self, ms, frameIndex):
 		self.time = self.time + ms
 
 		pointProgress = self.time / self.timePerPoint
@@ -29,6 +29,6 @@ class Camera(GameObject):
 			self.x = self.path[-1][0]
 			self.y = self.path[-1][1]
 
-		super().update(ms)
+		super().update(ms, frameIndex)
 
 

@@ -52,20 +52,26 @@ class MapParser:
 				entity = None
 
 				if generator:
-					entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
+					try:
+						entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
+					except Exception as e:
+						print("Error generating type", generator.typeName)
+						raise e
 					if properties.get("player"):
 						gamemap.player = entity
 
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
-					entity = AnimSprite(spritePath, layer, (x,y), mirror_h)
+					entity = AnimSprite(spritePath)
+					entity.topleft = (x,y)
+					layer.entities.add(entity)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
-				gamemap.goal = GameObject((x * PHYSICS_SCALE, y * PHYSICS_SCALE), (width * PHYSICS_SCALE, height * PHYSICS_SCALE), align=Alignment.TOPLEFT)
+				gamemap.goal = GameObject(position=(x * PHYSICS_SCALE, y * PHYSICS_SCALE), size=(width * PHYSICS_SCALE, height * PHYSICS_SCALE), align=Alignment.TOPLEFT)
 			elif obj.get("type") == "camera":
 
 				properties = obj["properties"]
