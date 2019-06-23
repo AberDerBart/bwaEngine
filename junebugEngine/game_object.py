@@ -85,39 +85,43 @@ class GameObject(Rect):
 
 		return candidates
 
-	def collideRectX(self, block, dx):
+	def collideRectX(self, other, dx, block = True):
 		collisionRect = self.move(dx, 0)
-		collision = collisionRect.colliderect(block)
+		collision = collisionRect.colliderect(other)
 
 		dirX = Direction.NONE
 
 		if collision:
 			if dx > 0:
-				self.vx = 0
-				dx = block.left - self.right 
 				dirX = Direction.RIGHT
+				if block:
+					self.vx = 0
+					dx = other.left - self.right 
 			elif dx < 0:
-				self.vx = 0
-				dx = block.right - self.left
 				dirX = Direction.LEFT
+				if block:
+					self.vx = 0
+					dx = other.right - self.left
 		return dx, dirX
 	
-	def collideRectY(self, block, dy):
+	def collideRectY(self, other, dy, block = True):
 		collisionRect = self.move(0, dy)
-		collision = collisionRect.colliderect(block)
+		collision = collisionRect.colliderect(other)
 		
 		dirY = Direction.NONE
 		
 		if collision:
 			if dy > 0:
-				self.vy = 0
-				dy = block.top - self.bottom
-				self.on_ground = True
 				dirY = Direction.DOWN
+				if block:
+					self.vy = 0
+					dy = other.top - self.bottom
+					self.on_ground = True
 			elif dy < 0:
-				self.vy = 0
-				dy = block.bottom - self.top
 				dirY = Direction.UP
+				if block:
+					self.vy = 0
+					dy = other.bottom - self.top
 		return dy, dirY
 
 	def simulate_gravity(self, ms):
@@ -150,7 +154,7 @@ class GameObject(Rect):
 		collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
 
 		for block in collision_list:
-			dx, dirX = self.collideRectX(block, dx)
+			dx, dirX = self.collideRectX(block, dx, self.blocks and block.blocks)
 			if dirX != Direction.NONE:
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
@@ -186,7 +190,7 @@ class GameObject(Rect):
 		collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
 
 		for block in collision_list:
-			dy, dirY = self.collideRectY(block, dy)
+			dy, dirY = self.collideRectY(block, dy, self.blocks and block.blocks)
 			if dirY == Direction.DOWN:
 				if self.anchor != block:
 					self.anchorTo(block)
@@ -241,7 +245,6 @@ class GameObject(Rect):
 		self.lastTruncPosition = self.truncate().topleft
 
 	def die(self):
-		print(self.typeName, 'die')
 		self.anchorTo(None)
 		if self.sprite:
 			self.sprite.die()
