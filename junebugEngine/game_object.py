@@ -92,12 +92,12 @@ class GameObject(Rect):
 		dirX = Direction.NONE
 
 		if collision:
-			if dx > 0:
+			if other.centerx > self.centerx:
 				dirX = Direction.RIGHT
 				if block:
 					self.vx = 0
 					dx = other.left - self.right 
-			elif dx < 0:
+			elif other.centerx < self.centerx:
 				dirX = Direction.LEFT
 				if block:
 					self.vx = 0
@@ -111,13 +111,13 @@ class GameObject(Rect):
 		dirY = Direction.NONE
 		
 		if collision:
-			if dy > 0:
+			if other.centery > self.centery:
 				dirY = Direction.DOWN
 				if block:
 					self.vy = 0
 					dy = other.top - self.bottom
 					self.on_ground = True
-			elif dy < 0:
+			elif other.centery < self.centery:
 				dirY = Direction.UP
 				if block:
 					self.vy = 0
