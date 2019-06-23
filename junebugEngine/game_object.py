@@ -62,6 +62,9 @@ class GameObject(Rect):
 	def anchorTo(self, anchor):
 		"""anchors the GameObject to another GameObject - any movement of the anchor is copied to the object"""
 		# if we lose the anchor, keep it for the children
+		if anchor == self.anchor:
+			return
+
 		if not anchor:
 			for obj in self.anchored:
 				obj.anchorTo(self.anchor)
@@ -116,7 +119,6 @@ class GameObject(Rect):
 				if block:
 					self.vy = 0
 					dy = other.top - self.bottom
-					self.on_ground = True
 			elif other.centery < self.centery:
 				dirY = Direction.UP
 				if block:
@@ -174,8 +176,6 @@ class GameObject(Rect):
 		for tile, tileRect in reversed(collisionTiles):
 			if tile.collide:
 				dy, dirY = self.collideRectY(tileRect, dy, self.collides)
-				if dirY == Direction.DOWN and self.anchor != self.world:
-					self.anchorTo(self.world)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
 					if not dy:
@@ -186,22 +186,25 @@ class GameObject(Rect):
 
 		for block in collision_list:
 			dy, dirY = self.collideRectY(block, dy, self.blocks and block.blocks and self.collides)
-			if dirY == Direction.DOWN:
-				if self.anchor != block:
-					self.anchorTo(block)
 			if dirY != Direction.NONE:
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
 				if not dy:
 					return 0
 
-		if not self.on_ground and self.anchor != self.world:
+		if not self.on_ground:
 			self.anchorTo(self.world)
 
 		return dy
 
 	def on_collision(self, direction, obj = None):
-		pass
+		if direction == Direction.DOWN:
+			if not obj:
+				self.on_ground = True
+				self.anchorTo(self.world)
+			elif obj.blocks and self.blocks:
+				self.on_ground = True
+				self.anchorTo(obj)
 		
 	def boundingBox(self):
 		return self.unionall(self.anchored)
