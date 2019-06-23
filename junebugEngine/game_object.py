@@ -134,9 +134,6 @@ class GameObject(Rect):
 
 		dx = self.absDx(self.vx * ms)
 
-		if not self.collides:
-			return dx
-
 		# collide with map in x direction
 		if not self.anchor:
 			return 0
@@ -144,7 +141,8 @@ class GameObject(Rect):
 
 		for tile, tileRect in collisionTiles:
 			if tile.collide:
-				dx, dirX = self.collideRectX(tileRect, dx)
+				dx, dirX = self.collideRectX(tileRect, dx, self.collides)
+
 				if dirX != Direction.NONE:
 					self.on_collision(dirX, None)
 					if not dx:
@@ -154,7 +152,7 @@ class GameObject(Rect):
 		collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
 
 		for block in collision_list:
-			dx, dirX = self.collideRectX(block, dx, self.blocks and block.blocks)
+			dx, dirX = self.collideRectX(block, dx, self.blocks and block.blocks and self.collides)
 			if dirX != Direction.NONE:
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
@@ -167,9 +165,6 @@ class GameObject(Rect):
 
 		dy = self.absDy(self.vy * ms)
 
-		if not self.collides:
-			return dy
-
 		# collide with map in y direction
 		if not self.anchor:
 			return 0
@@ -178,7 +173,7 @@ class GameObject(Rect):
 
 		for tile, tileRect in reversed(collisionTiles):
 			if tile.collide:
-				dy, dirY = self.collideRectY(tileRect, dy)
+				dy, dirY = self.collideRectY(tileRect, dy, self.collides)
 				if dirY == Direction.DOWN and self.anchor != self.world:
 					self.anchorTo(self.world)
 				if dirY != Direction.NONE:
@@ -190,7 +185,7 @@ class GameObject(Rect):
 		collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
 
 		for block in collision_list:
-			dy, dirY = self.collideRectY(block, dy, self.blocks and block.blocks)
+			dy, dirY = self.collideRectY(block, dy, self.blocks and block.blocks and self.collides)
 			if dirY == Direction.DOWN:
 				if self.anchor != block:
 					self.anchorTo(block)
