@@ -137,19 +137,16 @@ class GameObject(Rect):
 
 		dx = self.absDx(self.vx * ms)
 
-		# collide with map in x direction
-		#if not self.anchor:
-		#	return 0
-		collisionTiles = self.world.tileRange(self.move(dx, 0))
+		if self.collides:
+			# collide with map in x direction
+			collisionTiles = self.world.tileRange(self.move(dx, 0))
 
-		for tile, tileRect in collisionTiles:
-			if tile.collide:
-				dx, dirX = self.collideRectX(tileRect, dx, self.collides)
+			for tile, tileRect in collisionTiles:
+				if tile.collide:
+					dx, dirX = self.collideRectX(tileRect, dx, self.collides)
 
-				if dirX != Direction.NONE:
-					self.on_collision(dirX, None)
-					#if not dx:
-					#	return 0
+					if dirX != Direction.NONE:
+						self.on_collision(dirX, None)
 
 		# collide with entities in x direction
 		collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
@@ -157,10 +154,10 @@ class GameObject(Rect):
 		for block in collision_list:
 			dx, dirX = self.collideRectX(block, dx, self.blocks and block.blocks and self.collides)
 			if dirX != Direction.NONE:
-				self.on_collision(dirX, block)
-				block.on_collision(dirX * -1, self)
-				#if not dx:
-				#	return 0
+				if self.collides:
+					self.on_collision(dirX, block)
+				if block.collides:
+					block.on_collision(dirX * -1, self)
 		
 		self.x += dx
 		self.truncDx = self.truncate().x - lastTruncX
@@ -176,19 +173,16 @@ class GameObject(Rect):
 
 		dy = self.absDy(self.vy * ms)
 
-		# collide with map in y direction
-		#if not self.anchor:
-		#	return 0
 
-		collisionTiles = self.world.tileRange(self.move(0, dy))
+		if self.collides:
+			# collide with map in y direction
+			collisionTiles = self.world.tileRange(self.move(0, dy))
 
-		for tile, tileRect in reversed(collisionTiles):
-			if tile.collide:
-				dy, dirY = self.collideRectY(tileRect, dy, self.collides)
-				if dirY != Direction.NONE:
-					self.on_collision(dirY, None)
-					#if not dy:
-					#	return 0
+			for tile, tileRect in reversed(collisionTiles):
+				if tile.collide:
+					dy, dirY = self.collideRectY(tileRect, dy, self.collides)
+					if dirY != Direction.NONE:
+						self.on_collision(dirY, None)
 
 		# collide with entities in y direction
 		collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
@@ -196,10 +190,10 @@ class GameObject(Rect):
 		for block in collision_list:
 			dy, dirY = self.collideRectY(block, dy, self.blocks and block.blocks and self.collides)
 			if dirY != Direction.NONE:
-				self.on_collision(dirY, block)
-				block.on_collision(dirY * -1, self)
-				#if not dy:
-				#	return 0
+				if self.collides:
+					self.on_collision(dirY, block)
+				if block.collides:
+					block.on_collision(dirY * -1, self)
 
 		if not self.on_ground:
 			self.anchorTo(self.world)
@@ -245,11 +239,6 @@ class GameObject(Rect):
 		self.on_ground = False
 		if self.gravity:
 			self.simulate_gravity(ms)
-
-		#self.physicsX(ms)
-		#self.physicsY(ms)
-
-		#self.updateSpritePosition()
 
 		for obj in self.anchored:
 			#if obj.frameIndex != frameIndex:
