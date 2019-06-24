@@ -41,7 +41,6 @@ class GameObject(Rect):
 
 		self.world = world
 		self.frameIndex = 0
-		self.lastTruncPosition = self.truncate().topleft
 
 		self.truncDx = 0
 		self.truncDy = 0
@@ -100,7 +99,7 @@ class GameObject(Rect):
 				if block:
 					self.vx = 0
 					dx = other.left - self.right 
-			elif other.centerx < self.centerx:
+			else:
 				dirX = Direction.LEFT
 				if block:
 					self.vx = 0
@@ -119,7 +118,7 @@ class GameObject(Rect):
 				if block:
 					self.vy = 0
 					dy = other.top - self.bottom
-			elif other.centery < self.centery:
+			else:
 				dirY = Direction.UP
 				if block:
 					self.vy = 0
@@ -134,11 +133,13 @@ class GameObject(Rect):
 
 	def physicsX(self, ms):
 
+		lastTruncX = self.truncate().x
+
 		dx = self.absDx(self.vx * ms)
 
 		# collide with map in x direction
-		if not self.anchor:
-			return 0
+		#if not self.anchor:
+		#	return 0
 		collisionTiles = self.world.tileRange(self.move(dx, 0))
 
 		for tile, tileRect in collisionTiles:
@@ -147,8 +148,8 @@ class GameObject(Rect):
 
 				if dirX != Direction.NONE:
 					self.on_collision(dirX, None)
-					if not dx:
-						return 0
+					#if not dx:
+					#	return 0
 
 		# collide with entities in x direction
 		collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
@@ -158,18 +159,24 @@ class GameObject(Rect):
 			if dirX != Direction.NONE:
 				self.on_collision(dirX, block)
 				block.on_collision(dirX * -1, self)
-				if not dx:
-					return 0
+				#if not dx:
+				#	return 0
 		
-		return dx
+		self.x += dx
+		self.truncDx = self.truncate().x - lastTruncX
+
+		for obj in self.anchored:
+			obj.physicsX(ms)
 
 	def physicsY(self, ms):
+
+		lastTruncY = self.truncate().y
 
 		dy = self.absDy(self.vy * ms)
 
 		# collide with map in y direction
-		if not self.anchor:
-			return 0
+		#if not self.anchor:
+		#	return 0
 
 		collisionTiles = self.world.tileRange(self.move(0, dy))
 
@@ -178,8 +185,8 @@ class GameObject(Rect):
 				dy, dirY = self.collideRectY(tileRect, dy, self.collides)
 				if dirY != Direction.NONE:
 					self.on_collision(dirY, None)
-					if not dy:
-						return 0
+					#if not dy:
+					#	return 0
 
 		# collide with entities in y direction
 		collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
@@ -189,13 +196,17 @@ class GameObject(Rect):
 			if dirY != Direction.NONE:
 				self.on_collision(dirY, block)
 				block.on_collision(dirY * -1, self)
-				if not dy:
-					return 0
+				#if not dy:
+				#	return 0
 
 		if not self.on_ground:
 			self.anchorTo(self.world)
 
-		return dy
+		self.y += dy
+		self.truncDy = self.truncate().y - lastTruncY
+
+		for obj in self.anchored:
+			obj.physicsY(ms)
 
 	def on_collision(self, direction, obj = None):
 		if direction == Direction.DOWN:
@@ -227,20 +238,16 @@ class GameObject(Rect):
 		self.on_ground = False
 		if self.gravity:
 			self.simulate_gravity(ms)
-			
-		self.x += self.physicsX(ms)
-		self.y += self.physicsY(ms)
 
-		self.updateSpritePosition()
+		#self.physicsX(ms)
+		#self.physicsY(ms)
 
-		self.truncDx = self.truncate().x - self.lastTruncPosition[0]
-		self.truncDy = self.truncate().y - self.lastTruncPosition[1]
+		#self.updateSpritePosition()
 
 		for obj in self.anchored:
-			if obj.frameIndex != frameIndex:
-				obj.update(ms, frameIndex)
+			#if obj.frameIndex != frameIndex:
+			obj.update(ms, frameIndex)
 
-		self.lastTruncPosition = self.truncate().topleft
 
 	def die(self):
 		self.anchorTo(None)
@@ -267,4 +274,6 @@ class GameObject(Rect):
 			y = self.toPixel().y + self.spriteOffset[1]
 			self.sprite.rect.topleft = self.toPixel().move(self.spriteOffset).topleft
 			self.sprite.orientation = self.orientation
+		for obj in self.anchored:
+			obj.updateSpritePosition()
 
