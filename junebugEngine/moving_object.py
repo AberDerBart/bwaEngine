@@ -60,13 +60,13 @@ class MovingObject(GameObject):
 		super().die()
 
 	def update(self, ms, frameIndex):
-		#self.vx = self.targetSpeed
+		# handle horizontal movement
 		if self.targetSpeed > self.vx:
 			self.vx = min(self.vx + self.acc * ms / 1000., self.targetSpeed)
 		elif self.targetSpeed < self.vx:
 			self.vx = max(self.vx - self.acc * ms / 1000., self.targetSpeed)
 
-
+		# handle jumping
 		if self.jumpTime < 250:
 			self.jumpTime += ms
 			if self.jumping:
@@ -77,8 +77,7 @@ class MovingObject(GameObject):
 				if self.vy < 0:
 					self.simulate_gravity(ms)
 
-		super().update(ms, frameIndex)
-
+		# edge detection
 		if self.on_ground and self.vx != 0:
 			groundY = self.bottom
 			
@@ -94,3 +93,4 @@ class MovingObject(GameObject):
 			if not nextTile or not nextTile.collides():
 				self.on_edge(direction)
 
+		super().update(ms, frameIndex)
