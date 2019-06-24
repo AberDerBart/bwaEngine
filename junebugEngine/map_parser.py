@@ -91,7 +91,7 @@ class MapParser:
 					py = point["y"]
 					path.append((px * PHYSICS_SCALE,py * PHYSICS_SCALE))
 
-				cam = Camera(layer, path, timePerPoint)
+				cam = Camera(path, timePerPoint, world = gamemap)
 				cam.anchorTo(gamemap)
 
 				if player:
