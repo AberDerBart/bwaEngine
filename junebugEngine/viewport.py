@@ -49,8 +49,6 @@ class Viewport:
 			obj.physicsX(ms)
 		for obj in self.map_.anchored:
 			obj.physicsY(ms)
-		for obj in self.map_.anchored:
-			obj.updateSpritePosition()
 
 		# update visible entities
 		for layer in self.map_.layers:

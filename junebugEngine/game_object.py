@@ -165,6 +165,8 @@ class GameObject(Rect):
 		self.x += dx
 		self.truncDx = self.truncate().x - lastTruncX
 
+		self.updateSpritePosition()
+
 		for obj in self.anchored:
 			obj.physicsX(ms)
 
@@ -205,8 +207,13 @@ class GameObject(Rect):
 		self.y += dy
 		self.truncDy = self.truncate().y - lastTruncY
 
+		self.updateSpritePosition()
+
 		for obj in self.anchored:
 			obj.physicsY(ms)
+	
+	def on_map_exit(self):
+		self.die()
 
 	def on_collision(self, direction, obj = None):
 		if direction == Direction.DOWN:
