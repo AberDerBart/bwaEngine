@@ -48,6 +48,9 @@ class GameObject(Rect):
 		self.vx = 0
 		self.vy = 0
 		self.on_ground = False
+
+		self.chunks = []
+
 	def resetPhysics(self):
 		self.blocks = type(self).blocks
 		self.gravity = type(self).gravity
@@ -76,6 +79,12 @@ class GameObject(Rect):
 
 	def collisionCandidates(self, rect, _branch = None):
 		candidates = []
+		for chunk in self.world.chunkRange(rect):
+			for obj in chunk:
+				if obj not in candidates and obj != self:
+					candidates.append(obj)
+		return candidates
+
 		if _branch:
 			for c in self.anchored:
 				if c != _branch:
@@ -163,6 +172,7 @@ class GameObject(Rect):
 		self.truncDx = self.truncate().x - lastTruncX
 
 		self.updateSpritePosition()
+		self.updateChunks()
 
 		for obj in self.anchored:
 			obj.physicsX(ms)
@@ -202,6 +212,7 @@ class GameObject(Rect):
 		self.truncDy = self.truncate().y - lastTruncY
 
 		self.updateSpritePosition()
+		self.updateChunks()
 
 		for obj in self.anchored:
 			obj.physicsY(ms)
@@ -247,6 +258,7 @@ class GameObject(Rect):
 
 	def die(self):
 		self.anchorTo(None)
+		self.updateChunks()
 		if self.sprite:
 			self.sprite.die()
 
@@ -263,6 +275,23 @@ class GameObject(Rect):
 		w = self.w // PHYSICS_SCALE
 		h = self.h // PHYSICS_SCALE
 		return Rect(x, y, w, h)
+
+	def updateChunks(self):
+		if self.anchor:
+			newChunks = self.world.chunkRange(self)
+		else:
+			newChunks = []
+
+
+		for chunk in newChunks:
+			if chunk not in self.chunks:
+				chunk.add(self)
+
+		for chunk in self.chunks:
+			if chunk not in newChunks:
+				chunk.discard(self)
+
+		self.chunks = newChunks
 
 	def updateSpritePosition(self):
 		if self.sprite:

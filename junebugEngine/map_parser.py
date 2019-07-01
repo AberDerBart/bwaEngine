@@ -8,7 +8,7 @@ from .sprite import AnimSprite, Alignment
 from .game_object import PHYSICS_SCALE, GameObject
 import pygame
 
-from .game_map import GameMap, TileLayer, EntityLayer
+from .game_map import GameMap, TileLayer, EntityLayer, PhysicsChunk
 
 class MapParser:
 	def _parseTileLayer(gamemap, layerData, setDict):
@@ -119,6 +119,12 @@ class MapParser:
 		renderOrder = data['renderorder']
 		gamemap.tileWidth = int(data['tilewidth'])
 		gamemap.tileHeight = int(data['tileheight'])
+
+		for rowIndex in range(gamemap.height):
+			row = []
+			for colIndex in range(gamemap.width):
+				row.append(PhysicsChunk())
+			gamemap.chunks.append(row)
 
 		setDict = SetDict(data['tilesets'], path)
 					

@@ -7,6 +7,7 @@ import math
 from .text import RenderedText
 from .offset_group import OffsetGroup
 from .game_object import PHYSICS_SCALE, GameObject
+from . import config
 
 class MapLayer:
 	def __init__(self, gamemap, name):
@@ -44,6 +45,22 @@ class EntityLayer(MapLayer):
 
 	def render(self, screen, offset):
 		self.entities.draw(screen, offset)
+
+class PhysicsChunk:
+	def __init__(self):
+		self.objects = []
+	def add(self, obj):
+		if obj not in self.objects:
+			self.objects.append(obj)
+	def discard(self, obj):
+		if obj in self.objects:
+			self.objects.remove(obj)
+	def __len__(self):
+		return len(self.objects)
+	def __iter__(self):
+		return self.objects.__iter__()
+	def __next__(self):
+		return self.objects.__next__()
 	
 class GameMap(GameObject):
 	typeName = "map"
@@ -62,6 +79,8 @@ class GameMap(GameObject):
 		self.background = None
 		self.collisionTiles = None
 		self.layerDict = {}
+
+		self.chunks = []
 
 	def spawn(self, objType, position, layer = None, **kwargs):
 		entity = objType(world = self, position = position, **kwargs)
@@ -105,6 +124,19 @@ class GameMap(GameObject):
 					tileRect = pygame.Rect(tileX, tileY, self.tileWidth * PHYSICS_SCALE, self.tileHeight * PHYSICS_SCALE)
 					tiles.append((tmpTile, tileRect))
 		return tiles
+
+	def chunkRange(self, rect):
+		xMin = rect.left // config.chunkSize
+		xMax = rect.right // config.chunkSize
+		yMin = rect.top // config.chunkSize
+		yMax = rect.bottom // config.chunkSize
+
+		chunks = []
+		for row in self.chunks[yMin: yMax + 1]:
+			chunks.extend(row[xMin: xMax+1])
+			
+		return chunks
+
 
 	def render(self,screen,offset):
 		for layer in self.layers:
