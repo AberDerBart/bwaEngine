@@ -61,6 +61,18 @@ class GameObject(Rect):
 		self.spriteOffset = spriteOffset
 		self.updateSpritePosition()
 
+	def absVx(self):
+		if self.anchor:
+			return self.vx + self.anchor.absVx()
+		else:
+			return self.vx
+
+	def absVy(self):
+		if self.anchor:
+			return self.vy + self.anchor.absVy()
+		else:
+			return self.vy
+
 	def anchorTo(self, anchor):
 		"""anchors the GameObject to another GameObject - any movement of the anchor is copied to the object"""
 		# if we lose the anchor, keep it for the children
@@ -71,11 +83,15 @@ class GameObject(Rect):
 			for obj in self.anchored:
 				obj.anchorTo(self.anchor)
 		# exchange the anchor
+		self.vx = self.absVx()
+		self.vy = self.absVy()
 		if self.anchor:
 			self.anchor.anchored.remove(self)
 		self.anchor = anchor
 		if anchor:
 			anchor.anchored.append(self)
+			self.vx -= anchor.absVx()
+			self.vy -= anchor.absVy()
 
 	def collisionCandidates(self, rect, _branch = None):
 		candidates = []
