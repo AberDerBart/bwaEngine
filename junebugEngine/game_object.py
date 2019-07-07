@@ -194,7 +194,7 @@ class GameObject(Rect):
 		self.updateSpritePosition()
 		self.updateChunks()
 
-		if not self.chunks:
+		if not self.colliderect(self.world):
 			if self.top > self.world.bottom:
 				self.on_map_exit(Direction.DOWN)
 			elif self.bottom < self.world.top:
@@ -244,7 +244,7 @@ class GameObject(Rect):
 		self.updateSpritePosition()
 		self.updateChunks()
 
-		if not self.chunks:
+		if not self.colliderect(self.world):
 			if self.top > self.world.bottom:
 				self.on_map_exit(Direction.DOWN)
 			elif self.bottom < self.world.top:

@@ -7,6 +7,8 @@ from .camera import Camera
 from .sprite import AnimSprite, Alignment
 from .game_object import PHYSICS_SCALE, GameObject
 import pygame
+import math
+from . import config
 
 from .game_map import GameMap, TileLayer, EntityLayer, PhysicsChunk
 
@@ -71,7 +73,7 @@ class MapParser:
 			elif "text" in obj:
 				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
-				gamemap.goal = GameObject(position=(x * PHYSICS_SCALE, y * PHYSICS_SCALE), size=(width * PHYSICS_SCALE, height * PHYSICS_SCALE), align=Alignment.TOPLEFT)
+				gamemap.goal = GameObject(position=(x * PHYSICS_SCALE, y * PHYSICS_SCALE), size=(width, height), align=Alignment.TOPLEFT)
 			elif obj.get("type") == "camera":
 
 				properties = obj["properties"]
@@ -115,14 +117,16 @@ class MapParser:
 		gamemap.tilesH = data['width']
 		gamemap.tilesV = data['height']
 
-
 		renderOrder = data['renderorder']
 		gamemap.tileWidth = int(data['tilewidth'])
 		gamemap.tileHeight = int(data['tileheight'])
 
-		for rowIndex in range(gamemap.tilesV):
+		gamemap.width = gamemap.tilesH * gamemap.tileWidth * PHYSICS_SCALE
+		gamemap.height = gamemap.tilesV * gamemap.tileHeight * PHYSICS_SCALE
+
+		for rowIndex in range(math.ceil(gamemap.height / config.chunkSize)):
 			row = []
-			for colIndex in range(gamemap.tilesH):
+			for colIndex in range(math.ceil(gamemap.width / config.chunkSize)):
 				row.append(PhysicsChunk())
 			gamemap.chunks.append(row)
 
