@@ -67,8 +67,8 @@ class GameMap(GameObject):
 	def __init__(self):
 		super().__init__(self)
 		self.path = None
-		self.width = 0
-		self.height = 0
+		self.tilesH = 0
+		self.tilesV = 0
 		self.player = None
 		self.tileWidth = 0
 		self.tileHeight = 0
@@ -94,9 +94,9 @@ class GameMap(GameObject):
 	def getLayer(self, layerName):
 		return self.layerDict.get(layerName)
 	def pixelWidth(self):
-		return self.tileWidth * self.width
+		return self.tileWidth * self.tilesH
 	def pixelHeight(self):
-		return self.tileHeight * self.height
+		return self.tileHeight * self.tilesV
 	def tileAt(self,pos):
 		x = pos[0]
 		y = pos[1]
@@ -104,7 +104,7 @@ class GameMap(GameObject):
 		tileX = int(x / self.tileWidth / PHYSICS_SCALE)
 		tileY = int(y / self.tileHeight / PHYSICS_SCALE)
 
-		if tileX in range(0, self.width) and tileY in range(0, self.height):
+		if tileX in range(0, self.tilesH) and tileY in range(0, self.tilesV):
 			return self.collisionTiles[tileY][tileX]
 		return None
 

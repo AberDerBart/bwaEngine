@@ -16,6 +16,7 @@ class GameObject(Rect):
 	blocks = False
 
 	def __init__(self, world = None, position = (0, 0), size = (0,0), align = Alignment.BOTTOMLEFT, **kwargs):
+		size = (size[0] * PHYSICS_SCALE, size[1] * PHYSICS_SCALE)
 		if align & Alignment.LEFT:
 			x = position[0]
 		elif align & Alignment.RIGHT:
@@ -50,6 +51,9 @@ class GameObject(Rect):
 		self.on_ground = False
 
 		self.chunks = []
+
+	def __bool__(self):
+		return True
 
 	def resetPhysics(self):
 		self.blocks = type(self).blocks
@@ -190,6 +194,16 @@ class GameObject(Rect):
 		self.updateSpritePosition()
 		self.updateChunks()
 
+		if not self.chunks:
+			if self.top > self.world.bottom:
+				self.on_map_exit(Direction.DOWN)
+			elif self.bottom < self.world.top:
+				self.on_map_exit(Direction.UP)
+			elif self.left > self.world.right:
+				self.on_map_exit(Direction.RIGHT)
+			elif self.right < self.world.left:
+				self.on_map_exit(Direction.LEFT)
+
 		for obj in self.anchored:
 			obj.physicsX(ms)
 
@@ -230,11 +244,22 @@ class GameObject(Rect):
 		self.updateSpritePosition()
 		self.updateChunks()
 
+		if not self.chunks:
+			if self.top > self.world.bottom:
+				self.on_map_exit(Direction.DOWN)
+			elif self.bottom < self.world.top:
+				self.on_map_exit(Direction.UP)
+			elif self.left > self.world.right:
+				self.on_map_exit(Direction.RIGHT)
+			elif self.right < self.world.left:
+				self.on_map_exit(Direction.LEFT)
+
 		for obj in self.anchored:
 			obj.physicsY(ms)
 	
-	def on_map_exit(self):
-		self.die()
+	def on_map_exit(self, direction):
+		if direction == Direction.DOWN:
+			self.die()
 
 	def on_collision(self, direction, obj = None):
 		if direction == Direction.DOWN:

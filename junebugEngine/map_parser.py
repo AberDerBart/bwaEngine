@@ -112,17 +112,17 @@ class MapParser:
 		print("Loading map:",path)
 		data = json.load(open(path))
 
-		gamemap.width = data['width']
-		gamemap.height = data['height']
+		gamemap.tilesH = data['width']
+		gamemap.tilesV = data['height']
 
 
 		renderOrder = data['renderorder']
 		gamemap.tileWidth = int(data['tilewidth'])
 		gamemap.tileHeight = int(data['tileheight'])
 
-		for rowIndex in range(gamemap.height):
+		for rowIndex in range(gamemap.tilesV):
 			row = []
-			for colIndex in range(gamemap.width):
+			for colIndex in range(gamemap.tilesH):
 				row.append(PhysicsChunk())
 			gamemap.chunks.append(row)
 

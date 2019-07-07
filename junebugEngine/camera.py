@@ -6,7 +6,7 @@ class Camera(GameObject):
 
 	def __init__(self, path, timePerPoint, **kwargs):
 		# TODO: make gameobject with no size not be falsy
-		super().__init__(size=(PHYSICS_SCALE, PHYSICS_SCALE), **kwargs)
+		super().__init__(**kwargs)
 
 		self.timePerPoint = int(timePerPoint * 1000)
 		self.time = 0
