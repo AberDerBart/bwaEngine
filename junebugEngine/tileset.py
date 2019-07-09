@@ -59,9 +59,8 @@ class EntityData:
 		self.path = relPath
 		self.entityType = None
 		self.properties = {}
-		for prop in data['properties']:
-			if prop['name'] == 'entityType':
-				self.entityType = prop['value']
+		self.entityType = data.get('type')
+		for prop in data.get('properties', []):
 			self.properties[prop["name"]] = prop["value"]
 
 class EntitySet:
