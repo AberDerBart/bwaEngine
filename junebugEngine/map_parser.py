@@ -64,9 +64,9 @@ class MapParser:
 
 				elif properties.get("sprite"):
 					spritePath = relativePath(properties.get("sprite"), entityData.path)
-					entity = AnimSprite(spritePath)
-					entity.rect.bottomleft = (x,y)
-					layer.entities.add(entity)
+					sprite = AnimSprite(spritePath)
+					sprite.rect.bottomleft = (x,y)
+					layer.entities.add(sprite)
 				else:
 					print("Failed to generate",setDict.get(entityIndex).entityType)
 
