@@ -37,45 +37,38 @@ class MapParser:
 			y = obj["y"]
 			width = obj["width"]
 			height = obj["height"]
+			typeName = obj.get("type")
+			properties = {}
+
+			for prop in obj.get("properties", {}):
+				properties[prop["name"]] = prop["value"]
+
+			# look up, if this is a tile object
 			if "gid" in obj:
 				entityIndex = obj["gid"] & 0x0fffffff # mask out vertical and horizontal flipping
 				mirror_h = True if (obj["gid"] & 0x80000000) else False
 				entityData = setDict.get(entityIndex)
 
-				# extract static entity properties
-				properties = entityData.properties.copy()
-				# overwrite custom properties
-				propDict = obj.get("properties",[])
-				for prop in propDict:
-					properties[prop["name"]] = prop["value"]
+				if not typeName:
+					typeName = entityData.entityType
 
-				generator = entityData.getGenerator()
+				for prop in entityData.properties:
+					if prop not in properties:
+						properties[prop] = entityData.properties[prop]
 
-				entity = None
+			generator = EntityData.generators.get(typeName)
+			if generator:
+				try:
+					entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
+				except Exception as e:
+					print("Error generating type", generator.typeName)
+					raise e
+				if properties.get("player"):
+					gamemap.player = entity
 
-				if generator:
-					try:
-						entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
-					except Exception as e:
-						print("Error generating type", generator.typeName)
-						raise e
-					if properties.get("player"):
-						gamemap.player = entity
-
-				elif properties.get("sprite"):
-					spritePath = relativePath(properties.get("sprite"), entityData.path)
-					sprite = AnimSprite(spritePath)
-					sprite.rect.bottomleft = (x,y)
-					layer.entities.add(sprite)
-				else:
-					print("Failed to generate",setDict.get(entityIndex).entityType)
-
-			elif "text" in obj:
-				layer.entities.add(RenderedText((x,y), obj["text"]))
 			elif obj.get("type") == "goal":
 				gamemap.goal = GameObject(position=(x * PHYSICS_SCALE, y * PHYSICS_SCALE), size=(width, height), align=Alignment.TOPLEFT)
 			elif obj.get("type") == "camera":
-
 				properties = obj["properties"]
 				player = False
 				timePerPoint = 10
@@ -98,6 +91,17 @@ class MapParser:
 
 				if player:
 					gamemap.player = cam
+			# if no type is given, but the parameter sprite is set, generate the corresponding sprite
+			elif properties.get("sprite"):
+				spritePath = relativePath(properties.get("sprite"), gamemap.path)
+				sprite = AnimSprite(spritePath)
+				sprite.rect.bottomleft = (x,y)
+				layer.entities.add(sprite)
+			elif "text" in obj:
+				layer.entities.add(RenderedText((x,y), obj["text"]))
+			else:
+				print("Failed to generate",setDict.get(entityIndex).entityType)
+
 		return layer
 
 	def _parseBackground(gamemap, backgroundLayerData):

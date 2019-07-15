@@ -61,7 +61,10 @@ class EntityData:
 		self.properties = {}
 		self.entityType = data.get('type')
 		for prop in data.get('properties', []):
-			self.properties[prop["name"]] = prop["value"]
+			if prop.get("type") == "file":
+				self.properties[prop["name"]] = relativePath(prop["value"], self.path)
+			else:
+				self.properties[prop["name"]] = prop["value"]
 
 class EntitySet:
 	sets = {}
