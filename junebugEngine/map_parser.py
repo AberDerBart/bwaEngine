@@ -39,9 +39,13 @@ class MapParser:
 			height = obj["height"]
 			typeName = obj.get("type")
 			properties = {}
+			objName = obj.get("name")
 
 			for prop in obj.get("properties", {}):
-				properties[prop["name"]] = prop["value"]
+				if prop.get("type") == "file":
+					properties[prop["name"]] = relativePath(prop["value"], gamemap.path)
+				else:
+					properties[prop["name"]] = prop["value"]
 
 			# look up, if this is a tile object
 			if "gid" in obj:
@@ -60,6 +64,8 @@ class MapParser:
 			if generator:
 				try:
 					entity = gamemap.spawn(generator, (x * PHYSICS_SCALE, y * PHYSICS_SCALE), layer = layer, **properties)
+					if objName:
+						gamemap.namedEntities[objName] = entity
 				except Exception as e:
 					print("Error generating type", generator.typeName)
 					raise e
@@ -93,8 +99,7 @@ class MapParser:
 					gamemap.player = cam
 			# if no type is given, but the parameter sprite is set, generate the corresponding sprite
 			elif properties.get("sprite"):
-				spritePath = relativePath(properties.get("sprite"), gamemap.path)
-				sprite = AnimSprite(spritePath)
+				sprite = AnimSprite(properties.get("sprite"))
 				sprite.rect.bottomleft = (x,y)
 				layer.entities.add(sprite)
 			elif "text" in obj:

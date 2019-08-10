@@ -79,6 +79,7 @@ class GameMap(GameObject):
 		self.background = None
 		self.collisionTiles = None
 		self.layerDict = {}
+		self.namedEntities = {}
 
 		self.chunks = []
 
@@ -93,6 +94,8 @@ class GameMap(GameObject):
 		return entity
 	def getLayer(self, layerName):
 		return self.layerDict.get(layerName)
+	def getEntity(self, entityName):
+		return self.namedEntities.get(entityName)
 	def pixelWidth(self):
 		return self.tileWidth * self.tilesH
 	def pixelHeight(self):
