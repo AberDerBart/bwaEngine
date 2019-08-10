@@ -2,6 +2,30 @@ import pygame
 
 from .game_object import Direction
 
+class MenuControl:
+	def __init__(self, keymap = {}, cursor=None):
+		self.keymap = keymap
+		self.setCursor(cursor)
+	def setCursor(self, cursor):
+		self.cursor = cursor
+		self.char = cursor
+	def processEvent(self, event):
+		if self.cursor:
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_LEFT:
+					self.cursor.goLeft()
+				if event.key == pygame.K_RIGHT:
+					self.cursor.goRight()
+				if event.key == pygame.K_UP:
+					self.cursor.goUp()
+				if event.key == pygame.K_DOWN:
+					self.cursor.goDown()
+				if event.key == pygame.K_RETURN:
+					self.cursor.select()
+
+			
+		
+
 class PlayerControl:
 	def __init__(self, keymap = {}, char=None):
 		self.char = char
