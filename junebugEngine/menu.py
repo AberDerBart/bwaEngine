@@ -18,16 +18,20 @@ class Cursor(GameObject):
 			self.selected = self.world.getEntity(self.goto)
 			self.topleft = self.selected.topleft
 			self.goto = ''
-	def goLeft(self):
-		self.goto = self.selected.leftOption
-	def goRight(self):
-		self.goto = self.selected.rightOption
-	def goUp(self):
-		self.goto = self.selected.upOption
-	def goDown(self):
-		self.goto = self.selected.downOption
-	def select(self):
-		if self.selected:
+	def goLeft(self, press=True):
+		if press:
+			self.goto = self.selected.leftOption
+	def goRight(self, press=True):
+		if press:
+			self.goto = self.selected.rightOption
+	def goUp(self, press=True):
+		if press:
+			self.goto = self.selected.upOption
+	def goDown(self, press=True):
+		if press:
+			self.goto = self.selected.downOption
+	def select(self, press=True):
+		if press and self.selected:
 			self.selected.trigger()
 
 
