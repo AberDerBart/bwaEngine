@@ -17,23 +17,27 @@ class Control:
 class PlayerControl:
 	def __init__(self, char=None):
 		self.char = char
-		self.active = []
+		self.active = set()
 
 	def setCharacter(self, char):
 		self.char = char
-		self.active = []
+		self.active = set()
 	def right(self, pressed):
 		if pressed:
+			self.active.add(PlayerControl.right)
 			self.char.run_right()
 		else:
+			self.active.discard(PlayerControl.right)
 			if PlayerControl.left in self.active:
 				self.char.run_left()
 			else:
 				self.char.idle()
 	def left(self, pressed):
 		if pressed:
+			self.active.add(PlayerControl.left)
 			self.char.run_left()
 		else:
+			self.active.discard(PlayerControl.left)
 			if PlayerControl.right in self.active:
 				self.char.run_right()
 			else:
