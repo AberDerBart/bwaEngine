@@ -1,3 +1,3 @@
 import pygame
 
-triggers={"quit": pygame.quit}
+triggers = {"quit": pygame.quit}
