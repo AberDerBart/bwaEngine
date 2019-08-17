@@ -8,9 +8,12 @@ max_vertical_speed = 6400000000
 """gravitational acceleration in MetaPixel/s²"""
 gravity = 480.
 
+""""""
+chunkSize = 1024 * 128
+
 """fonts"""
 
-fonts={}
+fonts = {}
 
 # other stuff
 current_map = None

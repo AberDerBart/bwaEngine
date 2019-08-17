@@ -1,37 +1,43 @@
 import pygame
 
-from .physical_object import Direction
-from .hero import Hero
+from .game_object import Direction
+from . import keymap
+
+class Control:
+	keymap = {}
+	entity = None
+	def setEntity(entity):
+		Control.keymap = keymap.keymaps.get(type(entity), {})
+		Control.entity = entity
+	def processEvent(event):
+		if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
+			if event.key in Control.keymap:
+				Control.keymap[event.key](Control.entity, event.type == pygame.KEYDOWN)
 
 class PlayerControl:
-	def __init__(self, keymap = {}, char=None):
+	def __init__(self, char=None):
 		self.char = char
-		self.keymap = keymap
-		self.active = []
-	def processEvent(self, event):
-		if self.char:
-			if event.type == pygame.KEYUP:
-				action = self.keymap.get(event.key)
-				if action:
-					self.active.remove(action)
-					action(self, False)
-			if event.type == pygame.KEYDOWN:
-				action = self.keymap.get(event.key)
-				if action:
-					self.active.append(action)
-					action(self, True)
+		self.active = set()
+
+	def setCharacter(self, char):
+		self.char = char
+		self.active = set()
 	def right(self, pressed):
 		if pressed:
+			self.active.add(PlayerControl.right)
 			self.char.run_right()
 		else:
+			self.active.discard(PlayerControl.right)
 			if PlayerControl.left in self.active:
 				self.char.run_left()
 			else:
 				self.char.idle()
 	def left(self, pressed):
 		if pressed:
+			self.active.add(PlayerControl.left)
 			self.char.run_left()
 		else:
+			self.active.discard(PlayerControl.left)
 			if PlayerControl.right in self.active:
 				self.char.run_right()
 			else:
