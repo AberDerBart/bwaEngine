@@ -13,7 +13,7 @@ chunkSize = 1024 * 128
 
 """fonts"""
 
-fonts={}
+fonts = {}
 
 # other stuff
 current_map = None
