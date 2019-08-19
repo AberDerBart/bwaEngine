@@ -41,6 +41,8 @@ class MapParser:
             typeName = obj.get("type")
             properties = {}
             objName = obj.get("name")
+            size = (width, height)
+            align = Alignment.TOPLEFT
 
             for prop in obj.get("properties", {}):
                 if prop.get("type") == "file":
@@ -55,6 +57,7 @@ class MapParser:
                 entityIndex = obj["gid"] & 0x0fffffff
                 mirror_h = True if (obj["gid"] & 0x80000000) else False
                 entityData = setDict.get(entityIndex)
+                align = Alignment.BOTTOMLEFT
 
                 if not typeName:
                     typeName = entityData.entityType
@@ -70,6 +73,8 @@ class MapParser:
                                            (x * PHYSICS_SCALE,
                                             y * PHYSICS_SCALE),
                                            layer=layer,
+                                           size=size,
+                                           align=align,
                                            **properties)
                     if objName:
                         gamemap.namedEntities[objName] = entity
