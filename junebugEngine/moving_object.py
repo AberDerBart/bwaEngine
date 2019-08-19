@@ -90,7 +90,7 @@ class MovingObject(GameObject):
                 direction = Direction.LEFT
                 groundX = self.left
 
-            nextTile = config.current_map.tileAt((groundX, groundY))
+            nextTile = self.world.tileAt((groundX, groundY))
 
             if not nextTile or not nextTile.collides():
                 self.on_edge(direction)
