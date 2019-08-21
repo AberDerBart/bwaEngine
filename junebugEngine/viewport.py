@@ -9,15 +9,12 @@ class Viewport:
         self.offsetx = offset[0]
         self.offsety = offset[1]
 
-        self.map_ = map_
-
-        if(self.map_.background):
-            self.bg = pygame.transform.scale(self.map_.background, size)
-        else:
-            self.bg = pygame.Surface(size).convert()
-
         self.width = size[0]
         self.height = size[1]
+
+        self.map_ = None
+        self.setMap(map_)
+
 
         self.rect = pygame.Rect((- self.offsetx, - self.offsety),
                                 (self.width, self.height))
@@ -31,6 +28,18 @@ class Viewport:
         self.frameIndex = 0
 
         self.clear()
+
+    def setMap(self, map_):
+        if self.map_:
+            self.map_.viewports.discard(self)
+        self.map_ = map_
+        self.map_.viewports.add(self)
+
+        if(self.map_.background):
+            self.bg = pygame.transform.scale(self.map_.background, (self.width,
+              self.height))
+        else:
+            self.bg = pygame.Surface((self.width, self.height)).convert()
 
     def clear(self):
         self.surf.blit(self.bg, (0, 0))

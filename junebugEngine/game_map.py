@@ -97,6 +97,7 @@ class GameMap(GameObject):
         self.collisionTiles = None
         self.layerDict = {}
         self.namedEntities = {}
+        self.viewports = set()
 
         self.chunks = []
 
