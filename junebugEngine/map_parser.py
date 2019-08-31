@@ -3,7 +3,6 @@ import json
 import junebugEngine.config
 from .tileset import *
 from .text import RenderedText
-from .camera import Camera
 from .sprite import AnimSprite, Alignment
 from .game_object import PHYSICS_SCALE, GameObject
 import pygame
@@ -66,6 +65,14 @@ class MapParser:
                     if prop not in properties:
                         properties[prop] = entityData.properties[prop]
 
+            if "polyline" in obj:
+                polyline =  []
+                for point in obj["polyline"]:
+                    px = point["x"] * PHYSICS_SCALE
+                    py = point["y"] * PHYSICS_SCALE
+                    polyline.append((px, py))
+                properties["polyline"] = polyline
+
             generator = EntityData.generators.get(typeName)
             if generator:
                 try:
@@ -83,35 +90,6 @@ class MapParser:
                     raise e
                 if properties.get("player"):
                     gamemap.player = entity
-
-            elif obj.get("type") == "goal":
-                gamemap.goal = GameObject(position=(x * PHYSICS_SCALE,
-                                                    y * PHYSICS_SCALE),
-                                          size=(width, height),
-                                          align=Alignment.TOPLEFT)
-            elif obj.get("type") == "camera":
-                properties = obj["properties"]
-                player = False
-                timePerPoint = 10
-
-                for prop in properties:
-                    if prop["name"] == "player":
-                        player = prop.get("value")
-                    if prop["name"] == "timePerPoint":
-                        timePerPoint = prop.get("value")
-
-                path = []
-
-                for point in obj["polyline"]:
-                    px = point["x"]
-                    py = point["y"]
-                    path.append((px * PHYSICS_SCALE, py * PHYSICS_SCALE))
-
-                cam = Camera(path, timePerPoint, world=gamemap)
-                cam.anchorTo(gamemap)
-
-                if player:
-                    gamemap.player = cam
             # if no type is given, but the parameter sprite is set,
             # generate the corresponding sprite
             elif properties.get("sprite"):

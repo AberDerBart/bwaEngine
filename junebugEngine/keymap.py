@@ -1,6 +1,7 @@
 import pygame
 from .control import PlayerControl
 from .menu import Cursor
+from .camera import Camera
 
 _defaultKeymapCursor = {
     pygame.K_LEFT: Cursor.goLeft,
@@ -18,7 +19,12 @@ _defaultKeymapPlayerControl = {
     pygame.K_UP: PlayerControl.switch
 }
 
-keymaps = {
+_defaultKeymapCamera = {
+    pygame.K_SPACE: Camera.skip
+}
+
+_defaultKeymaps = {
     Cursor: _defaultKeymapCursor,
-    PlayerControl: _defaultKeymapPlayerControl
+    PlayerControl: _defaultKeymapPlayerControl,
+    Camera: _defaultKeymapCamera
 }

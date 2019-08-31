@@ -1,16 +1,16 @@
 import pygame
 
 from .game_object import Direction
-from . import keymap
 from .moving_object import MovingObject
 
 class Control:
     keymap = {}
+    keymaps = {}
     entity = None
     def setEntity(entity):
         if isinstance(entity, MovingObject):
             entity = PlayerControl(entity)
-        Control.keymap = keymap.keymaps.get(type(entity), {})
+        Control.keymap = Control.keymaps.get(type(entity), {})
         Control.entity = entity
     def processEvent(event):
         if event.type in [pygame.KEYDOWN, pygame.KEYUP]:

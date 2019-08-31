@@ -8,6 +8,7 @@ from .text import RenderedText
 from .offset_group import OffsetGroup
 from .game_object import PHYSICS_SCALE, GameObject
 from . import config
+from .control import Control
 
 
 class MapLayer:
@@ -100,6 +101,14 @@ class GameMap(GameObject):
         self.viewports = set()
 
         self.chunks = []
+
+    def switchToMap(self, newMap):
+        viewports = set(self.viewports)
+
+        if viewports:
+            Control.setEntity(newMap.player)
+            for viewport in viewports:
+                viewport.setMap(newMap)
 
     def spawn(self, objType, position, layer=None, **kwargs):
         entity = objType(world=self, position=position, **kwargs)

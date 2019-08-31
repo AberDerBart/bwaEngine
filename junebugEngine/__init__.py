@@ -14,3 +14,5 @@ from .control import PlayerControl, Control
 from .game_object import GameObject, PHYSICS_SCALE, Direction
 from .menu import MenuOption, Cursor
 from .trigger import triggers
+
+Control.keymaps = keymap._defaultKeymaps
