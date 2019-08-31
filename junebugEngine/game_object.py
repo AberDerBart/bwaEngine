@@ -56,6 +56,8 @@ class GameObject(Rect):
 
         self.chunks = []
 
+        self.properties = kwargs
+
     def __bool__(self):
         return True
 

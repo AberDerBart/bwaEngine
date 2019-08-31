@@ -30,10 +30,24 @@ class Viewport:
         self.clear()
 
     def setMap(self, map_):
+
+        self.offsetx = 0
+        self.offsety = 0
+
         if self.map_:
             self.map_.viewports.discard(self)
         self.map_ = map_
         self.map_.viewports.add(self)
+
+        if self.map_.player:
+            self.paddingTop = \
+              self.map_.player.properties.get('marginTop', 0) * self.height
+            self.paddingBottom = \
+              self.map_.player.properties.get('marginBottom', 0) * self.height
+            self.paddingLeft = \
+              self.map_.player.properties.get('marginLeft', 0) * self.width
+            self.paddingRight = \
+              self.map_.player.properties.get('marginRight', 0) * self.width
 
         if(self.map_.background):
             self.bg = pygame.transform.scale(self.map_.background, (self.width,
