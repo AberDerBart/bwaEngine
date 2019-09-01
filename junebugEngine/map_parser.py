@@ -164,6 +164,7 @@ class MapParser:
                 newLayer = EntityLayer(gamemap, 'entities')
                 gamemap.layers.append(newLayer)
                 gamemap.layerDict[newLayer.name] = newLayer
+            gamemap.init()
             return gamemap
         else:
             print("unsupported render order", renderOrder, ", use right-down")

@@ -93,7 +93,6 @@ class GameMap(GameObject):
         self.layers = []
         self.collision = []
         self.goal = None
-        self.entities = OffsetGroup()
         self.background = None
         self.collisionTiles = None
         self.layerDict = {}
@@ -101,6 +100,10 @@ class GameMap(GameObject):
         self.viewports = set()
 
         self.chunks = []
+
+    def init(self):
+        for entity in self.anchored:
+            entity.init()
 
     def switchToMap(self, newMap):
         viewports = set(self.viewports)
@@ -184,5 +187,4 @@ class GameMap(GameObject):
             layer.render(screen, offset)
 
     def update(self, ms):
-        # self.entities.update(ms)
         pass

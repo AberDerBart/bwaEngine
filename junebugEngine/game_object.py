@@ -58,6 +58,10 @@ class GameObject(Rect):
 
         self.properties = kwargs
 
+    def init(self):
+        for entity in self.anchored:
+            entity.init()
+
     def __bool__(self):
         return True
 
