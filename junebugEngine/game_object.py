@@ -196,10 +196,10 @@ class GameObject(Rect):
                                          dx,
                                          self.blocks and block.blocks and self.collides)
             if dirX != Direction.NONE:
-                if self.collides:
-                    self.on_collision(dirX, block)
-                if block.collides:
-                    block.on_collision(dirX * -1, self)
+                if self.collides and block.collides:
+                    if block.collides:
+                        self.on_collision(dirX, block)
+                        block.on_collision(dirX * -1, self)
 
         self.x += dx
         self.truncDx = self.truncate().x - lastTruncX
@@ -244,10 +244,9 @@ class GameObject(Rect):
                                          dy,
                                          self.blocks and block.blocks and self.collides)
             if dirY != Direction.NONE:
-                if self.collides:
-                    self.on_collision(dirY, block)
-                if block.collides:
-                    block.on_collision(dirY * -1, self)
+                if self.collides and block.collides:
+                        self.on_collision(dirY, block)
+                        block.on_collision(dirY * -1, self)
 
         if not self.on_ground:
             self.anchorTo(self.world)
