@@ -101,7 +101,9 @@ class AnimSprite(pygame.sprite.Sprite):
     def on_death(self):
         pass
 
-    def setAnimation(self, animation):
+    def setAnimation(self, animation, reset=True):
+        if (not reset) and animation == self.currentAnimationName:
+            return True
         if animation in self.animations[self.orientation]:
             self.currentAnimationName = animation
             self.currentAnimation = self.animations[self.orientation][animation]
