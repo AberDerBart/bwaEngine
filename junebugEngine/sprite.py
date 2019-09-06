@@ -25,6 +25,46 @@ class Alignment:
 
 # TODO: refactor the AnimSprite class, moving animations to a seperate class
 
+class Frame():
+    def __init__(self, spriteSheet, data):
+        x = data['frame']['x']
+        y = data['frame']['y']
+        w = data['frame']['w']
+        h = data['frame']['h']
+        rect = pygame.Rect(x,y,w,h)
+        self.right = spriteSheet.subsurface(rect)
+        self.left = pygame.transform.flip(self.right, True, False)
+        self.duration = data['duration']
+
+class Animation():
+    def __init__(self, frames, data):
+        self.name = data['name']
+        direction = data['direction']
+
+        first = data['from']
+        last = data['to']
+        if direction == 'reverse':
+            self.frames = list(reversed(frames[first:last+1]))
+        elif direction == 'pingpong':
+            self.frames = frames[first:last+1] + \
+              list(reversed(frames[first:last]))
+        else:
+            self.frames = frames[first:last+1]
+
+        self.duration = sum(frame.duration for frame in self.frames)
+
+    def updateFrame(self, sprite):
+        if sprite.frameTime > self.frames[sprite.frameNo].duration:
+            sprite.frameTime -= self.frames[sprite.frameNo].duration
+            sprite.frameNo = (sprite.frameNo + 1) % len(self.frames)
+            if sprite.frameNo == 0:
+                sprite.on_animationFinished()
+
+        if sprite.orientation == Orientation.LEFT:
+            sprite.image = self.frames[sprite.frameNo].left
+        else:
+            sprite.image = self.frames[sprite.frameNo].right
+
 class AnimSprite(pygame.sprite.Sprite):
     typeName = None
 
@@ -41,46 +81,22 @@ class AnimSprite(pygame.sprite.Sprite):
 
         self.rect = pygame.rect.Rect(position, (0, 0))
 
+        # split into frames
         allFrames = []
-        allFramesRight = []
-        allFramesLeft = []
 
         for frame in data['frames']:
-            x = frame['frame']['x']
-            y = frame['frame']['y']
-            w = frame['frame']['w']
-            h = frame['frame']['h']
+            allFrames.append(Frame(image, frame))
 
-            rect = pygame.Rect(x, y, w, h)
-            self.rect.width = int(w)
-            self.rect.height = int(h)
-            frameImg = image.subsurface(rect)
-            duration = frame['duration']
-
-            allFrames.append({
-                Orientation.RIGHT: frameImg,
-                Orientation.LEFT: pygame.transform.flip(frameImg, True,False),
-                "duration": duration})
-            allFramesRight.append((frameImg, duration))
-            allFramesLeft.append((pygame.transform.flip(frameImg,
-                                                        True, False),
-                                  duration))
-
+        # generate animations
         self.animations = {}
 
-        for animation in data['meta']['frameTags']:
-            name = animation['name']
-            first = animation['from']
-            last = animation['to']
-            direction = animation['direction']
+        for animationData in data['meta']['frameTags']:
+            animation = Animation(allFrames, animationData)
+            self.animations[animation.name] = animation
 
-            framesRight = allFramesRight[first:last+1]
-            framesLeft = allFramesLeft[first:last+1]
-            frames = allFrames[first:last+1]
-
-            self.animations[name] = (frames, direction)
-
-        # adjust position to alignment
+        # adjust size and position to alignment
+        if allFrames:
+            self.rect.size = allFrames[0].right.get_size()
 
         if alignment & Alignment.BOTTOM:
             self.rect.y -= self.rect.height
@@ -106,32 +122,28 @@ class AnimSprite(pygame.sprite.Sprite):
         pass
 
     def setAnimation(self, animation, reset=True):
-        if (not reset) and animation == self.currentAnimationName:
+        if (not reset) and animation == self.currentAnimation.name:
             return True
         if animation in self.animations:
-            self.currentAnimationName = animation
             self.currentAnimation = self.animations[animation]
 
-            if(self.currentAnimation[1] == 'reverse'):
-                self.frameNo = len(self.currentAnimation[0]) - 1
-            else:
-                self.frameNo = 0
-
+            self.frameNo = 0
             self.frameTime = 0
-            self.direction = self.currentAnimation[1]
-            self.image = self.currentAnimation[0][self.frameNo][self.orientation]
+            self.currentAnimation.updateFrame(self)
             return True
+        return False
 
     def animationDuration(self, animation):
-        return sum([frame[1] for frame in self.animations.get(animation,
-        [])['duration']])
+        return animation.duration
 
     def on_animationFinished(self):
-        if self.currentAnimationName == "die":
+        if self.currentAnimation.name == "die":
             self.kill()
 
     def update(self, ms):
-        self.frameTime = self.frameTime + ms
+        self.frameTime += ms
+        self.currentAnimation.updateFrame(self)
+        return True
         curr = self.currentAnimation[0][self.frameNo]
         direction = self.currentAnimation[1]
         if self.frameTime > curr['duration']:
