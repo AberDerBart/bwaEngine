@@ -23,6 +23,8 @@ class Alignment:
     BOTTOMRIGHT = 10
 
 
+# TODO: refactor the AnimSprite class, moving animations to a seperate class
+
 class AnimSprite(pygame.sprite.Sprite):
     typeName = None
 
@@ -39,6 +41,7 @@ class AnimSprite(pygame.sprite.Sprite):
 
         self.rect = pygame.rect.Rect(position, (0, 0))
 
+        allFrames = []
         allFramesRight = []
         allFramesLeft = []
 
@@ -54,15 +57,16 @@ class AnimSprite(pygame.sprite.Sprite):
             frameImg = image.subsurface(rect)
             duration = frame['duration']
 
+            allFrames.append({
+                Orientation.RIGHT: frameImg,
+                Orientation.LEFT: pygame.transform.flip(frameImg, True,False),
+                "duration": duration})
             allFramesRight.append((frameImg, duration))
             allFramesLeft.append((pygame.transform.flip(frameImg,
                                                         True, False),
                                   duration))
 
-        self.animations = {
-            Orientation.LEFT: {},
-            Orientation.RIGHT: {}
-        }
+        self.animations = {}
 
         for animation in data['meta']['frameTags']:
             name = animation['name']
@@ -72,9 +76,9 @@ class AnimSprite(pygame.sprite.Sprite):
 
             framesRight = allFramesRight[first:last+1]
             framesLeft = allFramesLeft[first:last+1]
+            frames = allFrames[first:last+1]
 
-            self.animations[Orientation.RIGHT][name] = (framesRight, direction)
-            self.animations[Orientation.LEFT][name] = (framesLeft, direction)
+            self.animations[name] = (frames, direction)
 
         # adjust position to alignment
 
@@ -104,9 +108,9 @@ class AnimSprite(pygame.sprite.Sprite):
     def setAnimation(self, animation, reset=True):
         if (not reset) and animation == self.currentAnimationName:
             return True
-        if animation in self.animations[self.orientation]:
+        if animation in self.animations:
             self.currentAnimationName = animation
-            self.currentAnimation = self.animations[self.orientation][animation]
+            self.currentAnimation = self.animations[animation]
 
             if(self.currentAnimation[1] == 'reverse'):
                 self.frameNo = len(self.currentAnimation[0]) - 1
@@ -115,11 +119,12 @@ class AnimSprite(pygame.sprite.Sprite):
 
             self.frameTime = 0
             self.direction = self.currentAnimation[1]
-            self.image = self.currentAnimation[0][self.frameNo][0]
+            self.image = self.currentAnimation[0][self.frameNo][self.orientation]
             return True
 
     def animationDuration(self, animation):
-        return sum([frame[1] for frame in self.animations[self.orientation].get(animation, [])[0]])
+        return sum([frame[1] for frame in self.animations.get(animation,
+        [])['duration']])
 
     def on_animationFinished(self):
         if self.currentAnimationName == "die":
@@ -129,8 +134,8 @@ class AnimSprite(pygame.sprite.Sprite):
         self.frameTime = self.frameTime + ms
         curr = self.currentAnimation[0][self.frameNo]
         direction = self.currentAnimation[1]
-        if self.frameTime > curr[1]:
-            self.frameTime = self.frameTime - curr[1]
+        if self.frameTime > curr['duration']:
+            self.frameTime = self.frameTime - curr['duration']
             if self.direction == 'pingpong':
                 self.frameNo = self.frameNo + 1
                 if self.frameNo == len(self.currentAnimation[0]) - 1:
@@ -147,4 +152,4 @@ class AnimSprite(pygame.sprite.Sprite):
                 self.frameNo = (self.frameNo + 1) % len(self.currentAnimation[0])
                 if self.frameNo == 0:
                     self.on_animationFinished()
-        self.image = self.currentAnimation[0][self.frameNo][0]
+        self.image = self.currentAnimation[0][self.frameNo][self.orientation]
