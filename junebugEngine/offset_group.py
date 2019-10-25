@@ -7,7 +7,7 @@ class OffsetGroup(pygame.sprite.Group):
         sprites = self.sprites()
 
         for spr in sprites:
-            surface.blit(spr.image, spr.rect.move(offset))
+            surface.blit(spr.image, spr.rect.move(*offset))
         self.lostsprites = []
 
     def clear(self, surface, bgd, offset=(0, 0)):

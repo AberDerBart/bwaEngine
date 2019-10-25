@@ -189,7 +189,7 @@ class GameObject(Rect):
                         self.on_collision(dirX, None)
 
         # collide with entities in x direction
-        collision_list = self.collisionCandidates(self.union(self.move((dx, 0))))
+        collision_list = self.collisionCandidates(self.union(self.move(dx, 0)))
 
         for block in collision_list:
             dx, dirX = self.collideRectX(block,
@@ -237,7 +237,7 @@ class GameObject(Rect):
                         self.on_collision(dirY, None)
 
         # collide with entities in y direction
-        collision_list = self.collisionCandidates(self.union(self.move((0, dy))))
+        collision_list = self.collisionCandidates(self.union(self.move(0, dy)))
 
         for block in collision_list:
             dy, dirY = self.collideRectY(block,
@@ -347,7 +347,8 @@ class GameObject(Rect):
 
     def updateSpritePosition(self):
         if self.sprite:
-            self.sprite.rect.topleft = self.toPixel().move(self.spriteOffset).topleft
+            print('spriteOffset', self.spriteOffset)
+            self.sprite.rect.topleft = self.toPixel().move(*self.spriteOffset).topleft
             self.sprite.orientation = self.orientation
         for obj in self.anchored:
             obj.updateSpritePosition()
