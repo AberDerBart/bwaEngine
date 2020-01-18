@@ -347,7 +347,6 @@ class GameObject(Rect):
 
     def updateSpritePosition(self):
         if self.sprite:
-            print('spriteOffset', self.spriteOffset)
             self.sprite.rect.topleft = self.toPixel().move(*self.spriteOffset).topleft
             self.sprite.orientation = self.orientation
         for obj in self.anchored:
