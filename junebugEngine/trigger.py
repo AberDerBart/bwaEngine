@@ -7,14 +7,12 @@ from .control import Control
 triggers = {"quit": pygame.quit}
 
 class Trigger(GameObject):
-    triggerDict = {"quit": pygame.quit}
-
     typeName = "trigger"
     collides = True
 
     def __init__(self, function = '', **kwargs):
         super().__init__(**kwargs)
-        self.function = Trigger.triggerDict.get(function)
+        self.function = triggers.get(function)
         self.functionName = function
 
     def on_collision(self, direction, other):
