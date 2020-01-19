@@ -58,6 +58,8 @@ class MapParser:
                 entityData = setDict.get(entityIndex)
                 align = Alignment.BOTTOMLEFT
 
+                properties["mirror_h"] = mirror_h
+
                 if not typeName:
                     typeName = entityData.entityType
 
@@ -93,7 +95,7 @@ class MapParser:
             # if no type is given, but the parameter sprite is set,
             # generate the corresponding sprite
             elif properties.get("sprite"):
-                sprite = AnimSprite(properties.get("sprite"))
+                sprite = AnimSprite(properties.get("sprite"), mirror_h=mirror_h)
                 sprite.rect.bottomleft = (x, y)
                 layer.entities.add(sprite)
             elif "text" in obj:

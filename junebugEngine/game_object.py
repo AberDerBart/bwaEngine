@@ -19,7 +19,7 @@ class GameObject(Rect):
     blocks = False
 
     def __init__(self, world=None, position=(0, 0), size=(0, 0),
-                 align=Alignment.BOTTOMLEFT, **kwargs):
+                 align=Alignment.BOTTOMLEFT, mirror_h=False, **kwargs):
         size = (size[0] * PHYSICS_SCALE, size[1] * PHYSICS_SCALE)
         if align & Alignment.LEFT:
             x = position[0]
@@ -36,7 +36,7 @@ class GameObject(Rect):
             y = position[1] - size[1] / 2
 
         super().__init__((x, y), size)
-        self.orientation = Orientation.RIGHT
+        self.orientation = Orientation.LEFT if mirror_h else Orientation.RIGHT
 
         self.sprite = None
         self.spriteOffset = (0, 0)
