@@ -65,7 +65,7 @@ class Animation():
         else:
             sprite.image = self.frames[sprite.frameNo].right
 
-class AnimSprite(pygame.sprite.DirtySprite):
+class AnimSprite(pygame.sprite.Sprite):
     typeName = None
 
     def __init__(self, json_file, position=(0, 0), mirror_h=False,
@@ -80,6 +80,7 @@ class AnimSprite(pygame.sprite.DirtySprite):
         image.set_colorkey((255, 0, 255))
 
         self.rect = pygame.rect.Rect(position, (0, 0))
+        self.visible = 1
 
         # split into frames
         allFrames = []
@@ -143,25 +144,10 @@ class AnimSprite(pygame.sprite.DirtySprite):
     def update(self, ms):
         self.frameTime += ms
         self.currentAnimation.updateFrame(self)
+        if not self.visible:
+            image = pygame.Surface((self.rect.width,
+                                    self.rect.height),
+                                   flags=pygame.SRCALPHA)
+            image.fill((0, 0, 0, 0))
+            self.image = image
         return True
-        curr = self.currentAnimation[0][self.frameNo]
-        direction = self.currentAnimation[1]
-        if self.frameTime > curr['duration']:
-            self.frameTime = self.frameTime - curr['duration']
-            if self.direction == 'pingpong':
-                self.frameNo = self.frameNo + 1
-                if self.frameNo == len(self.currentAnimation[0]) - 1:
-                    self.direction = 'pingpong_r'
-            elif self.direction == 'pingpong_r':
-                self.frameNo = self.frameNo - 1
-                if self.frameNo == 0:
-                    self.direction = 'pingpong'
-            elif self.direction == 'reverse':
-                self.frameNo = (self.frameNo - 1) % len(self.currentAnimation[0])
-                if (self.frameNo == len(self.currentAnimation[0]) - 1):
-                    self.on_animationFinished()
-            else:
-                self.frameNo = (self.frameNo + 1) % len(self.currentAnimation[0])
-                if self.frameNo == 0:
-                    self.on_animationFinished()
-        self.image = self.currentAnimation[0][self.frameNo][self.orientation]
