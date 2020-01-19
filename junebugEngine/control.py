@@ -7,15 +7,19 @@ class Control:
     keymap = {}
     keymaps = {}
     entity = None
+    controlInstance = None
     def setEntity(entity):
-        if isinstance(entity, MovingObject):
-            entity = PlayerControl(entity)
-        Control.keymap = Control.keymaps.get(type(entity), {})
         Control.entity = entity
+        if isinstance(entity, MovingObject):
+            Control.controlInstance = PlayerControl(entity)
+        else:
+            print('setting control instance to entity')
+            Control.controlInstance = entity
+        Control.keymap = Control.keymaps.get(type(Control.controlInstance), {})
     def processEvent(event):
         if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
             if event.key in Control.keymap:
-                Control.keymap[event.key](Control.entity, event.type == pygame.KEYDOWN)
+                Control.keymap[event.key](Control.controlInstance, event.type == pygame.KEYDOWN)
 
 class PlayerControl:
     def __init__(self, char=None):
