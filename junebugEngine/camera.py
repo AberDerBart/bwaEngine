@@ -42,6 +42,9 @@ class Camera(GameObject):
             self.x = self.path[-1][0]
             self.y = self.path[-1][1]
 
+        print("x: "+str(self.x))
+        print("y: "+str(self.y))
+
         super().update(ms, frameIndex)
 
 EntityData.registerType(Camera)
