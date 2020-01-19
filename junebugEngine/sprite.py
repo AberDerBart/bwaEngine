@@ -120,9 +120,11 @@ class AnimSprite(pygame.sprite.Sprite):
         self.on_death()
 
     def on_death(self):
-        self.kill()
+        pass
 
     def setAnimation(self, animation, reset=True):
+        if animation == self.animations.get('die'):
+            self.kill()
         if (not reset) and animation == self.currentAnimation.name:
             return True
         if animation in self.animations:
