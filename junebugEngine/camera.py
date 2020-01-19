@@ -4,10 +4,12 @@ from .tileset import EntityData
 
 class Camera(GameObject):
     typeName = "camera"
+    collides = True
 
     def __init__(self, polyline=[], timePerPoint=0, skipToMap=None, **kwargs):
         print(skipToMap)
         print(kwargs)
+        kwargs['size'] = (1,1)
         super().__init__(**kwargs)
 
         self.timePerPoint = int(timePerPoint * 1000)
