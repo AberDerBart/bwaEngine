@@ -65,7 +65,7 @@ class Animation():
         else:
             sprite.image = self.frames[sprite.frameNo].right
 
-class AnimSprite(pygame.sprite.Sprite):
+class AnimSprite(pygame.sprite.DirtySprite):
     typeName = None
 
     def __init__(self, json_file, position=(0, 0), mirror_h=False,
