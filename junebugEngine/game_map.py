@@ -112,7 +112,6 @@ class GameMap(GameObject):
             Control.setEntity(newMap.player)
             for viewport in viewports:
                 viewport.setMap(newMap)
-        config.current_map = newMap
 
     def spawn(self, objType, position, layer=None, **kwargs):
         entity = objType(world=self, position=position, **kwargs)
