@@ -3,7 +3,7 @@
 nominal_height = 272
 
 """speed limit in vertical direction in MetaPixel/s"""
-max_vertical_speed = 64000
+max_vertical_speed = 64000000
 
 """gravitational acceleration in MetaPixel/s²"""
 gravity = 480.
