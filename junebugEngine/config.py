@@ -14,3 +14,6 @@ chunkSize = 1024 * 128
 """fonts"""
 
 fonts = {}
+
+"""running"""
+running = False

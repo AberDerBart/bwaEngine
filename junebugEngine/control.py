@@ -2,12 +2,16 @@ import pygame
 
 from .game_object import Direction
 from .moving_object import MovingObject
+from . import config
 
 class Control:
     keymap = {}
     keymaps = {}
     entity = None
     controlInstance = None
+
+    def quit():
+        config.running = False
 
     def setEntity(entity):
         Control.entity = entity
