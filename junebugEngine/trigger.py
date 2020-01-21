@@ -4,7 +4,7 @@ from .tileset import EntityData
 from .map_parser import MapParser
 from .control import Control
 
-triggers = {"quit": pygame.quit}
+triggers = {"quit": Control.quit}
 
 class Trigger(GameObject):
     typeName = "trigger"
