@@ -26,8 +26,7 @@ class Control:
 
 class PlayerControl:
     def __init__(self, char=None):
-        self.char = char
-        self.active = set()
+        self.setCharacter(char)
 
     def setCharacter(self, char):
         self.char = char
