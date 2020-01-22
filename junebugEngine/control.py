@@ -25,7 +25,8 @@ class Control:
     def processEvent(event):
         if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
             if event.key in Control.keymap:
-                Control.keymap[event.key](Control.controlInstance, event.type == pygame.KEYDOWN)
+                Control.keymap[event.key](Control.controlInstance,
+                                          event.type == pygame.KEYDOWN)
 
 
 class PlayerControl:
