@@ -1,6 +1,7 @@
 from .game_object import GameObject
 from .map_parser import MapParser
 from .tileset import EntityData
+from .import config
 
 class Camera(GameObject):
     typeName = "camera"
@@ -43,5 +44,9 @@ class Camera(GameObject):
             self.y = self.path[-1][1]
 
         super().update(ms, frameIndex)
+
+    def quit(self, pressed):
+        if pressed:
+            config.running = False
 
 EntityData.registerType(Camera)

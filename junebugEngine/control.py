@@ -69,3 +69,7 @@ class PlayerControl:
     def switch(self, pressed):
         if pressed:
             self.char = self.char.switch()
+
+    def quit(self, pressed):
+        if pressed:
+            Control.quit()

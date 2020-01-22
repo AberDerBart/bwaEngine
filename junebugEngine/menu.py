@@ -2,6 +2,7 @@ from .game_object import GameObject
 from .tileset import EntityData
 from .sprite import AnimSprite
 from .trigger import triggers
+from . import config
 
 
 class Cursor(GameObject):
@@ -41,6 +42,10 @@ class Cursor(GameObject):
     def select(self, press=True):
         if press and self.selected:
             self.selected.trigger()
+
+    def quit(self, pressed):
+        if pressed:
+            config.running = False
 
 
 EntityData.registerType(Cursor)

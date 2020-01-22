@@ -8,7 +8,8 @@ _defaultKeymapCursor = {
     pygame.K_RIGHT: Cursor.goRight,
     pygame.K_UP: Cursor.goUp,
     pygame.K_DOWN: Cursor.goDown,
-    pygame.K_RETURN: Cursor.select
+    pygame.K_RETURN: Cursor.select,
+    pygame.K_ESCAPE: Cursor.quit
 }
 
 _defaultKeymapPlayerControl = {
@@ -16,11 +17,13 @@ _defaultKeymapPlayerControl = {
     pygame.K_RIGHT: PlayerControl.right,
     pygame.K_SPACE: PlayerControl.jump,
     pygame.K_LCTRL: PlayerControl.attack,
-    pygame.K_UP: PlayerControl.switch
+    pygame.K_UP: PlayerControl.switch,
+    pygame.K_ESCAPE: PlayerControl.quit
 }
 
 _defaultKeymapCamera = {
-    pygame.K_SPACE: Camera.skip
+    pygame.K_SPACE: Camera.skip,
+    pygame.K_ESCAPE: Camera.quit
 }
 
 _defaultKeymaps = {
