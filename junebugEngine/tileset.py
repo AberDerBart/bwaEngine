@@ -91,10 +91,11 @@ class EntitySet:
 
         entityData = data["tiles"]
 
-        es.entities = []
+        es.entities = {}
 
         for entity in entityData:
-            es.entities.append(EntityData(entity, path))
+            entityId = entity['id']
+            es.entities[entityId] = EntityData(entity, path)
 
         EntitySet.sets[path] = es
         return es
@@ -103,7 +104,7 @@ class EntitySet:
         return len(self.entities)
 
     def getObj(self, index):
-        return self.entities[index]
+        return self.entities.get(index)
 
 
 class TileSet:
