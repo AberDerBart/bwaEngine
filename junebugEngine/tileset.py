@@ -32,7 +32,7 @@ class SetDict:
             if os.path.basename(path).startswith("entities"):
                 tmpSet = EntitySet.get(path)
                 firstGid = tileset["firstgid"]
-                lastGid = firstGid + tmpSet.length()
+                lastGid = firstGid + tmpSet.maxId()
                 self.sets[range(firstGid, lastGid)] = tmpSet
             else:
                 tmpSet = TileSet.get(path)
@@ -100,8 +100,8 @@ class EntitySet:
         EntitySet.sets[path] = es
         return es
 
-    def length(self):
-        return len(self.entities)
+    def maxId(self):
+        return max(self.entities.keys())
 
     def getObj(self, index):
         return self.entities.get(index)
