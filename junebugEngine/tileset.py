@@ -33,7 +33,7 @@ class SetDict:
                 tmpSet = EntitySet.get(path)
                 firstGid = tileset["firstgid"]
                 lastGid = firstGid + tmpSet.maxId()
-                self.sets[range(firstGid, lastGid)] = tmpSet
+                self.sets[range(firstGid, lastGid + 1)] = tmpSet
             else:
                 tmpSet = TileSet.get(path)
                 firstGid = tileset["firstgid"]
