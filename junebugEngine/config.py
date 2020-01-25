@@ -1,6 +1,6 @@
 # constants
 """height of the screen in MetaPixel"""
-nominal_height = 272
+nominal_height = 270
 
 """speed limit in vertical direction in MetaPixel/s"""
 max_vertical_speed = 64000000
