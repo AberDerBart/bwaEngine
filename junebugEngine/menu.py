@@ -24,19 +24,19 @@ class Cursor(GameObject):
             self.goto = ''
 
     def goLeft(self, press=True):
-        if press:
+        if press and self.selected:
             self.goto = self.selected.leftOption
 
     def goRight(self, press=True):
-        if press:
+        if press and self.selected:
             self.goto = self.selected.rightOption
 
     def goUp(self, press=True):
-        if press:
+        if press and self.selected:
             self.goto = self.selected.upOption
 
     def goDown(self, press=True):
-        if press:
+        if press and self.selected:
             self.goto = self.selected.downOption
 
     def select(self, press=True):

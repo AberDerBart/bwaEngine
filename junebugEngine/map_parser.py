@@ -56,16 +56,18 @@ class MapParser:
                 entityIndex = obj["gid"] & 0x0fffffff
                 mirror_h = True if (obj["gid"] & 0x80000000) else False
                 entityData = setDict.get(entityIndex)
-                align = Alignment.BOTTOMLEFT
 
-                properties["mirror_h"] = mirror_h
+                if entityData:
+                    align = Alignment.BOTTOMLEFT
 
-                if not typeName:
-                    typeName = entityData.entityType
+                    properties["mirror_h"] = mirror_h
 
-                for prop in entityData.properties:
-                    if prop not in properties:
-                        properties[prop] = entityData.properties[prop]
+                    if not typeName:
+                        typeName = entityData.entityType
+
+                    for prop in entityData.properties:
+                        if prop not in properties:
+                            properties[prop] = entityData.properties[prop]
 
             if "polyline" in obj:
                 polyline =  []
@@ -101,8 +103,7 @@ class MapParser:
             elif "text" in obj:
                 layer.entities.add(RenderedText((x, y), obj["text"]))
             else:
-                print("Failed to generate",
-                      setDict.get(entityIndex).entityType)
+                print("Failed to generate", typeName)
 
         return layer
 
