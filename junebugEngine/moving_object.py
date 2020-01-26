@@ -7,10 +7,16 @@ from .game_object import GameObject, Direction
 
 
 class MovingObject(GameObject):
+    """A controllable GameObject
+
+    can react to edges, walls and other GameObjects"""
+
     acc = 500
     speed = 100
 
     def __init__(self, **kwargs):
+        """Initializes a MovingObject"""
+
         super().__init__(**kwargs)
 
         # sound
@@ -25,6 +31,10 @@ class MovingObject(GameObject):
         self.idle()
 
     def run_left(self):
+        """Starts accelerating [self] to the left until [self.speed] is reached.
+
+        Also sets the orientation to left and sets the 'run' animation on the corresponding sprite"""
+
         self.targetSpeed = -self.speed
         self.orientation = Orientation.LEFT
         # TODO: make sprite check for its orientation on every frame
@@ -33,6 +43,11 @@ class MovingObject(GameObject):
             self.sprite.setAnimation('run')
 
     def run_right(self):
+        """Starts accelerating [self] to the right until [self.speed] is reached.
+
+        Also sets the orientation to right and sets the 'run' animation on the corresponding sprite"""
+
+        self.targetSpeed = -self.speed
         self.targetSpeed = self.speed
         self.orientation = Orientation.RIGHT
         # TODO: make sprite check for its orientation on every frame
@@ -41,6 +56,10 @@ class MovingObject(GameObject):
             self.sprite.setAnimation('run')
 
     def jump(self, hold=True):
+        """Makes the object jump.
+
+        If [hold] is False, stops accelerating upwards."""
+
         if self.on_ground and hold:
             self.channel.play(self.jump_sound)
             self.jumping = True
@@ -49,18 +68,35 @@ class MovingObject(GameObject):
             self.jumping = False
 
     def idle(self):
+        """Make the object stop moving.
+
+        Also sets the animation of the corresponding sprite to 'idle'"""
+
         self.targetSpeed = 0
         if self.sprite:
             self.sprite.setAnimation('idle')
 
     def on_edge(self, direction):
+        """Does something when the object reaches and edge.
+
+        Override this to implement custom behaviour."""
+
         pass
 
     def die(self):
+        """Removes the object from physics and rendering.
+
+        Override this to implement custom behaviour on death.
+        Don't forget to call super().die()"""
+
         self.targetSpeed = 0
         super().die()
 
     def update(self, ms, frameIndex):
+        """Updates the object.
+
+        Applies physics of running, jumping, etc. and calls GameObject.update"""
+
         # handle horizontal movement
         if self.targetSpeed > self.vx:
             self.vx = min(self.vx + self.acc * ms / 1000., self.targetSpeed)
