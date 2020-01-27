@@ -4,10 +4,17 @@ from .tileset import EntityData
 from .import config
 
 class Camera(GameObject):
+    """A camera object for making "video" sequences
+
+    The camera follows a path."""
+
+
     typeName = "camera"
     collides = True
 
     def __init__(self, polyline=[], timePerPoint=0, skipToMap=None, **kwargs):
+        """Initializes the camera."""
+
         print(skipToMap)
         print(kwargs)
         kwargs['size'] = (1,1)
@@ -19,6 +26,8 @@ class Camera(GameObject):
         self.skipToMap = skipToMap
 
     def skip(self, pressed=True):
+        """skips the sequence and continues to the next GameMap [self.skipToMap]"""
+
         if pressed and self.skipToMap:
             print('skip')
             self.world.switchToMap(MapParser.parse(self.skipToMap))
@@ -26,6 +35,8 @@ class Camera(GameObject):
             print(pressed, self.skipToMap)
 
     def update(self, ms, frameIndex):
+        """Advance the Camera along the path"""
+
         self.time = self.time + ms
 
         pointProgress = self.time / self.timePerPoint
@@ -46,6 +57,8 @@ class Camera(GameObject):
         super().update(ms, frameIndex)
 
     def quit(self, pressed):
+        """Closes the game."""
+
         if pressed:
             config.running = False
 
