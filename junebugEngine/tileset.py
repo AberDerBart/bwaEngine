@@ -49,12 +49,15 @@ class SetDict:
 class EntityData:
     generators = {}
 
+    @staticmethod
     def getType(entityType):
         return EntityData.generators.get(entityType)
 
+    @staticmethod
     def registerType(entityType):
-        print("Registering type", entityType.typeName)
-        EntityData.generators[entityType.typeName] = entityType
+        typeName = entityType.__dict__.get("typeName") or entityType.__class__.__name__
+        print("Registering type", typeName)
+        EntityData.generators[typeName] = entityType
 
     def getGenerator(self):
         return EntityData.generators.get(self.entityType)
@@ -75,6 +78,7 @@ class EntityData:
 class EntitySet:
     sets = {}
 
+    @staticmethod
     def get(path):
         """returns the EntitySet specified by path, loading it if necessary"""
 
@@ -110,6 +114,7 @@ class EntitySet:
 class TileSet:
     sets = {}
 
+    @staticmethod
     def get(path):
         """returns the tileset specified by path, loading it if necessary"""
 
