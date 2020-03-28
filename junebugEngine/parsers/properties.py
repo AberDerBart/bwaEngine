@@ -1,4 +1,4 @@
-from .util import relativePath
+from junebugEngine.util import relativePath
 
 def parseProperties(propertyData, path):
     properties = {}
