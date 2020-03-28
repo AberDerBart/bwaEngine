@@ -10,6 +10,7 @@ import math
 from . import config
 from .util import relativePath
 from .parsers import parseProperties
+from .parsers.game_object import parseGameObject
 
 from .game_map import GameMap, TileLayer, EntityLayer, PhysicsChunk
 
@@ -37,68 +38,9 @@ class MapParser:
         layer = EntityLayer(gamemap, entityLayerData.get("name"))
 
         for obj in entityLayerData["objects"]:
-            x = obj["x"]
-            y = obj["y"]
-            width = obj["width"]
-            height = obj["height"]
-            typeName = obj.get("type")            
-            objName = obj.get("name")
-            size = (width, height)
-            align = Alignment.TOPLEFT
-            properties = parseProperties(obj.get('properties', {}), gamemap.path)
-            
-            # look up, if this is a tile object
-            if "gid" in obj:
-                # mask out vertical and horizontal flipping
-                entityIndex = obj["gid"] & 0x0fffffff
-                mirror_h = True if (obj["gid"] & 0x80000000) else False
-                entityData = setDict.get(entityIndex)
-
-                if entityData:
-                    align = Alignment.BOTTOMLEFT
-
-                    properties["mirror_h"] = mirror_h
-
-                    if not typeName:
-                        typeName = entityData.entityType
-
-                    for prop, value in entityData.properties.items():
-                        properties.setdefault(prop, value)
-
-            if "polyline" in obj:
-                polyline =  []
-                for point in obj["polyline"]:
-                    px = point["x"] * PHYSICS_SCALE
-                    py = point["y"] * PHYSICS_SCALE
-                    polyline.append((px, py))
-                properties["polyline"] = polyline
-
-            generator = EntityData.generators.get(typeName)
-            if generator:
-                try:
-                    entity = gamemap.spawn(generator,
-                                           (x * PHYSICS_SCALE, y * PHYSICS_SCALE),
-                                           layer=layer,
-                                           size=size,
-                                           align=align,
-                                           **properties)
-                    if objName:
-                        gamemap.namedEntities[objName] = entity
-                except Exception as e:
-                    print("Error generating type", generator.typeName)
-                    raise e
-                if properties.get("player"):
-                    gamemap.player = entity
-            # if no type is given, but the parameter sprite is set,
-            # generate the corresponding sprite
-            elif properties.get("sprite"):
-                sprite = AnimSprite(properties.get("sprite"), mirror_h=mirror_h)
-                sprite.rect.bottomleft = (x, y)
+            sprite = parseGameObject(obj, gamemap, setDict)
+            if sprite:
                 layer.entities.add(sprite)
-            elif "text" in obj:
-                layer.entities.add(RenderedText((x, y), obj["text"]))
-            else:
-                print("Failed to generate", typeName)
 
         return layer
 
