@@ -43,16 +43,16 @@ class Viewport:
         if self.map_.player:
             self.paddingTop = \
               self.map_.player.properties.get('marginTop', 0) *\
-              (self.height - self.map_.player.height/ PHYSICS_SCALE)
+              (self.height - self.map_.player.rect.height/ PHYSICS_SCALE)
             self.paddingBottom = \
               self.map_.player.properties.get('marginBottom', 0) *\
-              (self.height - self.map_.player.height / PHYSICS_SCALE)
+              (self.height - self.map_.player.rect.height / PHYSICS_SCALE)
             self.paddingLeft = \
               self.map_.player.properties.get('marginLeft', 0) *\
-              (self.width - self.map_.player.width / PHYSICS_SCALE)
+              (self.width - self.map_.player.rect.width / PHYSICS_SCALE)
             self.paddingRight = \
               self.map_.player.properties.get('marginRight', 0) *\
-              (self.width - self.map_.player.width/ PHYSICS_SCALE)
+              (self.width - self.map_.player.rect.width/ PHYSICS_SCALE)
 
         if(self.map_.background):
             self.bg = pygame.transform.scale(self.map_.background, (self.width,

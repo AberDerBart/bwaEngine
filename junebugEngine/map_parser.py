@@ -4,7 +4,8 @@ import junebugEngine.config
 from .tileset import EntityData, EntityData, TileSet, Tile, SetDict
 from .text import RenderedText
 from .sprite import AnimSprite, Alignment
-from .game_object import PHYSICS_SCALE, GameObject
+from .physics import PHYSICS_SCALE
+from .game_object import GameObject
 import pygame
 import math
 from . import config

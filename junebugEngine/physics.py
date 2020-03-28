@@ -1,3 +1,7 @@
+from pygame.rect import Rect
+
+PHYSICS_SCALE = 1024
+
 def resetPhysics(obj):
     obj.blocks = type(obj).blocks
     obj.gravity = type(obj).gravity
@@ -136,15 +140,15 @@ def absDy(obj, dy=0):
         return dy
 
 def truncate(obj):
-    x = obj.x - obj.x % PHYSICS_SCALE
-    y = obj.y - obj.y % PHYSICS_SCALE
-    w = obj.w - obj.w % PHYSICS_SCALE
-    h = obj.h - obj.h % PHYSICS_SCALE
+    x = obj.rect.x - obj.rect.x % PHYSICS_SCALE
+    y = obj.rect.y - obj.rect.y % PHYSICS_SCALE
+    w = obj.rect.w - obj.rect.w % PHYSICS_SCALE
+    h = obj.rect.h - obj.rect.h % PHYSICS_SCALE
     return Rect(x, y, w, h)
 
 def toPixel(obj):
-    x = obj.x // PHYSICS_SCALE
-    y = obj.y // PHYSICS_SCALE
-    w = obj.w // PHYSICS_SCALE
-    h = obj.h // PHYSICS_SCALE
+    x = obj.rect.x // PHYSICS_SCALE
+    y = obj.rect.y // PHYSICS_SCALE
+    w = obj.rect.w // PHYSICS_SCALE
+    h = obj.rect.h // PHYSICS_SCALE
     return Rect(x, y, w, h)

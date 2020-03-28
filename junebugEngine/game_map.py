@@ -6,7 +6,9 @@ import os.path
 import math
 from .text import RenderedText
 from .offset_group import OffsetGroup
-from .game_object import PHYSICS_SCALE, GameObject
+from .physics import PHYSICS_SCALE
+from .game_object import GameObject
+from . import game
 from . import config
 from .control import Control
 
@@ -103,7 +105,7 @@ class GameMap(GameObject):
 
     def init(self):
         for entity in self.anchored:
-            entity.init()
+            game.init(entity)
 
     def switchToMap(self, newMap):
         viewports = set(self.viewports)

@@ -1,15 +1,14 @@
 from pygame.rect import Rect
 from .sprite import Orientation, Alignment
+from .physics import PHYSICS_SCALE
 from . import config
-
-
-PHYSICS_SCALE = 1024
 
 
 class Direction(Orientation):
     NONE = 0
     UP = -1
     DOWN = 1
+
 
 class GameObject():
     gravity = False
@@ -18,7 +17,8 @@ class GameObject():
 
     def __init__(self, world=None, position=(0, 0), size=(0, 0),
                  align=Alignment.BOTTOMLEFT, mirror_h=False, **kwargs):
-        size = (size[0] * PHYSICS_SCALE, size[1] * PHYSICS_SCALE)
+        size = (size[0] * PHYSICS_SCALE,
+                size[1] * PHYSICS_SCALE)
         if align & Alignment.LEFT:
             x = position[0]
         elif align & Alignment.RIGHT:

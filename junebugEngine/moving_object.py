@@ -4,6 +4,7 @@ from . import config
 
 from .sprite import Orientation
 from .game_object import GameObject, Direction
+from .game import updateSpritePosition
 
 
 class MovingObject(GameObject):
@@ -51,7 +52,7 @@ class MovingObject(GameObject):
         self.targetSpeed = self.speed
         self.orientation = Orientation.RIGHT
         # TODO: make sprite check for its orientation on every frame
-        self.updateSpritePosition()
+        updateSpritePosition(self)
         if self.sprite:
             self.sprite.setAnimation('run')
 

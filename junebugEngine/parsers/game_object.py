@@ -1,4 +1,6 @@
-from ..game_object import Alignment, PHYSICS_SCALE
+from ..game_object import Alignment
+from ..physics import PHYSICS_SCALE
+from ..game import anchorTo
 from ..tileset import EntityData
 from .properties import parseProperties
 from ..sprite import AnimSprite
@@ -10,12 +12,12 @@ def parseGameObject(obj, gamemap, setDict):
     y = obj["y"]
     width = obj["width"]
     height = obj["height"]
-    typeName = obj.get("type")            
+    typeName = obj.get("type")
     objName = obj.get("name")
     size = (width, height)
     align = Alignment.TOPLEFT
     properties = parseProperties(obj.get('properties', {}), gamemap.path)
-    
+
     # look up, if this is a tile object
     if "gid" in obj:
         # mask out vertical and horizontal flipping
@@ -50,7 +52,7 @@ def parseGameObject(obj, gamemap, setDict):
             align=align,
             world=gamemap,
             **properties)
-        entity.anchorTo(gamemap)
+        anchorTo(entity, gamemap)
         if objName:
             gamemap.namedEntities[objName] = entity
         if properties.get("player"):
