@@ -33,7 +33,7 @@ class GameObject():
         else:
             y = position[1] - size[1] / 2
 
-        super().__init__((x, y), size)
+        self.rect = Rect((x, y), size)
         self.orientation = Orientation.LEFT if mirror_h else Orientation.RIGHT
 
         self.sprite = None
