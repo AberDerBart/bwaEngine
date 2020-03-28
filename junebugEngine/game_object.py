@@ -11,10 +11,6 @@ class Direction(Orientation):
     UP = -1
     DOWN = 1
 
-### previously in GameObject: ###
-
-### /previously in GameObject/ ###
-
 class GameObject():
     gravity = False
     collides = False
