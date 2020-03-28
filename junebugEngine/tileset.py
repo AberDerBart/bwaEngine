@@ -2,6 +2,7 @@ import json
 import pygame
 import os.path
 from .util import relativePath
+from .parsers import parseProperties
 
 
 class Tile:
@@ -70,13 +71,7 @@ class EntityData:
         self.entityType = None
         self.properties = {}
         self.entityType = data.get('type')
-        for prop in data.get('properties', []):
-            if prop.get("type") == "file":
-                self.properties[prop["name"]] = relativePath(prop["value"],
-                                                             self.path)
-            else:
-                self.properties[prop["name"]] = prop["value"]
-
+        self.properties = parseProperties(data.get('properties', []), relPath)
 
 class EntitySet:
     sets = {}

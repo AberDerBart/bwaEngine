@@ -1,18 +1,21 @@
 import os.path
 import json
 import junebugEngine.config
-from .tileset import *
+from .tileset import EntityData, EntityData, TileSet, Tile, SetDict
 from .text import RenderedText
 from .sprite import AnimSprite, Alignment
 from .game_object import PHYSICS_SCALE, GameObject
 import pygame
 import math
 from . import config
+from .util import relativePath
+from .parsers import parseProperties
 
 from .game_map import GameMap, TileLayer, EntityLayer, PhysicsChunk
 
 
 class MapParser:
+    @staticmethod
     def _parseTileLayer(gamemap, layerData, setDict):
         layer = TileLayer(gamemap, layerData.get("name"))
         layer.height = layerData.get("height")
@@ -28,6 +31,7 @@ class MapParser:
 
         return layer
 
+    @staticmethod
     def _parseEntityLayer(gamemap, entityLayerData, setDict):
         """parses and returns an entity layer of a map"""
         layer = EntityLayer(gamemap, entityLayerData.get("name"))
@@ -37,19 +41,12 @@ class MapParser:
             y = obj["y"]
             width = obj["width"]
             height = obj["height"]
-            typeName = obj.get("type")
-            properties = {}
+            typeName = obj.get("type")            
             objName = obj.get("name")
             size = (width, height)
             align = Alignment.TOPLEFT
-
-            for prop in obj.get("properties", {}):
-                if prop.get("type") == "file":
-                    properties[prop["name"]] = relativePath(prop["value"],
-                                                            gamemap.path)
-                else:
-                    properties[prop["name"]] = prop["value"]
-
+            properties = parseProperties(obj.get('properties', {}), gamemap.path)
+            
             # look up, if this is a tile object
             if "gid" in obj:
                 # mask out vertical and horizontal flipping
@@ -65,9 +62,8 @@ class MapParser:
                     if not typeName:
                         typeName = entityData.entityType
 
-                    for prop in entityData.properties:
-                        if prop not in properties:
-                            properties[prop] = entityData.properties[prop]
+                    for prop, value in entityData.properties.items():
+                        properties.setdefault(prop, value)
 
             if "polyline" in obj:
                 polyline =  []
@@ -81,8 +77,7 @@ class MapParser:
             if generator:
                 try:
                     entity = gamemap.spawn(generator,
-                                           (x * PHYSICS_SCALE,
-                                            y * PHYSICS_SCALE),
+                                           (x * PHYSICS_SCALE, y * PHYSICS_SCALE),
                                            layer=layer,
                                            size=size,
                                            align=align,
@@ -107,11 +102,13 @@ class MapParser:
 
         return layer
 
+    @staticmethod
     def _parseBackground(gamemap, backgroundLayerData):
         """parses the background layer of a map and
         adds it to the given GameMap object"""
         gamemap.background = pygame.image.load(relativePath(backgroundLayerData.get("image"),gamemap.path))
 
+    @staticmethod
     def parse(path):
         """parses the map data given under [path] and
         returns the resulting GameMap object"""
