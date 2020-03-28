@@ -29,16 +29,19 @@ class SetDict:
         self.sets = {}
         for tileset in data:
             path = relativePath(tileset['source'], relFile)
-            if os.path.basename(path).startswith("entities"):
-                tmpSet = EntitySet.get(path)
-                firstGid = tileset["firstgid"]
-                lastGid = firstGid + tmpSet.maxId()
-                self.sets[range(firstGid, lastGid + 1)] = tmpSet
-            else:
+            data = json.load(open(path))
+
+            # TODO: pathname is checked for legacy entitysets, remove this
+            if "image" in data and not os.path.basename(path).startswith('entities'):
                 tmpSet = TileSet.get(path)
                 firstGid = tileset["firstgid"]
                 lastGid = firstGid + tmpSet.length()
                 self.sets[range(firstGid, lastGid)] = tmpSet
+            else:
+                tmpSet = EntitySet.get(path)
+                firstGid = tileset["firstgid"]
+                lastGid = firstGid + tmpSet.maxId()
+                self.sets[range(firstGid, lastGid + 1)] = tmpSet
 
     def get(self, index):
         for indexRange in self.sets.keys():
