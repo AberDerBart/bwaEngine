@@ -90,7 +90,7 @@ def physicsY(obj, ms):
             if tile.collide:
                 dy, dirY = collision.collideRectY(obj, tileRect, dy, obj.collides)
                 if dirY != Direction.NONE:
-                    obj.on_collision(dirY, None)
+                    collision.on_collision(obj, dirY, None)
 
     # collide with entities in y direction
     collision_list = collision.collisionCandidates(obj, obj.rect.union(obj.rect.move(0, dy)))

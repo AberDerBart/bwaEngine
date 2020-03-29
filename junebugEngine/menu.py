@@ -1,4 +1,5 @@
 from .game_object import GameObject
+from .game import setSprite
 from .tileset import EntityData
 from .sprite import AnimSprite
 from .trigger import triggers
@@ -12,7 +13,7 @@ class Cursor(GameObject):
         super().__init__(**kwargs)
 
         spr = AnimSprite(sprite)
-        self.setSprite(spr, (-spr.rect.width/2, -spr.rect.height/2))
+        setSprite(self, spr, (-spr.rect.width/2, -spr.rect.height/2))
         self.goto = selected
         self.selected = None
 

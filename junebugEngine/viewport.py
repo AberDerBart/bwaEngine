@@ -1,6 +1,7 @@
 import pygame
 from .game_map import EntityLayer
 from .physics import PHYSICS_SCALE, physicsX, physicsY, toPixel
+from . import game
 
 
 class Viewport:
@@ -73,7 +74,7 @@ class Viewport:
 
         # update physics for visible entities:
         for obj in self.map_.anchored:
-            obj.update(ms, self.frameIndex)
+            game.update(obj, ms, self.frameIndex)
         for obj in self.map_.anchored:
             physicsX(obj, ms)
         for obj in self.map_.anchored:
