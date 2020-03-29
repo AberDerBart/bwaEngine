@@ -20,7 +20,7 @@ def collisionCandidates(obj, rect, _branch=None):
     return candidates
 
 def collideRectX(obj, other, dx, block=True):
-    collisionRect = obj.move(dx, 0)
+    collisionRect = obj.rect.move(dx, 0)
     collision = collisionRect.colliderect(other)
 
     dirX = Direction.NONE
@@ -30,12 +30,12 @@ def collideRectX(obj, other, dx, block=True):
             dirX = Direction.RIGHT
             if block:
                 obj.vx = 0
-                dx = other.left - obj.right
+                dx = other.left - obj.rect.right
         else:
             dirX = Direction.LEFT
             if block:
                 obj.vx = 0
-                dx = other.right - obj.left
+                dx = other.right - obj.rect.left
     return dx, dirX
 
 def collideRectY(obj, other, dy, block=True):
@@ -64,4 +64,4 @@ def on_collision(obj, direction, other=None):
             anchorTo(obj, obj.world)
         elif other.blocks and obj.blocks:
             obj.on_ground = True
-            obj.anchorTo(other)
+            anchorTo(obj, other)

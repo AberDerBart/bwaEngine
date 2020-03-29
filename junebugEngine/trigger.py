@@ -3,6 +3,7 @@ from .game_object import GameObject
 from .tileset import EntityData
 from .map_parser import MapParser
 from .control import Control
+from . import collision
 
 triggers = {"quit": Control.quit}
 
@@ -16,7 +17,7 @@ class Trigger(GameObject):
         self.functionName = function
 
     def on_collision(self, direction, other):
-        super().on_collision(direction, other)
+        collision.on_collision(self, direction, other)
         if other == self.world.player:
             print("Triggering function '{}'".format(self.functionName))
             self.function()
@@ -41,7 +42,7 @@ class Goal(GameObject):
                 viewport.setMap(newMap)
 
     def on_collision(self, direction, other):
-        super().on_collision(direction, other)
+        collision.on_collision(self, direction, other)
         if other == self.world.player:
             print("Reached Goal, transitioning to '{}'"
               .format(self.nextMap))

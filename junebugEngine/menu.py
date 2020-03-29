@@ -4,6 +4,7 @@ from .tileset import EntityData
 from .sprite import AnimSprite
 from .trigger import triggers
 from . import config
+from . import game
 
 
 class Cursor(GameObject):
@@ -16,9 +17,10 @@ class Cursor(GameObject):
         setSprite(self, spr, (-spr.rect.width/2, -spr.rect.height/2))
         self.goto = selected
         self.selected = None
+        print('Cursor created')
 
     def update(self, ms, frameIndex):
-        super().update(ms, frameIndex)
+        game.update(self, ms, frameIndex)
         if self.goto:
             self.selected = self.world.getEntity(self.goto)
             self.topleft = self.selected.topleft
