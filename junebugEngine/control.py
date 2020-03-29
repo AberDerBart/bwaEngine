@@ -1,6 +1,6 @@
 import pygame
 
-from .game_object import Direction
+from .game import Direction
 from .moving_object import MovingObject
 from . import config
 

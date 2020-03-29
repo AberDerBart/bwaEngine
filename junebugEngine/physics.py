@@ -1,4 +1,6 @@
 from pygame.rect import Rect
+from . import config, collision, game
+from .game import Direction
 
 PHYSICS_SCALE = 1024
 
@@ -9,13 +11,13 @@ def resetPhysics(obj):
 
 def absVx(obj):
     if obj.anchor:
-        return obj.vx + obj.anchor.absVx()
+        return obj.vx + absVx(obj.anchor)
     else:
         return obj.vx
 
 def absVy(obj):
     if obj.anchor:
-        return obj.vy + obj.anchor.absVy()
+        return obj.vy + absVy(obj.anchor)
     else:
         return obj.vy
 
@@ -27,13 +29,13 @@ def simulate_gravity(obj, ms):
 
 def physicsX(obj, ms):
 
-    lastTruncX = obj.truncate().x
+    lastTruncX = truncate(obj).x
 
-    dx = obj.absDx(obj.vx * ms)
+    dx = absDx(obj, obj.vx * ms)
 
     if obj.collides:
         # collide with map in x direction
-        collisionTiles = obj.world.tileRange(obj.move(dx, 0))
+        collisionTiles = obj.world.tileRange(obj.rect.move(dx, 0))
 
         for tile, tileRect in collisionTiles:
             if tile.collide:
@@ -43,7 +45,7 @@ def physicsX(obj, ms):
                     obj.on_collision(dirX, None)
 
     # collide with entities in x direction
-    collision_list = obj.collisionCandidates(obj.union(obj.move(dx, 0)))
+    collision_list = collision.collisionCandidates(obj, obj.rect.union(obj.rect.move(dx, 0)))
 
     for block in collision_list:
         dx, dirX = obj.collideRectX(block,
@@ -55,87 +57,88 @@ def physicsX(obj, ms):
                     obj.on_collision(dirX, block)
                     block.on_collision(dirX * -1, obj)
 
-    obj.x += dx
-    obj.truncDx = obj.truncate().x - lastTruncX
+    obj.rect.x += dx
+    obj.truncDx = truncate(obj).x - lastTruncX
 
-    obj.updateSpritePosition()
-    obj.updateChunks()
+    game.updateSpritePosition(obj)
+    game.updateChunks(obj)
 
-    if not obj.colliderect(obj.world):
-        if obj.top > obj.world.bottom:
-            obj.on_map_exit(Direction.DOWN)
-        elif obj.bottom < obj.world.top:
-            obj.on_map_exit(Direction.UP)
-        elif obj.left > obj.world.right:
-            obj.on_map_exit(Direction.RIGHT)
-        elif obj.right < obj.world.left:
-            obj.on_map_exit(Direction.LEFT)
+    if not obj.rect.colliderect(obj.world):
+        if obj.rect.top > obj.world.rect.bottom:
+            game.on_map_exit(obj, Direction.DOWN)
+        elif obj.rect.bottom < obj.world.rect.top:
+            game.on_map_exit(obj, Direction.UP)
+        elif obj.rect.left > obj.world.rect.right:
+            game.on_map_exit(obj, Direction.RIGHT)
+        elif obj.rect.right < obj.world.rect.left:
+            game.on_map_exit(obj, Direction.LEFT)
 
     for other in obj.anchored:
         other.physicsX(ms)
 
 def physicsY(obj, ms):
 
-    lastTruncY = obj.truncate().y
+    lastTruncY = truncate(obj).y
 
-    dy = obj.absDy(obj.vy * ms)
+    dy = absDy(obj, obj.vy * ms)
 
     if obj.collides:
         # collide with map in y direction
-        collisionTiles = obj.world.tileRange(obj.move(0, dy))
+        collisionTiles = obj.world.tileRange(obj.rect.move(0, dy))
 
         for tile, tileRect in reversed(collisionTiles):
             if tile.collide:
-                dy, dirY = obj.collideRectY(tileRect, dy, obj.collides)
+                dy, dirY = collision.collideRectY(obj, tileRect, dy, obj.collides)
                 if dirY != Direction.NONE:
                     obj.on_collision(dirY, None)
 
     # collide with entities in y direction
-    collision_list = obj.collisionCandidates(obj.union(obj.move(0, dy)))
+    collision_list = collision.collisionCandidates(obj, obj.rect.union(obj.rect.move(0, dy)))
 
     for block in collision_list:
-        dy, dirY = obj.collideRectY(block,
-                                     dy,
-                                     obj.blocks and block.blocks and obj.collides)
+        dy, dirY = collision.collideRectY(obj,
+                                          block,
+                                          dy,
+                                          obj.blocks and block.blocks and obj.collides)
         if dirY != Direction.NONE:
             if obj.collides and block.collides:
                     obj.on_collision(dirY, block)
                     block.on_collision(dirY * -1, obj)
 
     if not obj.on_ground:
-        obj.anchorTo(obj.world)
+        game.anchorTo(obj, obj.world)
 
-    obj.y += dy
-    obj.truncDy = obj.truncate().y - lastTruncY
+    obj.rect.y += dy
+    obj.truncDy = truncate(obj).y - lastTruncY
 
-    obj.updateSpritePosition()
-    obj.updateChunks()
+    game.updateSpritePosition(obj)
+    game.updateChunks(obj)
 
-    if not obj.colliderect(obj.world):
-        if obj.top > obj.world.bottom:
-            obj.on_map_exit(Direction.DOWN)
-        elif obj.bottom < obj.world.top:
-            obj.on_map_exit(Direction.UP)
-        elif obj.left > obj.world.right:
-            obj.on_map_exit(Direction.RIGHT)
-        elif obj.right < obj.world.left:
-            obj.on_map_exit(Direction.LEFT)
+    if not obj.rect.colliderect(obj.world):
+        if obj.rect.top > obj.world.rect.bottom:
+            game.on_map_exit(obj, Direction.DOWN)
+        elif obj.rect.bottom < obj.world.rect.top:
+            game.on_map_exit(obj, Direction.UP)
+        elif obj.rect.left > obj.world.rect.right:
+            game.on_map_exit(obj, Direction.RIGHT)
+        elif obj.rect.right < obj.world.rect.left:
+            game.on_map_exit(obj, Direction.LEFT)
 
     for other in obj.anchored:
         other.physicsY(ms)
 
 def boundingBox(obj):
-    return obj.unionall(obj.anchored)
+    return obj.rect.unionall(obj.anchored)
 
 def absDx(obj, dx=0):
     if obj.anchor:
-        return obj.anchor.absDx(dx) + obj.anchor.truncDx
+        return absDx(obj.anchor, dx) + obj.anchor.truncDx
     else:
         return dx
 
 def absDy(obj, dy=0):
     if obj.anchor:
-        return obj.anchor.absDy(dy) + obj.anchor.truncDy
+        return absDy(obj.anchor, dy) + obj.anchor.truncDy
     else:
         return dy
 

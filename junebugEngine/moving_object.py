@@ -3,8 +3,9 @@ import pygame
 from . import config
 
 from .sprite import Orientation
-from .game_object import GameObject, Direction
-from .game import updateSpritePosition
+from .game_object import GameObject
+from .game import updateSpritePosition, Direction
+from . import game
 
 
 class MovingObject(GameObject):
@@ -39,7 +40,7 @@ class MovingObject(GameObject):
         self.targetSpeed = -self.speed
         self.orientation = Orientation.LEFT
         # TODO: make sprite check for its orientation on every frame
-        self.updateSpritePosition()
+        game.updateSpritePosition(self)
         if self.sprite:
             self.sprite.setAnimation('run')
 
@@ -52,7 +53,7 @@ class MovingObject(GameObject):
         self.targetSpeed = self.speed
         self.orientation = Orientation.RIGHT
         # TODO: make sprite check for its orientation on every frame
-        updateSpritePosition(self)
+        game.updateSpritePosition(self)
         if self.sprite:
             self.sprite.setAnimation('run')
 
@@ -132,4 +133,4 @@ class MovingObject(GameObject):
             if not nextTile or not nextTile.collides():
                 self.on_edge(direction)
 
-        super().update(ms, frameIndex)
+        game.update(self, ms, frameIndex)

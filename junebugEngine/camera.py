@@ -1,7 +1,7 @@
 from .game_object import GameObject
 from .map_parser import MapParser
 from .tileset import EntityData
-from .import config
+from . import config, game
 
 class Camera(GameObject):
     """A camera object for making "video" sequences
@@ -54,7 +54,7 @@ class Camera(GameObject):
             self.x = self.path[-1][0]
             self.y = self.path[-1][1]
 
-        super().update(ms, frameIndex)
+        game.update(self, ms, frameIndex)
 
     def quit(self, pressed):
         """Closes the game."""

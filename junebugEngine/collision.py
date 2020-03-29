@@ -1,3 +1,5 @@
+from .game import Direction, anchorTo
+
 def collisionCandidates(obj, rect, _branch=None):
     candidates = []
     for chunk in obj.world.chunkRange(rect):
@@ -37,29 +39,29 @@ def collideRectX(obj, other, dx, block=True):
     return dx, dirX
 
 def collideRectY(obj, other, dy, block=True):
-    collisionRect = obj.move(0, dy)
+    collisionRect = obj.rect.move(0, dy)
     collision = collisionRect.colliderect(other)
 
     dirY = Direction.NONE
 
     if collision:
-        if other.centery > obj.centery:
+        if other.centery > obj.rect.centery:
             dirY = Direction.DOWN
             if block:
                 obj.vy = 0
-                dy = other.top - obj.bottom
+                dy = other.top - obj.rect.bottom
         else:
             dirY = Direction.UP
             if block:
                 obj.vy = 0
-                dy = other.bottom - obj.top
+                dy = other.bottom - obj.rect.top
     return dy, dirY
 
 def on_collision(obj, direction, other=None):
     if direction == Direction.DOWN:
         if not other:
             obj.on_ground = True
-            obj.anchorTo(self.world)
+            anchorTo(obj, obj.world)
         elif other.blocks and obj.blocks:
             obj.on_ground = True
             obj.anchorTo(other)

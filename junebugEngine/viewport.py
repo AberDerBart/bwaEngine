@@ -1,6 +1,6 @@
 import pygame
 from .game_map import EntityLayer
-from .game_object import PHYSICS_SCALE
+from .physics import PHYSICS_SCALE, physicsX, physicsY, toPixel
 
 
 class Viewport:
@@ -75,9 +75,9 @@ class Viewport:
         for obj in self.map_.anchored:
             obj.update(ms, self.frameIndex)
         for obj in self.map_.anchored:
-            obj.physicsX(ms)
+            physicsX(obj, ms)
         for obj in self.map_.anchored:
-            obj.physicsY(ms)
+            physicsY(obj, ms)
 
         # update visible entities
         for layer in self.map_.layers:
@@ -88,7 +88,7 @@ class Viewport:
 
         # adjust offset
         if self.map_.player:
-            playerRect = self.map_.player.toPixel()
+            playerRect = toPixel(self.map_.player)
             if playerRect.left + self.offsetx < self.paddingLeft:
                 self.offsetx = self.paddingLeft - playerRect.left
             elif playerRect.right + self.offsetx > self.width - self.paddingRight:

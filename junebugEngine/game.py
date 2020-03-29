@@ -1,4 +1,11 @@
 from . import physics
+from .sprite import Orientation, Alignment
+
+class Direction(Orientation):
+    NONE = 0
+    UP = -1
+    DOWN = 1
+
 
 def init(obj):
     for entity in obj.anchored:
@@ -35,8 +42,8 @@ def on_map_exit(obj, direction):
         kill(obj)
 
 def kill(obj):
-    obj.anchorTo(None)
-    obj.updateChunks()
+    anchorTo(obj, None)
+    updateChunks(obj)
     if obj.sprite:
         obj.sprite.die()
 
@@ -45,14 +52,14 @@ def update(obj, ms, frameIndex):
 
     obj.on_ground = False
     if obj.gravity:
-        simulate_gravity(obj, ms)
+        physics.simulate_gravity(obj, ms)
 
-    for other in self.anchored:
+    for other in obj.anchored:
         update(other, ms, frameIndex)
 
 def updateChunks(obj):
     if obj.anchor:
-        newChunks = obj.world.chunkRange(obj)
+        newChunks = obj.world.chunkRange(obj.rect)
     else:
         newChunks = []
 

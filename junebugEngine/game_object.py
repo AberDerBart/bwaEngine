@@ -4,12 +4,6 @@ from .physics import PHYSICS_SCALE
 from . import config
 
 
-class Direction(Orientation):
-    NONE = 0
-    UP = -1
-    DOWN = 1
-
-
 class GameObject():
     gravity = False
     collides = False
