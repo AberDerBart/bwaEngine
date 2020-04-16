@@ -1,6 +1,7 @@
 import pygame
 import json
 import os.path
+import random
 
 
 # TODO: consider defining this elsewhere
@@ -131,6 +132,9 @@ class AnimSprite(pygame.sprite.Sprite):
             self.orientation = Orientation.RIGHT
         self.setAnimation(data['meta']['frameTags'][0]['name'])
 
+        # initialize list for particles
+        self.particles = []
+
     def die(self):
         """Plays the "die" animation, if available, then removes the sprite."""
         if not self.setAnimation('die'):
@@ -158,6 +162,24 @@ class AnimSprite(pygame.sprite.Sprite):
         Triggered whenever an animation finished playing."""
         if self.currentAnimation.name == "die":
             self.kill()
+
+    def emit_particles(self):
+        items_to_remove_ = []
+
+        # create new particle
+        self.particles.append([[0, 0],
+                               [random.randint(0, 20) / 10 - 1, 2],
+                               random.randint(4, 6)])
+        # compute existing particles
+        for particle in self.particles:
+            particle[0][0] += particle[1][0]
+            particle[0][1] += particle[1][1]
+            particle[2] -= 0.1
+            if particle[2] <= 0:
+                items_to_remove_.append(particle)
+        # remove nonexistent particles
+        for item in items_to_remove_:
+            self.particles.remove(item)
 
     def update(self, ms):
         """Updates the sprite by advancing the animation by [ms] ms."""
