@@ -167,7 +167,7 @@ class AnimSprite(pygame.sprite.Sprite):
         items_to_remove_ = []
 
         # create new particle
-        self.particles.append([[0, 0],
+        self.particles.append([list(self.rect.center),
                                [random.randint(0, 20) / 10 - 1, 2],
                                random.randint(4, 6)])
         # compute existing particles
