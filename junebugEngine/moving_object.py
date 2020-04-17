@@ -1,9 +1,6 @@
-import pygame
-
-from . import config
-
 from .sprite import Orientation
 from .game_object import GameObject, Direction
+from .junebug_sound import load_sound_from_wav, play_sound
 
 
 class MovingObject(GameObject):
@@ -20,10 +17,7 @@ class MovingObject(GameObject):
         super().__init__(**kwargs)
 
         # sound
-        self.jump_sound = pygame.mixer.Sound('sound/jump.wav')
-        self.channel = pygame.mixer.find_channel()
-        if self.channel:
-            self.channel.set_volume(.3)
+        self.jump_sound = load_sound_from_wav('sound/jump.wav')
 
         self.jumpTime = 0
         self.jumping = False
@@ -61,7 +55,7 @@ class MovingObject(GameObject):
         If [hold] is False, stops accelerating upwards."""
 
         if self.on_ground and hold:
-            self.channel.play(self.jump_sound)
+            play_sound(self.jump_sound, volume=.3)
             self.jumping = True
             self.jumpTime = 0
         if not hold:

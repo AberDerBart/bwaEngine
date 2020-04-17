@@ -8,14 +8,14 @@ import os.path
 
 class Orientation:
     """Defines, which direction an object/sprite is facing."""
-    
+
     LEFT = -2
     RIGHT = 2
 
 
 class Alignment:
     """Defines, which point in a spawned object/sprite is specified as its position."""
-    
+
     CENTER = 0
     LEFT = 1
     RIGHT = 2
@@ -29,7 +29,7 @@ class Alignment:
 
 class Frame():
     """Data class for a single animation frame in both orientations"""
-    
+
     def __init__(self, spriteSheet, data):
         """Create a frame, extracting the image from [spriteSheet] using [data]"""
         x = data['frame']['x']
@@ -43,7 +43,7 @@ class Frame():
 
 class Animation():
     """Data class for a single animation consisting of several timed [Frame]s"""
-    
+
     def __init__(self, frames, data):
         """Create a new animation using the frames specified in [data]."""
         self.name = data['name']
@@ -79,7 +79,7 @@ class Animation():
 
 class AnimSprite(pygame.sprite.Sprite):
     """Represents the sprites drawn on the screen."""
-    
+
     def __init__(self, json_file, position=(0, 0), mirror_h=False,
                  alignment=Alignment.BOTTOMLEFT):
         """Creates a new sprite.
