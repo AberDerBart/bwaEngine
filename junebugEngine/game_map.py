@@ -233,7 +233,6 @@ class GameMap(GameObject):
             particle_center = [particle[0][0] // PHYSICS_SCALE,
                                particle[0][1] // PHYSICS_SCALE]
             center = list(map(sum, zip(tuple(particle_center), offset)))
-            print(center)
             # color stuff
             for ind in range(len(particle[4])):
                 if particle[2] >= particle[5][ind]:
