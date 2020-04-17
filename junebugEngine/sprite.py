@@ -166,16 +166,22 @@ class AnimSprite(pygame.sprite.Sprite):
     def emit_particles(self, color_list=[(255, 255, 255)]):
         items_to_remove_ = []
 
+        # configuration (to be moved to function args)
+        decay = 0.08
+        x_velocity = random.randint(0, 20) / 10 -1
+        y_velocity = 2
+        particle_radius = random.randint(1, 4)
+
         # create new particle
         self.particles.append([list(self.rect.center),
-                               [random.randint(0, 20) / 10 - 1, 2],
-                               random.randint(4, 6),
+                               [x_velocity, y_velocity],
+                               particle_radius,
                                color_list])
         # compute existing particles
         for particle in self.particles:
             particle[0][0] += particle[1][0]
             particle[0][1] += particle[1][1]
-            particle[2] -= 0.1
+            particle[2] -= decay
             if particle[2] <= 0:
                 items_to_remove_.append(particle)
         # remove nonexistent particles
@@ -185,8 +191,9 @@ class AnimSprite(pygame.sprite.Sprite):
     def draw_particles(self, offset, surface):
         for particle in self.particles:
             center = list(map(sum, zip(tuple(particle[0]), offset)))
+            color_index = random.randint(0, len(particle[3]) - 1)
             pygame.draw.circle(surface,
-                               particle[3][0],
+                               particle[3][color_index],
                                center,
                                particle[2])
 
