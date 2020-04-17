@@ -10,12 +10,7 @@ class OffsetGroup(pygame.sprite.Group):
         for spr in sprites:
             surface.blit(spr.image, spr.rect.move(*offset))
             if isinstance(spr, AnimSprite):
-                for particle in spr.particles:
-                    center = list(map(sum, zip(tuple(particle[0]), offset)))
-                    pygame.draw.circle(surface,
-                                       (255, 255, 255),
-                                       center,
-                                       particle[2])
+                spr.draw_particles(offset, surface)
         self.lostsprites = []
 
     def clear(self, surface, bgd, offset=(0, 0)):

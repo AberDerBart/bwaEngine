@@ -181,6 +181,14 @@ class AnimSprite(pygame.sprite.Sprite):
         for item in items_to_remove_:
             self.particles.remove(item)
 
+    def draw_particles(self, offset, surface):
+        for particle in self.particles:
+            center = list(map(sum, zip(tuple(particle[0]), offset)))
+            pygame.draw.circle(surface,
+                               (255, 255, 255),
+                               center,
+                               particle[2])
+
     def update(self, ms):
         """Updates the sprite by advancing the animation by [ms] ms."""
         self.frameTime += ms
