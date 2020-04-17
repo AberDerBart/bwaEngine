@@ -163,13 +163,14 @@ class AnimSprite(pygame.sprite.Sprite):
         if self.currentAnimation.name == "die":
             self.kill()
 
-    def emit_particles(self):
+    def emit_particles(self, color_list=[(255, 255, 255)]):
         items_to_remove_ = []
 
         # create new particle
         self.particles.append([list(self.rect.center),
                                [random.randint(0, 20) / 10 - 1, 2],
-                               random.randint(4, 6)])
+                               random.randint(4, 6),
+                               color_list])
         # compute existing particles
         for particle in self.particles:
             particle[0][0] += particle[1][0]
@@ -185,7 +186,7 @@ class AnimSprite(pygame.sprite.Sprite):
         for particle in self.particles:
             center = list(map(sum, zip(tuple(particle[0]), offset)))
             pygame.draw.circle(surface,
-                               (255, 255, 255),
+                               particle[3][0],
                                center,
                                particle[2])
 
