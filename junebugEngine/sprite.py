@@ -163,14 +163,23 @@ class AnimSprite(pygame.sprite.Sprite):
         if self.currentAnimation.name == "die":
             self.kill()
 
-    def emit_particles(self, color_list=[(255, 255, 255)]):
+    def emit_particles(self,
+                       color_list=[(255, 255, 255)],
+                       decay=0.1,
+                       x_velocity_range=[-1, 1],
+                       y_velocity_range=[-2, 2],
+                       radius_range=[1, 4]):
         items_to_remove_ = []
 
         # configuration (to be moved to function args)
-        decay = 0.08
-        x_velocity = random.randint(0, 20) / 10 - 1
-        y_velocity = 2
-        particle_radius = random.randint(1, 4)
+        decay = 0.1
+        x_scaled_range = x_velocity_range * 10
+        x_velocity = random.randint(x_scaled_range[0],
+                                    x_scaled_range[1]) / 10
+        y_velocity = random.randint(y_velocity_range[0],
+                                    y_velocity_range[1])
+        particle_radius = random.randint(radius_range[0],
+                                         radius_range[1])
 
         # compute intervals for colors
         interval_size = float(particle_radius) / float(len(color_list))
