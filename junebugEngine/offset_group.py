@@ -1,5 +1,4 @@
 import pygame
-from .sprite import AnimSprite
 
 
 class OffsetGroup(pygame.sprite.Group):
@@ -9,8 +8,6 @@ class OffsetGroup(pygame.sprite.Group):
 
         for spr in sprites:
             surface.blit(spr.image, spr.rect.move(*offset))
-            if isinstance(spr, AnimSprite):
-                spr.draw_particles(offset, surface)
         self.lostsprites = []
 
     def clear(self, surface, bgd, offset=(0, 0)):

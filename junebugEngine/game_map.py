@@ -1,5 +1,6 @@
 import json
 import pygame
+import random
 from .tileset import TileSet, EntitySet, SetDict
 from .util import relativePath, convertCoords
 import os.path
@@ -101,6 +102,9 @@ class GameMap(GameObject):
 
         self.chunks = []
 
+        # initialize list for particles
+        self.particles = []
+
     def init(self):
         for entity in self.anchored:
             entity.init()
@@ -185,6 +189,63 @@ class GameMap(GameObject):
     def render(self, screen, offset):
         for layer in self.layers:
             layer.render(screen, offset)
+        self.draw_particles(screen, offset)
+
+    def emit_particles(self,
+                       center,
+                       color_list=[(255, 255, 255)],
+                       decay=0.1,
+                       x_velocity_range=[-1, 1],
+                       y_velocity_range=[-2, 2],
+                       radius_range=[1, 4]):
+
+        # configuration (to be moved to function args)
+        x_scaled_range = x_velocity_range * 10
+        x_velocity = random.randint(x_scaled_range[0],
+                                    x_scaled_range[1]) / 10
+        y_velocity = random.randint(y_velocity_range[0],
+                                    y_velocity_range[1])
+        particle_radius = random.randint(radius_range[0],
+                                         radius_range[1])
+
+        # compute intervals for colors
+        interval_size = float(particle_radius) / float(len(color_list))
+        interval_borders = []
+        for ind in range(len(color_list)):
+            interval_borders.append(float(ind) * interval_size)
+        # create new particle
+        self.particles.append([list(center),
+                               [x_velocity, y_velocity],
+                               particle_radius,
+                               particle_radius,
+                               color_list,
+                               interval_borders,
+                               decay])
+
+    def draw_particles(self, surface, offset):
+        for particle in self.particles:
+            center = list(map(sum, zip(tuple(particle[0]), offset)))
+            # color stuff
+            for ind in range(len(particle[4])):
+                if particle[2] >= particle[5][ind]:
+                    color_index = ind
+
+            pygame.draw.circle(surface,
+                               particle[4][color_index],
+                               center,
+                               particle[2])
 
     def update(self, ms):
-        pass
+        items_to_remove_ = []
+
+        # compute existing particles
+        for particle in self.particles:
+            particle[0][0] += particle[1][0]
+            particle[0][1] += particle[1][1]
+            particle[2] -= particle[6]
+            if particle[2] <= 0:
+                items_to_remove_.append(particle)
+
+        # remove nonexistent particles
+        for item in items_to_remove_:
+            self.particles.remove(item)
