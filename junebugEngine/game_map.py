@@ -199,35 +199,39 @@ class GameMap(GameObject):
                        y_velocity_range=[-2, 2],
                        radius_range=[1, 4]):
 
-        # configuration (to be moved to function args)
+        physics_center = [center[0] * PHYSICS_SCALE,
+                          center[1] * PHYSICS_SCALE]
         x_scaled_range = [x_velocity_range[0] * PHYSICS_SCALE,
                           x_velocity_range[1] * PHYSICS_SCALE]
         y_scaled_range = [y_velocity_range[0] * PHYSICS_SCALE,
                           y_velocity_range[1] * PHYSICS_SCALE]
         x_velocity = random.randint(int(x_scaled_range[0]),
-                                    int(x_scaled_range[1])) / PHYSICS_SCALE
+                                    int(x_scaled_range[1]))
         y_velocity = random.randint(int(y_scaled_range[0]),
-                                    int(y_scaled_range[1])) / PHYSICS_SCALE
-        particle_radius = random.randint(radius_range[0],
-                                         radius_range[1])
+                                    int(y_scaled_range[1]))
+        particle_radius = random.randint(radius_range[0] * PHYSICS_SCALE,
+                                         radius_range[1] * PHYSICS_SCALE)
 
         # compute intervals for colors
-        interval_size = float(particle_radius) / float(len(color_list))
+        interval_size = particle_radius // len(color_list)
         interval_borders = []
         for ind in range(len(color_list)):
-            interval_borders.append(float(ind) * interval_size)
+            interval_borders.append(ind * interval_size)
         # create new particle
-        self.particles.append([list(center),
+        self.particles.append([list(physics_center),
                                [x_velocity, y_velocity],
                                particle_radius,
                                particle_radius,
                                color_list,
                                interval_borders,
-                               decay])
+                               decay * PHYSICS_SCALE])
 
     def draw_particles(self, surface, offset):
         for particle in self.particles:
-            center = list(map(sum, zip(tuple(particle[0]), offset)))
+            particle_center = [particle[0][0] // PHYSICS_SCALE,
+                               particle[0][1] // PHYSICS_SCALE]
+            center = list(map(sum, zip(tuple(particle_center), offset)))
+            print(center)
             # color stuff
             for ind in range(len(particle[4])):
                 if particle[2] >= particle[5][ind]:
@@ -236,7 +240,7 @@ class GameMap(GameObject):
             pygame.draw.circle(surface,
                                particle[4][color_index],
                                center,
-                               particle[2])
+                               particle[2] // PHYSICS_SCALE)
 
     def update(self, ms):
         items_to_remove_ = []
