@@ -4,7 +4,7 @@ import pygame
 
 class ParseMap(unittest.TestCase):
     def runTest(self):
-        dia = dialog.parse_dialog('data/dialog.json')
+        dia = dialog.parse('data/dialog.json')
         self.assertIn("Alice",dia.persons)
         self.assertIn("Bob", dia.persons)
         self.assertEqual(dia.persons["Alice"].name, "Alice")

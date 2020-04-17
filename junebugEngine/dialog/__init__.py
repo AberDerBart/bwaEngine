@@ -1,4 +1,5 @@
 """Dialog parsing and rendering"""
 
-from .parse import parse_dialog
 from .types import Dialog, Sentence, Person
+from .parse import parse
+from .render import render

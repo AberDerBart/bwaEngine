@@ -1,8 +1,9 @@
-from .types import Dialog, Sentence, Person
+"""parses dialogs"""
+import os
 from typing import Dict, List
 import json
 import pygame
-import os
+from .types import Dialog, Sentence, Person
 
 def _parse_person(name: str, data: Dict, basedir: str) -> Person:
     portrait_path_rel = data["portrait"]
@@ -20,7 +21,7 @@ def _parse_sentence(data: Dict, persons: Dict[str, Person]) -> Sentence:
 
     return Sentence(person, text)
 
-def parse_dialog(filename: str) -> Dialog:
+def parse(filename: str) -> Dialog:
     """parses a dialog"""
     basedir = os.path.dirname(filename)
 
