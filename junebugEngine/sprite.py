@@ -168,15 +168,22 @@ class AnimSprite(pygame.sprite.Sprite):
 
         # configuration (to be moved to function args)
         decay = 0.08
-        x_velocity = random.randint(0, 20) / 10 -1
+        x_velocity = random.randint(0, 20) / 10 - 1
         y_velocity = 2
         particle_radius = random.randint(1, 4)
 
+        # compute intervals for colors
+        interval_size = float(particle_radius) / float(len(color_list))
+        interval_borders = []
+        for ind in range(len(color_list)):
+            interval_borders.append(float(ind) * interval_size)
         # create new particle
         self.particles.append([list(self.rect.center),
                                [x_velocity, y_velocity],
                                particle_radius,
-                               color_list])
+                               particle_radius,
+                               color_list,
+                               interval_borders])
         # compute existing particles
         for particle in self.particles:
             particle[0][0] += particle[1][0]
@@ -191,9 +198,13 @@ class AnimSprite(pygame.sprite.Sprite):
     def draw_particles(self, offset, surface):
         for particle in self.particles:
             center = list(map(sum, zip(tuple(particle[0]), offset)))
-            color_index = random.randint(0, len(particle[3]) - 1)
+            # color stuff
+            for ind in range(len(particle[4])):
+                if particle[2] >= particle[5][ind]:
+                    color_index = ind
+
             pygame.draw.circle(surface,
-                               particle[3][color_index],
+                               particle[4][color_index],
                                center,
                                particle[2])
 
