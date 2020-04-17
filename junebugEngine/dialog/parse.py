@@ -2,9 +2,11 @@ from .types import Dialog, Sentence, Person
 from typing import Dict, List
 import json
 import pygame
+import os
 
-def _parse_person(name: str, data: Dict) -> Person:
-    portrait_path = data["portrait"]
+def _parse_person(name: str, data: Dict, basedir: str) -> Person:
+    portrait_path_rel = data["portrait"]
+    portrait_path = os.path.join(basedir, portrait_path_rel)
     color = pygame.color.Color(data["color"])
 
     portrait = pygame.image.load(portrait_path)
@@ -20,6 +22,8 @@ def _parse_sentence(data: Dict, persons: Dict[str, Person]) -> Sentence:
 
 def parse_dialog(filename: str) -> Dialog:
     """parses a dialog"""
+    basedir = os.path.dirname(filename)
+
     with open(filename) as dialog_file:
         data = json.load(dialog_file)
 
@@ -27,7 +31,7 @@ def parse_dialog(filename: str) -> Dialog:
         sentences: List[Sentence] = []
 
         for name, person_data in  data["persons"].items():
-            person = _parse_person(name, person_data)
+            person = _parse_person(name, person_data, basedir)
             persons[person.name] = person
 
         for sentence_data in data["sentences"]:
