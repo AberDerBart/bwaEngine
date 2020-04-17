@@ -21,9 +21,6 @@ class MovingObject(GameObject):
 
         # sound
         self.jump_sound = pygame.mixer.Sound('sound/jump.wav')
-        self.channel = pygame.mixer.find_channel()
-        if self.channel:
-            self.channel.set_volume(.3)
 
         self.jumpTime = 0
         self.jumping = False
@@ -61,7 +58,10 @@ class MovingObject(GameObject):
         If [hold] is False, stops accelerating upwards."""
 
         if self.on_ground and hold:
-            self.channel.play(self.jump_sound)
+            channel = pygame.mixer.find_channel()
+            if channel:
+                channel.set_volume(.3)
+                channel.play(self.jump_sound)
             self.jumping = True
             self.jumpTime = 0
         if not hold:
