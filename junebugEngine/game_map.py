@@ -200,11 +200,14 @@ class GameMap(GameObject):
                        radius_range=[1, 4]):
 
         # configuration (to be moved to function args)
-        x_scaled_range = [x_velocity_range[0] * 100, x_velocity_range[1] * 100]
+        x_scaled_range = [x_velocity_range[0] * PHYSICS_SCALE,
+                          x_velocity_range[1] * PHYSICS_SCALE]
+        y_scaled_range = [y_velocity_range[0] * PHYSICS_SCALE,
+                          y_velocity_range[1] * PHYSICS_SCALE]
         x_velocity = random.randint(int(x_scaled_range[0]),
-                                    int(x_scaled_range[1])) / 100.0
-        y_velocity = random.randint(int(y_velocity_range[0]),
-                                    int(y_velocity_range[1]))
+                                    int(x_scaled_range[1])) / PHYSICS_SCALE
+        y_velocity = random.randint(int(y_scaled_range[0]),
+                                    int(y_scaled_range[1])) / PHYSICS_SCALE
         particle_radius = random.randint(radius_range[0],
                                          radius_range[1])
 
