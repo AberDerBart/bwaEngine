@@ -1,7 +1,10 @@
 import pygame
 from .game_map import EntityLayer
 from .game_object import PHYSICS_SCALE
-from .dialog import parse
+from .dialog import parse as dialog_parse
+from .dialog import render as dialog_render
+from .dialogplayer import DialogPlayer
+from .control import Control
 
 
 class Viewport:
@@ -17,6 +20,9 @@ class Viewport:
         self.map_ = None
         self.setMap(map_)
 
+        self.dialog = None
+        self.player_queue = []
+        self.dialog_player = None
 
         self.rect = pygame.Rect((- self.offsetx, - self.offsety),
                                 (self.width, self.height))
@@ -64,14 +70,32 @@ class Viewport:
     def clear(self):
         self.surf.blit(self.bg, (0, 0))
 
-    def update(self, ms, dialog_trigger=None):
+    def set_dialog(self, dialog_trigger):
+        self.dialog_trigger = dialog_trigger
+        dialog_filepath = ('levels/dialogs/' +
+                           str(self.dialog_trigger.dialogName) + '.json')
+        self.dialog = dialog_parse(dialog_filepath)
+        self.next_step = int(self.dialog_trigger.initialStep)
+        self.dialog_player = DialogPlayer(viewport=self)
+        self.player_queue.append(self.map_.player)
+        Control.setEntity(self.dialog_player)
+        self.map_.player = self.dialog_player
+        return True
+
+    def update(self, ms):
         # reset to background
         self.clear()
-        if dialog_trigger:
-            dialog_filepath = ('levels/dialogs/' +
-            str(dialog_trigger.dialogName) + '.json')
-            dialog = parse(dialog_filepath)
-            print(str(dialog.persons))
+        if self.dialog:
+            if self.next_step < len(self.dialog.sentences):
+                dialog_render(surface=self.surf,
+                              dialog=self.dialog,
+                              progress=self.next_step)
+            else:
+                self.dialog = None
+                self.dialog_player = None
+                self.map_.player = self.player_queue.pop()
+                Control.setEntity(self.map_.player)
+                self.next_step = 0
             return
         # update the map
         self.map_.update(ms)
