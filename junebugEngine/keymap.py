@@ -2,6 +2,7 @@ import pygame
 from .control import PlayerControl
 from .menu import Cursor
 from .camera import Camera
+from .dialogplayer import DialogPlayer
 
 _defaultKeymapCursor = {
     pygame.K_LEFT: Cursor.goLeft,
@@ -26,8 +27,14 @@ _defaultKeymapCamera = {
     pygame.K_ESCAPE: Camera.quit
 }
 
+_defaultKeymapDialogPlayer = {
+    pygame.K_SPACE: DialogPlayer.forward,
+    pygame.K_ESCAPE: DialogPlayer.quit
+}
+
 _defaultKeymaps = {
     Cursor: _defaultKeymapCursor,
     PlayerControl: _defaultKeymapPlayerControl,
-    Camera: _defaultKeymapCamera
+    Camera: _defaultKeymapCamera,
+    DialogPlayer: _defaultKeymapDialogPlayer
 }
