@@ -94,6 +94,7 @@ class Viewport:
                 self.dialog = None
                 self.dialog_player = None
                 self.map_.player = self.player_queue.pop()
+                self.map_.player.idle()
                 Control.setEntity(self.map_.player)
                 self.next_step = 0
             return
