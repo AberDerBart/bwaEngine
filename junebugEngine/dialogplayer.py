@@ -18,7 +18,8 @@ class DialogPlayer(GameObject):
 
     def forward(self, pressed=True):
         """skips to the next sentence in the dialog."""
-        self.viewport.next_step += 1
+        if pressed == True:
+            self.viewport.next_step += 1
 
     def quit(self, pressed):
         """Closes the game."""
