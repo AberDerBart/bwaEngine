@@ -194,24 +194,20 @@ class GameMap(GameObject):
     def emit_particles(self,
                        center,
                        color_list=[(255, 255, 255)],
-                       decay=0.1,
-                       x_velocity_range=[-1, 1],
-                       y_velocity_range=[-2, 2],
+                       decay=5.1,
+                       x_velocity_range=[-51, 51],
+                       y_velocity_range=[-102, 102],
                        radius_range=[1, 4],
                        has_gravity=False):
 
         physics_center = [center[0] * PHYSICS_SCALE,
                           center[1] * PHYSICS_SCALE]
-        x_scaled_range = [x_velocity_range[0] * PHYSICS_SCALE,
-                          x_velocity_range[1] * PHYSICS_SCALE]
-        y_scaled_range = [y_velocity_range[0] * PHYSICS_SCALE,
-                          y_velocity_range[1] * PHYSICS_SCALE]
-        x_velocity = random.randint(int(x_scaled_range[0]),
-                                    int(x_scaled_range[1]))
-        y_velocity = random.randint(int(y_scaled_range[0]),
-                                    int(y_scaled_range[1]))
-        particle_radius = random.randint(radius_range[0] * PHYSICS_SCALE,
-                                         radius_range[1] * PHYSICS_SCALE)
+        x_velocity = random.randint(int(x_velocity_range[0]),
+                                    int(x_velocity_range[1]))
+        y_velocity = random.randint(int(y_velocity_range[0]),
+                                    int(y_velocity_range[1]))
+        particle_radius = random.randint(int(radius_range[0] * PHYSICS_SCALE),
+                                         int(radius_range[1] * PHYSICS_SCALE))
 
         # compute intervals for colors
         interval_size = particle_radius // len(color_list)
@@ -225,7 +221,7 @@ class GameMap(GameObject):
                                particle_radius,
                                color_list,
                                interval_borders,
-                               decay * PHYSICS_SCALE,
+                               int(decay),
                                has_gravity])
 
     def draw_particles(self, surface, offset):
@@ -248,9 +244,9 @@ class GameMap(GameObject):
 
         # compute existing particles
         for particle in self.particles:
-            particle[0][0] += particle[1][0]
-            particle[0][1] += particle[1][1]
-            particle[2] -= particle[6]
+            particle[0][0] += particle[1][0] * ms
+            particle[0][1] += particle[1][1] * ms
+            particle[2] -= particle[6] * ms
             if particle[2] <= 0:
                 items_to_remove_.append(particle)
             # simulate gravity for particles
