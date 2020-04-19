@@ -1,0 +1,17 @@
+{
+    "persons": {
+        "Alice": {
+            "portrait":"alice.png",
+            "color":"#ff0000"
+        },
+        "Bob": {
+            "portrait":"bob.png",
+            "color":"#00ff00"
+        }
+    },
+    "sentences": [
+        {"Alice": "Hi, how are you?"},
+        {"Bob": "I am fine, thanks for asking!"},
+        {"Alice": "Cool! Nice talking to you!"}
+    ]
+}
