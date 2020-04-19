@@ -83,8 +83,6 @@ class Viewport:
         return True
 
     def update(self, ms):
-        # reset to background
-        self.clear()
         if self.dialog:
             if self.next_step < len(self.dialog.sentences):
                 dialog_render(surface=self.surf,
@@ -98,6 +96,8 @@ class Viewport:
                 Control.setEntity(self.map_.player)
                 self.next_step = 0
             return
+        # reset to background
+        self.clear()
         # update the map
         self.map_.update(ms)
 
