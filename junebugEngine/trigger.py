@@ -19,7 +19,10 @@ class Trigger(GameObject):
         super().on_collision(direction, other)
         if other == self.world.player:
             print("Triggering function '{}'".format(self.functionName))
-            self.function()
+            if self.functionName == 'start_rain':
+                self.function(self)
+            else:
+                self.function()
 
 EntityData.registerType(Trigger)
 

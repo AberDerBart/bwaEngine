@@ -197,7 +197,8 @@ class GameMap(GameObject):
                        decay=0.1,
                        x_velocity_range=[-1, 1],
                        y_velocity_range=[-2, 2],
-                       radius_range=[1, 4]):
+                       radius_range=[1, 4],
+                       has_gravity=False):
 
         physics_center = [center[0] * PHYSICS_SCALE,
                           center[1] * PHYSICS_SCALE]
@@ -224,14 +225,14 @@ class GameMap(GameObject):
                                particle_radius,
                                color_list,
                                interval_borders,
-                               decay * PHYSICS_SCALE])
+                               decay * PHYSICS_SCALE,
+                               has_gravity])
 
     def draw_particles(self, surface, offset):
         for particle in self.particles:
             particle_center = [particle[0][0] // PHYSICS_SCALE,
                                particle[0][1] // PHYSICS_SCALE]
             center = list(map(sum, zip(tuple(particle_center), offset)))
-            print(center)
             # color stuff
             for ind in range(len(particle[4])):
                 if particle[2] >= particle[5][ind]:
@@ -252,6 +253,11 @@ class GameMap(GameObject):
             particle[2] -= particle[6]
             if particle[2] <= 0:
                 items_to_remove_.append(particle)
+            # simulate gravity for particles
+            if particle[7]:
+                particle[1][1] += config.gravity * (ms / 1000.)
+                if particle[1][1] >= config.max_vertical_speed / 1000.:
+                    particle[1][1] = config.max_vertical_speed / 1000.
 
         # remove nonexistent particles
         for item in items_to_remove_:
