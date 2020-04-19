@@ -10,16 +10,17 @@ class Trigger(GameObject):
     typeName = "trigger"
     collides = True
 
-    def __init__(self, function = '', **kwargs):
+    def __init__(self, function = '', dialog_name = '', **kwargs):
         super().__init__(**kwargs)
         self.function = triggers.get(function)
         self.functionName = function
+        self.dialogName = dialog_name
 
     def on_collision(self, direction, other):
         super().on_collision(direction, other)
         if other == self.world.player:
             print("Triggering function '{}'".format(self.functionName))
-            if self.functionName == 'start_rain':
+            if self.functionName in ['start_rain', 'open_dialog']:
                 self.function(self)
             else:
                 self.function()

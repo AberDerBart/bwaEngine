@@ -1,6 +1,7 @@
 import pygame
 from .game_map import EntityLayer
 from .game_object import PHYSICS_SCALE
+from .dialog import parse
 
 
 class Viewport:
@@ -63,9 +64,15 @@ class Viewport:
     def clear(self):
         self.surf.blit(self.bg, (0, 0))
 
-    def update(self, ms):
+    def update(self, ms, dialog_trigger=None):
         # reset to background
         self.clear()
+        if dialog_trigger:
+            dialog_filepath = ('levels/dialogs/' +
+            str(dialog_trigger.dialogName) + '.json')
+            dialog = parse(dialog_filepath)
+            print(str(dialog.persons))
+            return
         # update the map
         self.map_.update(ms)
 
