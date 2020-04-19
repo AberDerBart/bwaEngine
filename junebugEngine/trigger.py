@@ -10,11 +10,12 @@ class Trigger(GameObject):
     typeName = "trigger"
     collides = True
 
-    def __init__(self, function = '', dialog_name = '', **kwargs):
+    def __init__(self, function='', dialog_name='', initial_step='', **kwargs):
         super().__init__(**kwargs)
         self.function = triggers.get(function)
         self.functionName = function
         self.dialogName = dialog_name
+        self.initialStep = initial_step
 
     def on_collision(self, direction, other):
         super().on_collision(direction, other)
