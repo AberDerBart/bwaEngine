@@ -83,6 +83,8 @@ class Viewport:
         return True
 
     def update(self, ms):
+        # update the map
+        self.map_.update(ms)
         if self.dialog:
             if self.next_step < len(self.dialog.sentences):
                 dialog_render(surface=self.surf,
@@ -98,8 +100,6 @@ class Viewport:
             return
         # reset to background
         self.clear()
-        # update the map
-        self.map_.update(ms)
 
         self.frameIndex += 1
 
