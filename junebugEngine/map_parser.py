@@ -72,6 +72,14 @@ class MapParser:
         gamemap.width = gamemap.tilesH * gamemap.tileWidth * PHYSICS_SCALE
         gamemap.height = gamemap.tilesV * gamemap.tileHeight * PHYSICS_SCALE
 
+        # TODO: this is hacky. change this
+        mapProperties = data.get('properties',[])
+        for prop in mapProperties:
+            if prop['name'] == 'music':
+                musicFile = relativePath(prop['value'], gamemap.path)
+                pygame.mixer.music.load(musicFile)
+                pygame.mixer.music.play(-1)
+
         for rowIndex in range(math.ceil(gamemap.height / config.chunkSize)):
             row = []
             for colIndex in range(math.ceil(gamemap.width / config.chunkSize)):
