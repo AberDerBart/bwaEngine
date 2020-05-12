@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="junebugEngine",
-    version="1.0.0",
+    version="46.0.0",
     author="Nils Kornfeld, Jonas Grosse-Holz",
     author_email="aber@der-b.art",
     description="A platformer game engine",
