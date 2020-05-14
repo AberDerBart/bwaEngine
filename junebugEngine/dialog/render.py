@@ -5,7 +5,7 @@ from .types import Dialog
 pygame.font.init()
 
 padding = 15
-font = pygame.font.Font(pygame.font.get_default_font(), 15)
+font = pygame.font.Font('art/fonts/8bitoprtyr/8bitoprtyr.ttf', 15)
 
 def render(surface: pygame.surface.Surface, dialog: Dialog, progress: int) -> int:
     """renders the given dialog to the given surface"""
