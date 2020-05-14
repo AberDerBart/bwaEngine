@@ -9,7 +9,7 @@ max_vertical_speed = 64000000
 gravity = 480.
 
 """"""
-chunkSize = 1024 * 128
+chunkSize = 1024 * 16
 
 """fonts"""
 
