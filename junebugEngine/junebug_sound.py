@@ -18,11 +18,11 @@ def play_sound(sound_object, volume=.5, loops=0):
 
 def fade_in_and_play_music(loops=0,
                            target_volume=1.0,
-                           fade_duration=1.0,
+                           fade_duration=200,
                            fade_tick_duration = 20):
     pygame.mixer.music.set_volume(0.0)
     pygame.mixer.music.play(loops)
-    increment = (fade_tick_duration / 1000) / fade_duration
+    increment = fade_tick_duration / fade_duration
     return True, increment
 
 def update_music_volume(increment):
