@@ -1,6 +1,7 @@
 import os.path
 import json
 import junebugEngine.config
+import junebugEngine.junebug_sound as js
 from .tileset import EntityData, EntityData, TileSet, Tile, SetDict
 from .text import RenderedText
 from .sprite import AnimSprite, Alignment
@@ -72,13 +73,17 @@ class MapParser:
         gamemap.width = gamemap.tilesH * gamemap.tileWidth * PHYSICS_SCALE
         gamemap.height = gamemap.tilesV * gamemap.tileHeight * PHYSICS_SCALE
 
+        # needed to fix music issues
+        gamemap.is_fading_in = False
+
         # TODO: this is hacky. change this
         mapProperties = data.get('properties',[])
         for prop in mapProperties:
             if prop['name'] == 'music':
                 musicFile = relativePath(prop['value'], gamemap.path)
-                pygame.mixer.music.load(musicFile)
-                pygame.mixer.music.play(-1)
+                js.load_music(musicFile)
+                gamemap.is_fading_in, gamemap.music_increment = \
+                js.fade_in_and_play_music(loops=-1)
 
         for rowIndex in range(math.ceil(gamemap.height / config.chunkSize)):
             row = []
