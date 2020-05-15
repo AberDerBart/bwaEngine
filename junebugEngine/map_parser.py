@@ -80,6 +80,8 @@ class MapParser:
         mapProperties = data.get('properties',[])
         for prop in mapProperties:
             if prop['name'] == 'music':
+                if pygame.mixer.music.get_busy:
+                    pygame.mixer.music.fadeout(200)
                 musicFile = relativePath(prop['value'], gamemap.path)
                 js.load_music(musicFile)
                 gamemap.is_fading_in, gamemap.music_increment = \
