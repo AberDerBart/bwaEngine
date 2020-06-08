@@ -143,35 +143,32 @@ class GameMap(GameObject):
         x = pos[0]
         y = pos[1]
 
-        tileX = int(x / self.tileWidth / PHYSICS_SCALE)
-        tileY = int(y / self.tileHeight / PHYSICS_SCALE)
+        tileX = x // self.tileWidth // PHYSICS_SCALE
+        tileY = y // self.tileHeight // PHYSICS_SCALE
 
         if tileX in range(0, self.tilesH) and tileY in range(0, self.tilesV):
             return self.collisionTiles[tileY][tileX]
         return None
 
     def tileRange(self, rect):
-        xMin = rect.left
-        xMax = rect.right - 1
-        yMin = rect.top
-        yMax = rect.bottom - 1
+        xMin = rect.left // PHYSICS_SCALE // self.tileWidth
+        xMax = (rect.right - 1) // PHYSICS_SCALE // self.tileWidth + 1
+        yMin = rect.top // PHYSICS_SCALE // self.tileHeight
+        yMax = (rect.bottom - 1) // PHYSICS_SCALE // self.tileHeight + 1
 
         tiles = []
-        for y in list(range(yMin, yMax,
-                            self.tileHeight * PHYSICS_SCALE)) + [yMax]:
-            for x in list(range(xMin, xMax,
-                                self.tileWidth * PHYSICS_SCALE)) + [xMax]:
-                tmpTile = self.tileAt((x, y))
-                if tmpTile:
-                    tileX = int(x / self.tileWidth / PHYSICS_SCALE) \
-                            * self.tileWidth * PHYSICS_SCALE
-                    tileY = int(y / self.tileHeight / PHYSICS_SCALE) \
-                            * self.tileHeight * PHYSICS_SCALE
-                    tileRect = pygame.Rect(tileX,
-                                           tileY,
-                                           self.tileWidth * PHYSICS_SCALE,
-                                           self.tileHeight * PHYSICS_SCALE)
-                    tiles.append((tmpTile, tileRect))
+        for y in list(range(yMin, yMax)):
+            for x in list(range(xMin, xMax)):
+                if x in range(0, self.tilesH) and y in range(0, self.tilesV):
+                    tmpTile = self.collisionTiles[y][x]
+                    if tmpTile:
+                        tileX = x * self.tileWidth * PHYSICS_SCALE
+                        tileY = y * self.tileHeight * PHYSICS_SCALE
+                        tileRect = pygame.Rect(tileX,
+                                               tileY,
+                                               self.tileWidth * PHYSICS_SCALE,
+                                               self.tileHeight * PHYSICS_SCALE)
+                        tiles.append((tmpTile, tileRect))
         return tiles
 
     def chunkRange(self, rect):
