@@ -32,7 +32,6 @@ class Viewport:
         self.paddingLeft = paddingLeft
         self.paddingRight = paddingRight
 
-        self.visibleEntities = pygame.sprite.Group()
         self.frameIndex = 0
 
         self.clear()
@@ -105,11 +104,14 @@ class Viewport:
 
         # update physics for visible entities:
         for obj in self.map_.anchored:
-            obj.update(ms, self.frameIndex)
+            if self.obj_visible(obj):
+                obj.update(ms, self.frameIndex)
         for obj in self.map_.anchored:
-            obj.physicsX(ms)
+            if self.obj_visible(obj):
+                obj.physicsX(ms)
         for obj in self.map_.anchored:
-            obj.physicsY(ms)
+            if self.obj_visible(obj):
+                obj.physicsY(ms)
 
         # update visible entities
         for layer in self.map_.layers:
@@ -164,7 +166,8 @@ class Viewport:
         return self.rect.colliderect(sprite.rect)
 
     def obj_visible(self, obj):
-        if obj.typeName in ['berndman', 'wonderstevie', 'camera']:
+        if obj.typeName in ['berndman', 'wonderstevie', 'camera',
+                            'trigger', 'goal']:
             return True
         if not obj.sprite:
             return False
