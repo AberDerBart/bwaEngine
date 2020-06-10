@@ -168,7 +168,7 @@ class Viewport:
     def obj_visible(self, obj):
         if obj.typeName in ['berndman', 'wonderstevie', 'camera',
                             'trigger', 'goal', 'travelPath',
-                            'flameThatCannotDies']:
+                            'flameThatCannotDies', 'drone']:
             return True
         if not obj.sprite:
             return False
